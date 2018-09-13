@@ -7,3 +7,4 @@ George Meisinger - gem56@pitt.edu
 <br />Vanessa Colihan - vmc12@pitt.edu
 <br />Tyler Thompson - tyt5@pitt.edu
 <br />Brad Munson - bjm117@pitt.edu
+<br />Graeme Rock - gar59@pitt.edu
