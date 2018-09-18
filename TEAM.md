@@ -9,3 +9,4 @@ George Meisinger - gem56@pitt.edu
 <br />Brad Munson - bjm117@pitt.edu
 <br />Graeme Rock - gar59@pitt.edu
 <br />Brendan Valley - brv11@pitt.edu
+<br />Jacob Bader - jsb99@pitt.edu
