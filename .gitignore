@@ -1,0 +1,11 @@
+*.class
+*.jar
+*.log
+*.lck 
+*.zip
+*.lock
+*.bin
+*.properties
+
+.gradle
+/build/
