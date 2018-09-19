@@ -37,12 +37,12 @@ Should list which students are working on each advanced topic subteam
 - Jacob Bader
 
 Should describe what organizational approaches the team will take over the term, e.g.:
-####Will Slack or equivalent be used for project discussion?
+#####Will Slack or equivalent be used for project discussion?
 - Yes we have already set-up a slack.
 
-####What development methodologies will be used (if any)?
+#####What development methodologies will be used (if any)?
 - Basing our developement methodolies on that of Agile. We will have multiple leadership roles to allow for easy communication.
 
-####What coding style will be followed?
+#####What coding style will be followed?
 - Commenting before each method with any applicable params.
 - Commenting each end bracket of a method with the mehthod name for clarity.
