@@ -31,7 +31,7 @@ For our advanced featues, we will explore the topics of Advanced AI, advanced ph
 - George Meisinger
 - Jacob Bader
 
-##### Team organization and communication
+#### Team organization and communication
 Our team is divided into three groups to focus on each of the advanced features.  We will have temporary leadership positions for each week including a team leader, assistant to the team leader and a group leader for each feature group.  We hope this will increase accountability and establish clear lines of communication.  We will be using slack to communicate, and may use skype for virtual meetings as needed.  
 
 ##### Agile Development 
@@ -50,8 +50,23 @@ We will be using Agile development, here are the basic principles of agile:
 1. Regularly, the team reflects on how to become more effective, and adjusts
 
 ##### Style Guidelines 
-- Commenting before each method with any applicable params.
+[Google C++ Style Guide](https://google.github.io/styleguide/cppguide.html)
+
+Functions should accomplish small and simple tasks.  For complicated functions, call multiple smaller functions.  This will make debugging easier and should ultimately make code dryer.  Here are some important principles to start off:
+
+- Commenting before each method with any applicable params. and a good description 
+```
+// This functions is for doing something specific 
+// inputNum: Describe where this number came from and what it's for 
+somethingFunction(int inputNum){
+}
+```
+
 - Commenting each end bracket of a method with the mehthod name for clarity.
+```
+fooFunction(){
+}end of fooFunction 
+```
 
 #### Changes to repository 
 When you make any changes, create a new branch in the format of your initials_TOPIC_what_your_working_on.  This will keep code safe and changes trackable
