@@ -28,7 +28,8 @@ Should list which students are working on each advanced topic subteam
 ##### Physics Engine 
 - Kyle Hartenstein (Group Lead)
 - Tyler Thompson
-- Christian Brill 
+- Christian Brill
+- Brad Munson 
 
 ##### Procedural Generation 
 - Brendan Valley (Group Lead)
