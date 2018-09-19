@@ -37,5 +37,7 @@ Should list which students are working on each advanced topic subteam
 
 Should describe what organizational approaches the team will take over the term, e.g.:
 Will Slack or equivalent be used for project discussion?
+- Yes we have already set-up a slack.
 What development methodologies will be used (if any)?
+- Basing our developement methodolies on that of Agile. We will have multiple leadership roles to allow for easy communication.
 What coding style will be followed?
