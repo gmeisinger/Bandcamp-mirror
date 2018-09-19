@@ -52,3 +52,17 @@ We will be using Agile development, here are the basic principles of agile:
 ##### Style Guidelines 
 - Commenting before each method with any applicable params.
 - Commenting each end bracket of a method with the mehthod name for clarity.
+
+#### Changes to repository 
+When you make any changes, create a new branch in the format of your initials_TOPIC_what_your_working_on.  This will keep code safe and changes trackable
+
+
+exp: jb_AI_playertracking
+
+```
+git checkout -b jb_user_tokens
+```
+
+This way we can check each other's code, make a pull request and merge.
+
+If you have any dificulties with this or anything else, ASK FOR HELP.  Life is a team sport
