@@ -16,14 +16,14 @@ For our advanced featues, we will explore the topics of Advanced AI, advanced ph
 
 ##### Advanced AI
 - Ness Colihan (Group Lead)
-- Michael Hermenault 
 - Graeme Rock
-- Brad Munson (Assistant to the Regional Manager)
+- Christian Brill
+
 
 ##### Physics Engine 
 - Kyle Hartenstein (Group Lead)
 - Tyler Thompson
-- Christian Brill
+- Brad Munson (Assistant to the Regional Manager)
 
 ##### Procedural Generation 
 - Justin Budd (Team Leader)
