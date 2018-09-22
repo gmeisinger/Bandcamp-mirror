@@ -1,14 +1,14 @@
 Here is the list of our team managers for the coming weeks as well as which weeks we will be considering for our evalualtions:
-
-9-19 - Justin Budd
-9-26 - Brad Munson
-10-3
-10-10 - NOT COUNTING
-10-17 - Tyler Thompson
-10-24 - Kyle Hartenstein
-10-31 - Vanessa Colihan
-11-7 - George Meisinger
-11-14 - Christian Brill
-11-26
-11-28 - NOT COUNTING
-12-5
+<br />
+9-19 - Justin Budd<br />
+9-26 - Brad Munson<br />
+10-3              <br />
+10-10 - NOT COUNTING<br />
+10-17 - Tyler Thompson<br />
+10-24 - Kyle Hartenstein<br />
+10-31 - Vanessa Colihan<br />
+11-7 - George Meisinger<br />
+11-14 - Christian Brill<br />
+11-26                   <br />
+11-28 - NOT COUNTING<br />
+12-5                  <br />
