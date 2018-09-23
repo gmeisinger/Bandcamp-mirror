@@ -2,7 +2,7 @@ Here is the list of our team managers for the coming weeks as well as which week
 <br />
 9-19 - Justin Budd			<br />
 9-26 - Brad Munson			<br />
-10-3              			<br />
+10-3 - Brendan Valley		<br />
 10-10 - NOT COUNTING		<br />
 10-17 - Tyler Thompson		<br />
 10-24 - Kyle Hartenstein	<br />
