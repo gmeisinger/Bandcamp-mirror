@@ -2,7 +2,7 @@
 CS 1666 - Group game design project 
 
 ## Our Game
-The year is 2025, a coalition of Earths great powers have come together to fund Man's furthest exploration into space to date.  It is believed that on the distant Galilean moon Europa, orbiting Jupiter, there may be liquid water underneath the dense frozen surface.  Earth scientists are eager to find out if there may be any bacterium or any signs of life in this liquid water.  Your mission is to take the 8 month journey to Europa, safely land on the planets surface, search for any evidence of life and safely return to report any of your findings.  If this mission is successful, Earth may fund another mission several years from now, but if you don't find anything or fail to return to report your findings, if may be the end of this exploratory endeavor.  
+The year is 2025, a coalition of Earths great powers have come together to fund Man's furthest exploration into space to date.  It is believed that on the distant Galilean moon Europa, orbiting Jupiter, there may be liquid water underneath the dense frozen surface.  Earth scientists are eager to find out if there may be any bacterium or any signs of life in this liquid water.  Your mission is to take the 8 month journey to Europa, safely land on the planets surface, search for any evidence of life and safely return to report any of your findings.  If this mission is successful, Earth may fund another mission several years from now, but if you don't find anything or fail to return to report your findings, if may be the end of this exploratory endeavor.  
 
 After landing, you discover much more than bacteria.  You and your crew came equiped to take small ice samples and explore an open planet. You discover the remnants of an alien base on a battle field that took place between two alien races.  The freezing temperatures of Europa has left the battlefield almost perfectly preserved in ice and everything you find is a new discovery for mankind.  Your mission has taken on a whole new life.  Now there is technology to be found, bases and crashed ships to explore, and aliens to understand.  But why were these races fighting?  How was so much damage done?  And are the aliens that did this still here?...  
 
@@ -23,13 +23,13 @@ For our advanced featues, we will explore the topics of Advanced AI, advanced ph
 ##### Physics Engine 
 - Kyle Hartenstein (Group Lead)
 - Tyler Thompson
-- Brad Munson (Assistant to the Regional Manager)
+- Brad Munson
 
 ##### Procedural Generation 
-- Justin Budd (Team Leader)
 - Brendan Valley (Group Lead)
 - George Meisinger
 - Jacob Bader
+- Justin Budd
 
 #### Team organization and communication
 Our team is divided into three groups to focus on each of the advanced features.  We will have temporary leadership positions for each week including a team leader, assistant to the team leader and a group leader for each feature group.  We hope this will increase accountability and establish clear lines of communication.  We will be using slack to communicate, and may use skype for virtual meetings as needed.  
