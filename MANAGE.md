@@ -9,6 +9,6 @@ Here is the list of our team managers for the coming weeks as well as which week
 10-31 - Vanessa Colihan		<br />
 11-7 - George Meisinger		<br />
 11-14 - Christian Brill		<br />
-11-26                   	<br />
+11-26 - Graeme Rock        	<br />
 11-28 - NOT COUNTING		<br />
-12-5                  		<br />
+12-5  - Jacob Bader    		<br />
