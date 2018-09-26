@@ -103,8 +103,7 @@ std::vector<SDL_Texture*> loadCredits()
 	credits.push_back(loadTexture("Group Member Icons/gm_credit.png"));
 	credits.push_back(loadTexture("Group Member Icons/vc_credit.png"));
 	credits.push_back(loadTexture("Group Member Icons/jbader_credit.png"));
-//	Wating on Justin...
-//	credits.push_back(loadTexture("Group Member Icons/gm_credit.png"));			
+	credits.push_back(loadTexture("Group Member Icons/justin_budd_credit.png"));			
 
 	return credits;
 }
