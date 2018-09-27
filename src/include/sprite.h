@@ -1,7 +1,7 @@
 #ifndef BANDCAMP_SPRITE_H_
 #define BANDCAMP_SPRITE_H_
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 class Sprite
 {
