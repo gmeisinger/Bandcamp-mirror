@@ -11,7 +11,7 @@ class Sprite
         int height;
     public:
         Sprite(SDL_Texture* texture, int w, int y);
-        //~Sprite();
+        ~Sprite();
         void setTexture(SDL_Texture* texture, int w, int h);
         int getWidth();
         int getHeight();
