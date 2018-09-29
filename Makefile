@@ -32,11 +32,11 @@ ifeq ($(OS), Windows_NT)
 	LFLAGScr = -LC:/mingwdev/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image
 else ifeq ($(shell uname -s), Darwin)
 	DETECTED_OS := $(shell uname -s)
-	CC = g++ -std=c11
-	CFLAGS = -c -I/
-	INCLUDE = -I/
-	LFLAGS = -o $(OUT) 
-	#LFLAGScr =
+	CC = g++ -std=c++11
+	CFLAGS = -c -F/Library/Frameworks
+	INCLUDE = -F/Library/Frameworks
+	LFLAGS = -framework SDL2 -framework SDL2_image -framework SDL2_ttf -o $(OUT) 
+	LFLAGScr = -framework SDL2 -framework SDL2_image -framework SDL2_ttf
 else
 	DETECTED_OS := $(shell uname -s)
 	CC = g++ -std=c++11
@@ -66,3 +66,6 @@ credits: src/credits.cpp
 
 os:
 	@echo $(DETECTED_OS)
+
+clean:
+	rm obj/*.o
