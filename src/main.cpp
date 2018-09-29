@@ -1,8 +1,8 @@
 #include <string>
 #include <iostream>
 #include <vector>
-#include <SDL2/SDL.h>
-#include <SDL/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 #include "include/sprite.h"
 
 constexpr int SCREEN_WIDTH = 800;
