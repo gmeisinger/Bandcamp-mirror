@@ -11,7 +11,7 @@
 # $< == first dependency, $^ == all dependencies, $@ == target
 
 # declaring paths for source files
-OUT = bin/bandcamp
+OUT = ./bandcamp
 SRC = $(wildcard src/*.cpp)
 DEP = $(wildcard src/include/*.h)
 OBJ = $(patsubst src/%.cpp, obj/%.o, $(SRC))
