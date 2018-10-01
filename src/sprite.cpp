@@ -7,6 +7,12 @@ Sprite::Sprite(SDL_Texture* _texture, int _width, int _height)
     width = _width;
     height = _height;
 }
+//destructor
+Sprite::~Sprite()
+{
+    SDL_DestroyTexture(texture);
+    texture = nullptr;
+}
 
 //assign new texture to sprite
 void Sprite::setTexture(SDL_Texture* _texture, int w, int h)

@@ -1,9 +1,6 @@
-#include <string>
-#include <iostream>
-#include <vector>
-#include <SDL2/SDL.h>
-#include <SDL/SDL_image.h>
 #include "include/sprite.h"
+#include "include/utils.h"
+#include "include/credits.h"
 
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
@@ -53,28 +50,6 @@ bool init() {
 	return true;
 }
 
-//loads image at specified path as a texture
-//fname = relative path to image
-SDL_Texture* loadTexture(std::string fname) {
-    //the final texture
-    SDL_Texture* newTexture = nullptr;
-    //load the image
-	SDL_Surface* startSurf = IMG_Load(fname.c_str());
-	if (startSurf == nullptr) {
-		std::cout << "Unable to load image " << fname << "! SDL Error: " << SDL_GetError() << std::endl;
-		return nullptr;
-	}
-    //create texture from image
-	newTexture = SDL_CreateTextureFromSurface(gRenderer, startSurf);
-	if (newTexture == nullptr) {
-		std::cout << "Unable to create texture!" << std::endl;
-	}
-    //free original surface
-	SDL_FreeSurface(startSurf);
-
-	return newTexture;
-}
-
 //free memory and quit
 void close() {
 	
@@ -88,90 +63,7 @@ void close() {
 	SDL_Quit();
 }
 
-//returns a vector containing credit textures
-std::vector<SDL_Texture*> loadCredits()
-{
-	std::vector<SDL_Texture*> credits;
-	//load textures
-
-	credits.push_back(loadTexture("Group Member Icons/ChristianBrill_Icon.png"));
-	credits.push_back(loadTexture("Group Member Icons/kyle_hartenstein_credit.png"));
-	credits.push_back(loadTexture("Group Member Icons/Brendan valley - Icon.png"));
-	credits.push_back(loadTexture("Group Member Icons/Brad_Credit_Icon.png"));
-	credits.push_back(loadTexture("Group Member Icons/CS1666TylerThompsonIcon.png"));
-	credits.push_back(loadTexture("Group Member Icons/GraemeRock.png"));
-	credits.push_back(loadTexture("Group Member Icons/gm_credit.png"));
-	credits.push_back(loadTexture("Group Member Icons/vc_credit.png"));
-	credits.push_back(loadTexture("Group Member Icons/jbader_credit.png"));
-//	Wating on Justin...
-//	credits.push_back(loadTexture("Group Member Icons/gm_credit.png"));			
-
-	return credits;
-}
-
-//plays each credit in vector for 3 seconds
-void playCredits(std::vector<SDL_Texture*> creds)
-{
-	int alpha;
-	int time;
-	int elapsed;
-	//play each credit
-	for( auto i : creds)
-	{
-		//init alpha to 0
-		SDL_SetTextureBlendMode(i, SDL_BLENDMODE_BLEND);
-		alpha = SDL_ALPHA_TRANSPARENT;
-		elapsed = 0;
-		time = SDL_GetTicks();
-		SDL_RenderClear(gRenderer);
-		SDL_SetTextureAlphaMod(i, alpha);
-		SDL_RenderCopy(gRenderer, i, NULL, NULL);
-		SDL_RenderPresent(gRenderer);
-		//fade in over 255ms
-		while(alpha < SDL_ALPHA_OPAQUE)
-		{
-			elapsed = SDL_GetTicks() - time;
-			time = SDL_GetTicks();
-			alpha += elapsed;
-			if(alpha > 255) alpha = 255;
-			SDL_RenderClear(gRenderer);
-			SDL_SetTextureAlphaMod(i, alpha);
-			SDL_RenderCopy(gRenderer, i, NULL, NULL);
-			SDL_RenderPresent(gRenderer);
-		}
-		SDL_Delay(2490);
-		time = SDL_GetTicks();
-		elapsed = 0;
-		//fade out over 255ms
-		while(alpha > SDL_ALPHA_TRANSPARENT)
-		{
-			elapsed = SDL_GetTicks() - time;
-			time = SDL_GetTicks();
-			alpha -= elapsed;
-			if(alpha < 0) alpha = 0;
-			SDL_RenderClear(gRenderer);
-			SDL_SetTextureAlphaMod(i, alpha);
-			SDL_RenderCopy(gRenderer, i, NULL, NULL);
-			SDL_RenderPresent(gRenderer);
-		}
-	}
-}
-
-/*destroys a vector of textures
- *this exists outside of close() because we will quickly move away
- *from using globals. this could exist in a utilities.cpp for example.
- *we will discuss this kind of thing soon, so its subject to change
- */
-void destroyTextureVector(std::vector<SDL_Texture*> vect)
-{
-	for(auto i : vect)
-	{
-		SDL_DestroyTexture(i);
-		i = nullptr;
-	}
-}
-
-int main() {
+int main(int argc, char* argv[]) {
 	if (!init()) {
 		std::cout <<  "Failed to initialize!" << std::endl;
 		close();
@@ -182,9 +74,9 @@ int main() {
 	bool quit = false;
 	//event handler
 	SDL_Event e;
-
-	//load credit images
-	std::vector<SDL_Texture*> credits = loadCredits();
+	//credits
+	Credits creds = Credits(gRenderer);
+	creds.load();
 
 	//test sprite, leaving this commented out for now
 	//Sprite player_sprite = Sprite(loadTexture("res/retroMe.png"), 128, 128);
@@ -202,13 +94,11 @@ int main() {
 			}
 		
 		}
-
-		playCredits(credits);
+		creds.play();
 		quit = true;
 	}
 
 	//quit sdl
-	destroyTextureVector(credits);
 	close();
 	return 0;
 }
