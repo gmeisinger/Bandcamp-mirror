@@ -36,28 +36,28 @@ void HUD::init_HUD()
 
 void HUD::lower_oxygen()
 {
-	//replace the rectangle in the oxygen indicator down a set amount
+	//replace the rectangle in the oxygen indicator down a set amount (5 for now)
 	if(!init_h) return;
 	
 }
 
 void HUD::raise_oxygen(int resource_value)
 {
-	//replace the rectangle in the oxygen indicator up a set amount
+	//replace the rectangle in the oxygen indicator up a set amount (passed by resource value)
 	if(!init_h) return;
 	
 }
 
 void HUD::lower_temperature()
 {
-	//replace the rectangle in the temperature indicator down a set amount
+	//replace the rectangle in the temperature indicator down a set amount (5 for now)
 	if(!init_h) return;
 	
 }
 
 void HUD::raise_temperature(int resource_value)
 {
-	//replace the rectangle in the remperature indicator down a set amount
+	//replace the rectangle in the remperature indicator down a set amount (passed by resource value)
 	if(!init_h) return;
 	
 }
