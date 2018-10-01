@@ -57,7 +57,7 @@ void HUD::lower_temperature()
 
 void HUD::raise_temperature(int resource_value)
 {
-	//replace the rectangle in the remperature indicator down a set amount (passed by resource value)
+	//replace the rectangle in the temperature indicator down a set amount (passed by resource value)
 	if(!init_h) return;
 	
 }
