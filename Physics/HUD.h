@@ -5,11 +5,11 @@
 class HUD
 {
 	public:
-		init_HUD();
-		lower_oxygen();
-		raise_oxygen();
-		lower_temperature();
-		raise_temperature();
+		void init_HUD();
+		void lower_oxygen();
+		void raise_oxygen();
+		void lower_temperature();
+		void raise_temperature();
 };
 
 #endif  //  BANDCAMP_HUD_H_
