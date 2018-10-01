@@ -14,7 +14,6 @@ class Game
 private:
 	bool running;
 	SDL_Window* gWindow;
-	SDL_Surface* gScreenSurface;
 	SDL_Renderer* gRenderer;
 	std::vector<Sprite> sprites;
 public:

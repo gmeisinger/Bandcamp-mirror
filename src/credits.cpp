@@ -70,9 +70,13 @@ void Credits::play()
 		elapsed = 0;
 		while(elapsed < 2490)
 		{
-			if(SDL_PollEvent(&skip) != 0) 
+			if(SDL_PollEvent(&skip) != 0)
+			{ 
+				if(skip.type == SDL_QUIT)
+					return;
 				if(skip.type == SDL_KEYDOWN)
 					break;
+			}
 			elapsed = SDL_GetTicks() - time;
 		}
 		time = SDL_GetTicks();
