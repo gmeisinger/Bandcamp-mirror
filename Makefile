@@ -25,7 +25,7 @@ OBJ = $(patsubst src/%.cpp, obj/%.o, $(SRC))
 
 ifeq ($(OS), Windows_NT)
 	DETECTED_OS = $(OS)
-	CC = g++
+	CC = g++ -std=c++11
 	CFLAGS = -c -IC:/mingwdev/include/SDL2
 	INCLUDE = -IC:/mingwdev/include/SDL2
 	LFLAGS = -LC:/mingwdev/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -o $(OUT)

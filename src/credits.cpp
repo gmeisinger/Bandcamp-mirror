@@ -1,5 +1,4 @@
 #include "include/credits.h"
-#include "include/utils.h"
 
 bool init;
 std::vector<SDL_Texture*> credits;
@@ -31,7 +30,6 @@ void Credits::load()
 	credits.push_back(utils::loadTexture(renderer, "Group Member Icons/vc_credit.png"));
 	credits.push_back(utils::loadTexture(renderer, "Group Member Icons/jbader_credit.png"));
 //	Wating on Justin...
-//	credits.push_back(loadTexture("Group Member Icons/gm_credit.png"));			
     init = true;
 }
 
@@ -43,6 +41,7 @@ void Credits::play()
 	int alpha;
 	int time;
 	int elapsed;
+	SDL_Event skip;
 	//play each credit
 	for( auto i : credits)
 	{
@@ -67,9 +66,16 @@ void Credits::play()
 			SDL_RenderCopy(renderer, i, NULL, NULL);
 			SDL_RenderPresent(renderer);
 		}
-		SDL_Delay(2490);
 		time = SDL_GetTicks();
 		elapsed = 0;
+		while(elapsed < 2490)
+		{
+			if(SDL_PollEvent(&skip) != 0) 
+				if(skip.type == SDL_KEYDOWN)
+					break;
+			elapsed = SDL_GetTicks() - time;
+		}
+		time = SDL_GetTicks();
 		//fade out over 255ms
 		while(alpha > SDL_ALPHA_TRANSPARENT)
 		{
