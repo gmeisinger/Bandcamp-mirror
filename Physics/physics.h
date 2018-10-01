@@ -12,7 +12,7 @@ class Room
 		void lower_temperature();
 		void raise_temperature(int resource_value);
 	private:
-		int pressure, temperature;
-}
+		int oxygen, temperature;
+};
 
 #endif  //  BANDCAMP_PHYSICS_H_

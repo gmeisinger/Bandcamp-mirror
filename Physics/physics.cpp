@@ -1,11 +1,11 @@
-#include "include/physics.h"
+#include "physics.h"
 
 void Room::init_room()
 {
 	//initialize room values based of procgen
 	//we'll use "percent" values (0-100) to keep things simple
-	oxygen = 100;
-	temperature = 100;
+	int oxygen = 100;
+	int temperature = 100;
 }
 
 int Room::give_oxygen()
@@ -15,7 +15,7 @@ int Room::give_oxygen()
 
 int Room::give_temperature()
 {
-	return temperature();
+	return temperature;
 }
 
 void Room::lower_oxygen()

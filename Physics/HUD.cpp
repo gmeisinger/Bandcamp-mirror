@@ -1,4 +1,4 @@
-#include "include/HUD.h"
+#include "HUD.h"
 
 void HUD::init_HUD()
 {

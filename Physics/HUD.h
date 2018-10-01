@@ -10,6 +10,6 @@ class HUD
 		raise_oxygen();
 		lower_temperature();
 		raise_temperature();
-}
+};
 
 #endif  //  BANDCAMP_HUD_H_
