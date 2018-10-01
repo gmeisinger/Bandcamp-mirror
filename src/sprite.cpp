@@ -4,8 +4,11 @@
 Sprite::Sprite(SDL_Texture* _texture, int _width, int _height)
 {
     texture = _texture;
-    width = _width;
-    height = _height;
+    SDL_SetTextureBlendMode(texture, SDL_BLENDMODE_BLEND);
+    img_rect.x = 0;
+    img_rect.y = 0;
+    img_rect.w = _width;
+    img_rect.h = _height;
 }
 //destructor
 Sprite::~Sprite()
@@ -14,33 +17,27 @@ Sprite::~Sprite()
     texture = nullptr;
 }
 
-//assign new texture to sprite
-void Sprite::setTexture(SDL_Texture* _texture, int w, int h)
-{
-    texture = _texture;
-    width = w;
-    height = h;
-}
 
 //returns width of sprite
 int Sprite::getWidth()
 {
-    return width;
+    return img_rect.w;
 }
 
 //returns height of sprite
 int Sprite::getHeight()
 {
-    return height;
+    return img_rect.h;
 }
 
-//draws the sprite to the screen at position x,y
-void Sprite::draw(SDL_Renderer* renderer, int x, int y)
+//set position
+void Sprite::setPosition(int _x, int _y)
 {
-    SDL_Rect dest_rect;
-    dest_rect.x = x;
-    dest_rect.y = y;
-    dest_rect.w = this->width;
-    dest_rect.h = this->height;
-    SDL_RenderCopy(renderer, this->texture, NULL, &dest_rect);
+    img_rect.x = _x;
+    img_rect.y = _y;
+}
+//draws the sprite to the screen at position x,y
+void Sprite::draw(SDL_Renderer* renderer)
+{
+    SDL_RenderCopy(renderer, this->texture, NULL, &this->img_rect);
 }
