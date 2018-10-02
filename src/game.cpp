@@ -1,12 +1,13 @@
 #include "include/game.h"
+#include "include/player.h"
 //#include "include/sprite.h"
 
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 constexpr int TILE_SIZE = 32;
 
-//SDL_Rect temp_player;
-
+SDL_Rect player_box = {0, 0, TILE_SIZE, TILE_SIZE};
+Player temp_player = Player(player_box);
 //Constructor
 //starts new game
 Game::Game()
@@ -52,50 +53,70 @@ bool Game::init() {
 }
 
 
-void Game::loadMedia()
-{
-	//temp_player = {0, 0, TILE_SIZE, TILE_SIZE};
-	Sprite new_sprite = Sprite(gRenderer);
-	new_sprite.loadTexture("res/retroMe.png", TILE_SIZE, TILE_SIZE);
-	new_sprite.setPosition(100,100);
-	sprites.push_back(new_sprite);
+void Game::loadMedia() {
+	//Player temp_player = Player(&player_box);
+
+	//Sprite new_sprite = Sprite(gRenderer);
+	//new_sprite.loadTexture("res/retroMe.png", TILE_SIZE, TILE_SIZE);
+	//new_sprite.setPosition(100,100);
+	//sprites.push_back(new_sprite);
 }
 
-void Game::update()
-{
-	//
+void Game::update() {
+	updatePlayer();
 }
 
-void Game::draw()
-{
-	//SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+void Game::updatePlayer() {
+	int x_deltav = 0;
+	int y_deltav = 0;
+
+	// Get array of current key states
+	// Note that array is indexed by scancodes, not keycodes
+	// https://wiki.libsdl.org/SDL_Scancode
+	const Uint8* keystate = SDL_GetKeyboardState(nullptr);
+	if (keystate[SDL_SCANCODE_W])
+		y_deltav -= 1;
+	if (keystate[SDL_SCANCODE_A])
+		x_deltav -= 1;
+	if (keystate[SDL_SCANCODE_S])
+		y_deltav += 1;
+	if (keystate[SDL_SCANCODE_D])
+		x_deltav += 1;
+
+	temp_player.updateVelocity(x_deltav, y_deltav);
+
+	// Move box
+	temp_player.updatePosition();
+
+	// Check you haven't moved off the screen
+	temp_player.checkBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
+}
+
+void Game::draw() {
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(gRenderer);
-	for(auto i : sprites) {
+	//for(auto i : sprites) {
 		//i.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-		i.draw();
+	//	i.draw();
 		//std::cout << sprites.size() << std::endl;
 		//std::cout << i.getWidth() << std::endl;
-	}
-	//SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
-	//SDL_RenderFillRect(gRenderer, &temp_player);
+	//}
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
+	SDL_RenderFillRect(gRenderer, temp_player.getRect());
 	SDL_RenderPresent(gRenderer);
 }
 
 //main game loop
-void Game::run()
-{
+void Game::run() {
 	//event handler
 	SDL_Event e;
-	
+
 	//main loop
-	while(running)
-	{
+	while(running) {
 		//handle events on queue
-		while(SDL_PollEvent(&e) != 0)
-		{
+		while(SDL_PollEvent(&e) != 0) {
 			//user requests quit
-			if(e.type == SDL_QUIT)
-			{
+			if(e.type == SDL_QUIT) {
 				running = false;
 			}
 		
