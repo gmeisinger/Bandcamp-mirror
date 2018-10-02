@@ -121,11 +121,24 @@ void Game::run() {
 			if(e.type == SDL_QUIT) {
 				running = false;
 			}
+			else if(e.type == SDL_KEYDOWN) {
+				switch(e.key.keysym.sym) {
+					case SDLK_SPACE:
+						running = false;
+						break;
+				}
+			}
 		
 		}
 		update();
 		hud.init_HUD();
-		hud.change_levels(5, 5);
+		int oxygen = 100;
+		int temperature = 100;
+		while(oxygen > 0 && temperature > 0 && running){
+			hud.change_levels(oxygen, temperature);
+			oxygen -= 1;
+			temperature -= 1;
+		}
 	}
 	//credits
 	Credits creds = Credits(gRenderer);
