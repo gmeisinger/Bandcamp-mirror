@@ -1,7 +1,7 @@
 #ifndef BANDCAMP_PLAYER_H_
 #define BANDCAMP_PLAYER_H_
 
-#include <SDL2/SDL.h>
+#include <SDL.h>
 
 class Player
 {

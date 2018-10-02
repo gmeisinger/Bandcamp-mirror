@@ -25,6 +25,7 @@ public:
 	void close();
 	//void input();
 	void update();
+	void updatePlayer();
 	void draw();
 
 };
