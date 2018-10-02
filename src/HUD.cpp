@@ -34,30 +34,89 @@ void HUD::init_HUD()
 	init_h = true;
 }
 
-void HUD::lower_oxygen()
+void HUD::change_levels(int oxygen_level, int temperature_level)
 {
 	//replace the rectangle in the oxygen indicator down a set amount (5 for now)
 	if(!init_h) return;
-	
-}
-
-void HUD::raise_oxygen(int resource_value)
-{
-	//replace the rectangle in the oxygen indicator up a set amount (passed by resource value)
-	if(!init_h) return;
-	
-}
-
-void HUD::lower_temperature()
-{
-	//replace the rectangle in the temperature indicator down a set amount (5 for now)
-	if(!init_h) return;
-	
-}
-
-void HUD::raise_temperature(int resource_value)
-{
-	//replace the rectangle in the temperature indicator down a set amount (passed by resource value)
-	if(!init_h) return;
-	
+	SDL_SetRenderDrawColor(renderer_h, 0x00, 0x00, 0x00, 0xFF);
+	SDL_RenderClear(renderer_h);
+	SDL_SetRenderDrawColor(renderer_h, 0x00, 0xFF, 0xFF, 0xFF);
+	switch(oxygen_level)
+	{
+		case 100:
+			Oxygen = {109, 54, 33, 91};
+			break;
+		case 90:
+			Oxygen = {109, 64, 33, 81};
+			break;
+		case 80:
+			Oxygen = {109, 74, 33, 71};
+			break;
+		case 70:
+			Oxygen = {109, 84, 33, 61};
+			break;
+		case 60:
+			Oxygen = {109, 94, 33, 51};
+			break;
+		case 50:
+			Oxygen = {109, 104, 33, 41};
+			break;
+		case 40:
+			Oxygen = {109, 114, 33, 31};
+			break;
+		case 30:
+			Oxygen = {109, 124, 33, 21};
+			break;
+		case 20:
+			Oxygen = {109, 134, 33, 11};
+			break;
+		case 10:
+			Oxygen = {109, 144, 33, 1};
+			break;
+		case 0:
+			Oxygen = {109, 54, 33, 91};
+			break;
+	}
+	SDL_RenderFillRect(renderer_h, &Oxygen);
+	SDL_SetRenderDrawColor(renderer_h, 0x00, 0xFF, 0xFF, 0xFF);
+	switch(temperature_level)
+	{
+		case 100:
+			Temp = {54, 54, 33, 91};
+			break;
+		case 90:
+			Temp = {54, 64, 33, 81};
+			break;
+		case 80:
+			Temp = {54, 74, 33, 71};
+			break;
+		case 70:
+			Temp = {54, 84, 33, 61};
+			break;
+		case 60:
+			Temp = {54, 94, 33, 51};
+			break;
+		case 50:
+			Temp = {54, 104, 33, 41};
+			break;
+		case 40:
+			Temp = {54, 114, 33, 31};
+			break;
+		case 30:
+			Temp = {54, 124, 33, 21};
+			break;
+		case 20:
+			Temp = {54, 134, 33, 11};
+			break;
+		case 10:
+			Temp = {54, 144, 33, 1};
+			break;
+		case 0:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x00, 0x00, 0xFF);
+			Temp = {54, 54, 33, 91};
+			break;
+	}
+	SDL_RenderFillRect(renderer_h, &Temp);
+	SDL_RenderCopy(renderer_h, hud[0], NULL, NULL);
+	SDL_RenderPresent(renderer_h);
 }
