@@ -15,6 +15,8 @@ SDL_Texture* utils::loadTexture(SDL_Renderer* renderer, std::string fname) {
 		std::cout << "Unable to load image " << fname << "! SDL Error: " << SDL_GetError() << std::endl;
 		return nullptr;
 	}
+	//color key
+	SDL_SetColorKey(startSurf, SDL_TRUE, SDL_MapRGB(startSurf->format, 0, 0xFF, 0xFF));
     //create texture from image
 	newTexture = SDL_CreateTextureFromSurface(renderer, startSurf);
 	if (newTexture == nullptr) {

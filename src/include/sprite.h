@@ -2,20 +2,23 @@
 #define BANDCAMP_SPRITE_H_
 
 #include <SDL.h>
+#include <SDL_image.h>
+#include <string>
 
 class Sprite
 {
     private:
+        SDL_Renderer* renderer;
         SDL_Texture* texture;
-        int width;
-        int height;
+        SDL_Rect img_rect;
     public:
-        Sprite(SDL_Texture* texture, int w, int y);
+        Sprite(SDL_Renderer* _renderer);
         ~Sprite();
-        void setTexture(SDL_Texture* texture, int w, int h);
+        bool loadTexture(std::string fname, int w, int h);
+        void setPosition(int _x, int _y);
         int getWidth();
         int getHeight();
-        void draw(SDL_Renderer* renderer, int x, int y);
+        void draw();
 };
 
 #endif  //  BANDCAMP_SPRITE_H_
