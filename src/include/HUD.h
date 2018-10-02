@@ -13,10 +13,7 @@ class HUD
 {
 	public:
 		void init_HUD();
-		void lower_oxygen();
-		void raise_oxygen(int resource_value);
-		void lower_temperature();
-		void raise_temperature(int resource_value);
+		void change_levels(int oxygen_level, int temperature_level);
 		HUD(SDL_Renderer* _gRenderer);
 		~HUD();
 	private:
