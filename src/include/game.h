@@ -9,23 +9,22 @@
 #include "credits.h"
 #include "sprite.h"
 
-class Game
-{
-private:
-	bool running;
-	SDL_Window* gWindow;
-	SDL_Renderer* gRenderer;
-	std::vector<Sprite> sprites;
-public:
-	Game();
-	//~Game();
-	bool init();
-	void loadMedia();
-	void run();
-	void close();
-	//void input();
-	void update();
-	void draw();
+class Game {
+	private:
+		bool running;
+		SDL_Window* gWindow;
+		SDL_Renderer* gRenderer;
+		std::vector<Sprite> sprites;
+	public:
+		Game();
+		//~Game();
+		bool init();
+		void loadMedia();
+		void run();
+		void close();
+		//void input();
+		void update();
+		void draw();
 
 };
 #endif	//	BANDCAMP_GAME_H_

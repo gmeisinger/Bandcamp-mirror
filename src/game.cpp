@@ -1,4 +1,6 @@
+#include <cstdlib>
 #include "include/game.h"
+#include "include/pickup.h"
 #include "include/player.h"
 //#include "include/sprite.h"
 
@@ -8,10 +10,14 @@ constexpr int TILE_SIZE = 32;
 
 SDL_Rect player_box = {0, 0, TILE_SIZE, TILE_SIZE};
 Player temp_player = Player(player_box);
+Pickup *pickup = NULL;
 //Constructor
-//starts new game
-Game::Game()
-{
+
+//Function Prototypes
+void updatePlayer();
+
+//Starts new game
+Game::Game() {
 	gWindow = nullptr;
 	gRenderer = nullptr;
 	running = false;
@@ -64,9 +70,31 @@ void Game::loadMedia() {
 
 void Game::update() {
 	updatePlayer();
+	if (pickup == NULL) {
+		int pickupX = rand()%(SCREEN_WIDTH-TILE_SIZE);
+		int pickupY = rand()%(SCREEN_HEIGHT-TILE_SIZE);
+		SDL_Rect pickupBox = {pickupX, pickupY, TILE_SIZE, TILE_SIZE};
+		
+		int pickupValue = rand()%25+25;
+		
+		int pickupType = rand()%2;
+		if (pickupType == 0) {
+			Pickup pUp = Pickup(pickupBox, 'e', pickupValue, &temp_player);
+			pickup = &pUp;
+		} else {
+			Pickup pUp = Pickup(pickupBox, 'o', pickupValue, &temp_player);
+			pickup = &pUp;
+		}
+	//Need to be able to call checkPickupOverlap to know if player and pickup have overlapped
+	/*
+	} else if (pickup->checkPickupOverlap()) {
+		delete pickup;
+		pickup = NULL;
+	*/
+	}
 }
 
-void Game::updatePlayer() {
+void updatePlayer() {
 	int x_deltav = 0;
 	int y_deltav = 0;
 
