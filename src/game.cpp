@@ -1,5 +1,6 @@
 #include "include/game.h"
 #include "include/player.h"
+#include "include/HUD.h"
 //#include "include/sprite.h"
 
 constexpr int SCREEN_WIDTH = 800;
@@ -110,6 +111,7 @@ void Game::draw() {
 void Game::run() {
 	//event handler
 	SDL_Event e;
+	HUD hud = HUD(gRenderer);
 
 	//main loop
 	while(running) {
@@ -119,10 +121,24 @@ void Game::run() {
 			if(e.type == SDL_QUIT) {
 				running = false;
 			}
+			else if(e.type == SDL_KEYDOWN) {
+				switch(e.key.keysym.sym) {
+					case SDLK_SPACE:
+						running = false;
+						break;
+				}
+			}
 		
 		}
 		update();
-		draw();
+		hud.init_HUD();
+		int oxygen = 100;
+		int temperature = 100;
+		while(oxygen > 0 && temperature > 0 && running){
+			hud.change_levels(oxygen, temperature);
+			oxygen -= 1;
+			temperature -= 1;
+		}
 	}
 	//credits
 	Credits creds = Credits(gRenderer);
