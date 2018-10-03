@@ -11,4 +11,5 @@ class HUD
 		void lower_temperature();
 		void raise_temperature();
 };
+
 #endif  //  BANDCAMP_HUD_H_
