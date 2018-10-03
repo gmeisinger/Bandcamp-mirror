@@ -1,3 +1,6 @@
+#include <vector>
+#include <SDL.h>
+
 #include "include/HUD.h"
 #include "include/utils.h"
 
@@ -6,10 +9,13 @@ std::vector<SDL_Texture*> hud;
 SDL_Renderer* renderer_h;
 SDL_Rect Temp;
 SDL_Rect Oxygen;
+int currentTemp;
+int currentOxygen;
 
-HUD::HUD(SDL_Renderer* _renderer)
+//Forward declaration
+
+HUD::HUD()
 {
-    renderer_h = _renderer;
     init_h = false;
 }
 
@@ -18,28 +24,29 @@ HUD::~HUD()
     utils::destroyTextureVector(hud);
 }
 
-void HUD::init_HUD()
+void HUD::init(SDL_Renderer* _renderer)
 {
+	renderer_h = _renderer;
+	
 	//load in the image of HUD (HUD.png)
 	int imgFlags = IMG_INIT_PNG;
 	int retFlags = IMG_Init(imgFlags);
-	hud.push_back(utils::loadTexture(renderer_h, "Physics/HUD.png"));
+	hud.push_back(utils::loadTexture(renderer_h, "Physics/Nu HUD.png"));
 	SDL_Rect Temp = {54, 54, 33, 91};
 	SDL_Rect Oxygen = {109, 54, 33, 91};
-	SDL_SetRenderDrawColor(renderer_h, 0x00, 0xFF, 0xFF, 0xFF);
-	SDL_RenderFillRect(renderer_h, &Temp);
-	SDL_RenderFillRect(renderer_h, &Oxygen);
-	SDL_RenderCopy(renderer_h, hud[0], NULL, NULL);
-	SDL_RenderPresent(renderer_h);
 	init_h = true;
 }
 
-void HUD::change_levels(int oxygen_level, int temperature_level)
-{
+void HUD::update(std::vector<Object*> objectList){
+		
+}
+
+void HUD::input(const Uint8* keystate){
+	
+}
+
+SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level){
 	//replace the rectangle in the oxygen indicator down a set amount (5 for now)
-	if(!init_h) return;
-	SDL_SetRenderDrawColor(renderer_h, 0x00, 0x00, 0x00, 0xFF);
-	SDL_RenderClear(renderer_h);
 	SDL_SetRenderDrawColor(renderer_h, 0x00, 0xFF, 0xFF, 0xFF);
 	switch(oxygen_level)
 	{
@@ -117,6 +124,12 @@ void HUD::change_levels(int oxygen_level, int temperature_level)
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Temp);
-	SDL_RenderCopy(renderer_h, hud[0], NULL, NULL);
-	SDL_RenderPresent(renderer_h);
+	return renderer_h;
+}
+
+SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer){
+	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp);
+	SDL_SetRenderDrawColor(renderer_h, 0, 0, 0, 255);
+	SDL_RenderCopy(gRenderer, hud[0], NULL, NULL);
+	return gRenderer;
 }

@@ -1,4 +1,8 @@
+#include <SDL.h>
+#include <vector>
+
 #include "include/player.h"
+#include "include/game.h"
 
 SDL_Rect playerRect;
 int x_deltav;
@@ -13,11 +17,23 @@ Player::Player(SDL_Rect _rect) {
     y_deltav = 0;
     x_vel = 0;
     y_vel = 0;
+	up = false;
+	down = false;
+	left = false;
+	right = false;
 }
+
+Player::Player(){}
+
 //destructor
 Player::~Player() {
 
 }
+
+void Player::init(SDL_Renderer* gRenderer){
+	
+}
+
 
 //returns width of Player
 int Player::getWidth() {
@@ -95,8 +111,39 @@ void Player::checkBounds(int max_width, int max_height) {
         playerRect.y = max_height - playerRect.h;
 }
 
-/*
-void Player::draw(SDL_Renderer* gRenderer) {
-    SDL_RenderFillRect(gRenderer, &playerRect);
-    SDL_RenderPresent(gRenderer);
-}*/
+void Player::update(std::vector<Object*> objectList) {
+	int x_deltav = 0;
+	int y_deltav = 0;
+
+	if (up)
+		y_deltav -= 1;
+	if (left)
+		x_deltav -= 1;
+	if (down)
+		y_deltav += 1;
+	if (right)
+		x_deltav += 1;
+
+	updateVelocity(x_deltav, y_deltav);
+
+	// Move box
+	updatePosition();
+
+	// Check you haven't moved off the screen
+	checkBounds(screen_w, screen_h);
+}
+
+void Player::input(const Uint8* keystate)
+{
+	up = keystate[SDL_SCANCODE_W];
+	left = keystate[SDL_SCANCODE_A];
+	down = keystate[SDL_SCANCODE_S];
+	right = keystate[SDL_SCANCODE_D];
+}
+
+SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
+	SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+	SDL_RenderFillRect(renderer, &playerRect);
+	
+   return renderer;
+}
