@@ -45,7 +45,7 @@ bool Game::init() {
 	int imgFlags = IMG_INIT_PNG;
 	if( !( IMG_Init( imgFlags ) & imgFlags ) )
 	{
-		printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+		std::cout <<  "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
 		return false;
 	}
 	// Set renderer draw/clear color
