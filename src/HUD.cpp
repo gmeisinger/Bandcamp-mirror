@@ -9,25 +9,13 @@ SDL_Rect Oxygen;
 
 HUD::HUD(SDL_Renderer* _renderer)
 {
-    if(_renderer != nullptr)
-	{
-		renderer_h = _renderer;
-	}
-	else 
-	{
-		renderer_h = nullptr;
-	}
+	renderer_h = _renderer;
     init_h = false;
 }
 
 HUD::~HUD()
 {
     utils::destroyTextureVector(hud);
-}
-
-void HUD::set_renderer(SDL_Renderer* _renderer)
-{
-	renderer_h = _renderer;
 }
 
 void HUD::init_HUD()
