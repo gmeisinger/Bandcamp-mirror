@@ -1,5 +1,6 @@
 #include "include/game.h"
 #include "include/player.h"
+#include "include/HUD.h"
 //#include "include/sprite.h"
 
 constexpr int SCREEN_WIDTH = 800;
@@ -8,6 +9,7 @@ constexpr int TILE_SIZE = 32;
 
 SDL_Rect player_box = {0, 0, TILE_SIZE, TILE_SIZE};
 Player temp_player = Player(player_box);
+
 //Constructor
 //starts new game
 Game::Game()
@@ -103,13 +105,22 @@ void Game::draw() {
 	//}
 	SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
 	SDL_RenderFillRect(gRenderer, temp_player.getRect());
-	SDL_RenderPresent(gRenderer);
+
+	//Commented out because presentation is finalized in HUD
+	//SDL_RenderPresent(gRenderer);
 }
 
 //main game loop
 void Game::run() {
 	//event handler
 	SDL_Event e;
+
+	//Initialize HUD
+	HUD gameHud = HUD(gRenderer);
+	gameHud.init_HUD();
+
+	int temperature = 100;
+	int oxygen = 100;
 
 	//main loop
 	while(running) {
@@ -121,8 +132,19 @@ void Game::run() {
 			}
 		
 		}
+
+		oxygen -= 1;
+		temperature -= 1;
+		if(oxygen == 0){
+			oxygen = 100;
+		}
+		if(temperature == 0){
+			temperature = 100;
+		}
+		
 		update();
 		draw();
+		gameHud.change_levels(oxygen, temperature);
 	}
 	//credits
 	Credits creds = Credits(gRenderer);
