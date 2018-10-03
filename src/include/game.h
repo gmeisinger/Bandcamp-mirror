@@ -23,9 +23,9 @@ public:
 	void loadMedia();
 	void run();
 	void close();
-	void updatePlayer();
 	//void input();
 	void update();
+	void updatePlayer();
 	void draw();
 
 };

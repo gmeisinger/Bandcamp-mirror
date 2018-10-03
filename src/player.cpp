@@ -99,5 +99,4 @@ void Player::checkBounds(int max_width, int max_height) {
 void Player::draw(SDL_Renderer* gRenderer) {
     SDL_RenderFillRect(gRenderer, &playerRect);
     SDL_RenderPresent(gRenderer);
-
 }*/
