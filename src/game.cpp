@@ -7,7 +7,7 @@ constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 constexpr int TILE_SIZE = 32;
 
-SDL_Rect player_box = {0, 0, TILE_SIZE, TILE_SIZE};
+SDL_Rect player_box = {SCREEN_WIDTH/2-TILE_SIZE/2, SCREEN_HEIGHT/2-TILE_SIZE/2, TILE_SIZE, TILE_SIZE};
 Player temp_player = Player(player_box);
 
 //Constructor
