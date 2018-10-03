@@ -9,13 +9,25 @@ SDL_Rect Oxygen;
 
 HUD::HUD(SDL_Renderer* _renderer)
 {
-    renderer_h = _renderer;
+    if(_renderer != nullptr)
+	{
+		renderer_h = _renderer;
+	}
+	else 
+	{
+		renderer_h = nullptr;
+	}
     init_h = false;
 }
 
 HUD::~HUD()
 {
     utils::destroyTextureVector(hud);
+}
+
+void HUD::set_renderer(SDL_Renderer* _renderer)
+{
+	renderer_h = _renderer;
 }
 
 void HUD::init_HUD()
@@ -39,7 +51,7 @@ void HUD::change_levels(int oxygen_level, int temperature_level)
 	//replace the rectangle in the oxygen indicator down a set amount (5 for now)
 	if(!init_h) return;
 	SDL_SetRenderDrawColor(renderer_h, 0x00, 0x00, 0x00, 0xFF);
-	SDL_RenderClear(renderer_h);
+	//SDL_RenderClear(renderer_h);
 	SDL_SetRenderDrawColor(renderer_h, 0x00, 0xFF, 0xFF, 0xFF);
 	switch(oxygen_level)
 	{
