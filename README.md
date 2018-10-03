@@ -80,4 +80,24 @@ git checkout -b jb_user_tokens
 
 This way we can check each other's code, make a pull request and merge.
 
+
+When you are ready to add your changes, push your changes to your branch on github with the following commands
+
+```
+# stage your changes 
+git add . 
+
+# commit your change.  The -m is a message tag for describing your change 
+git commit -m "title for change"
+
+# push your changes to your branch 
+git push
+``` 
+
+Proper use of github means you will push to a branch of your own creation as shown above 
+
+### NEVER PUSH TO MASTER OR STABLE
+
+Once you have pushed your changes to your branch on github, you can make a pull request (PR) to unstable or whatever branch your team is using.  Also NEVER MERGE YOUR OWN BRANCH. Ask someone else, preferably your team leader, assistant to the regional manager or regional manager to merge your PR.
+
 If you have any dificulties with this or anything else, ASK FOR HELP.  Life is a team sport
