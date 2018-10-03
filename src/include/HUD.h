@@ -14,6 +14,7 @@ class HUD
 	public:
 		void init_HUD();
 		void change_levels(int oxygen_level, int temperature_level);
+		void set_renderer(SDL_Renderer* _renderer);
 		HUD(SDL_Renderer* _gRenderer);
 		~HUD();
 	private:
