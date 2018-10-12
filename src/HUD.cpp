@@ -47,6 +47,8 @@ void HUD::input(const Uint8* keystate){
 
 SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level){
 	//replace the rectangle in the oxygen indicator down a set amount (5 for now)
+
+
 	SDL_SetRenderDrawColor(renderer_h, 0x00, 0xFF, 0xFF, 0xFF);
 	switch(oxygen_level)
 	{
