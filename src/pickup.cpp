@@ -35,7 +35,7 @@ void Pickup::init(SDL_Renderer *renderer){
 	
 }
 		
-void Pickup::update(std::vector<Object*> objectList){
+void Pickup::update(std::vector<Object*> objectList, Uint32 ticks){
 	checkPickupOverlap(objectList);
 }
 

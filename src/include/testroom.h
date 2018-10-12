@@ -21,7 +21,7 @@ class TestRoom : public Screen
 		TestRoom(int* roomReference);
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
-		void update();
+		void update(Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
 		void checkPickups();
 };

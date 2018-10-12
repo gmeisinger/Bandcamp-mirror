@@ -37,7 +37,7 @@ void HUD::init(SDL_Renderer* _renderer)
 	init_h = true;
 }
 
-void HUD::update(std::vector<Object*> objectList){
+void HUD::update(std::vector<Object*> objectList, Uint32 ticks){
 		
 }
 

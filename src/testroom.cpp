@@ -40,11 +40,11 @@ void TestRoom::init(SDL_Renderer* reference){
 	objectList.push_back(&p);
 }
 
-void TestRoom::update(){
+void TestRoom::update(Uint32 ticks){
 	//Should we add a pickup?
 	checkPickups();
 	for(int i=0; i < objectList.size(); i++){
-		objectList[i]->update(objectList);
+		objectList[i]->update(objectList, ticks);
 	}
 }
 

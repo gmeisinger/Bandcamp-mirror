@@ -28,7 +28,7 @@ class Player : public Object
 		Player();
         ~Player();
 		void init(SDL_Renderer* gRenderer);
-		void update(std::vector<Object*> objectList);
+		void update(std::vector<Object*> objectList, Uint32 ticks);
 		void input(const Uint8* keystate);
 		SDL_Renderer* draw(SDL_Renderer* gRenderer);
 		void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
@@ -43,7 +43,7 @@ class Player : public Object
         void addAnimation(std::string tag, Animation anim);
         Animation* getAnimation(std::string tag);
         void setAnimation(std::string tag);
-        void updateAnimation();
+        void updateAnimation(Uint32 ticks);
         SpriteSheet getSheet();
 };
 

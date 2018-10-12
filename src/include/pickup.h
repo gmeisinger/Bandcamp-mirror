@@ -21,7 +21,7 @@ class Pickup : public Object
 	public:
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
-		void update(std::vector<Object*> objectList);
+		void update(std::vector<Object*> objectList, Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer *renderer);
 		Pickup(SDL_Rect _rect, char type, int value, Player* player, HUD* h);
         ~Pickup();

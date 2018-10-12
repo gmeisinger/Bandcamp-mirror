@@ -9,12 +9,13 @@ class Animation
 private:
 	std::vector< SDL_Rect > frames;
 	int curFrame;
+	Uint32 frameTicks;
 	bool playing;
 public:
 	Animation(std::vector<SDL_Rect> _frames);
 	Animation();
 	~Animation();
-	void update();
+	void update(Uint32 ticks);
 	void play();
 	void stop();
 	void reset();

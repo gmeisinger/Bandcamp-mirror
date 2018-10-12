@@ -29,10 +29,10 @@ void GSM::init(SDL_Renderer* reference){
 	running = true;
 }
 
-void GSM::update(){
+void GSM::update(Uint32 ticks){
 	previousScreen = currentScreen;
 	
-	roomList[currentScreen]->update();
+	roomList[currentScreen]->update(ticks);
 	
 	//Checking if we changed screens this loop
 	//If so, then call the init to the new screen.

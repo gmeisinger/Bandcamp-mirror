@@ -62,8 +62,8 @@ bool Game::init() {
 	return true;
 }
 
-void Game::update() {
-	gsm.update();
+void Game::update(Uint32 ticks) {
+	gsm.update(ticks);
 }
 
 void Game::draw() {
@@ -84,6 +84,11 @@ void Game::input(const Uint8* keystate){
 void Game::run() {
 	//event handler
 	SDL_Event e;
+
+	//timer
+	Uint32 last_time = SDL_GetTicks();
+	Uint32 cur_time = 0;
+	Uint32 ticks = 0;
 	
 	//main loop
 	while(running) {
@@ -97,10 +102,12 @@ void Game::run() {
 		}
 		
 		const Uint8* keystate = SDL_GetKeyboardState( NULL );
-		
+		cur_time = SDL_GetTicks();
+		ticks = cur_time - last_time;
 		input(keystate);
-		update();
+		update(ticks);
 		draw();
+		last_time = cur_time;
 	}
 	//credits
 	Credits creds = Credits(gRenderer);

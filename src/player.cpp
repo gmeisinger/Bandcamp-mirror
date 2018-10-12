@@ -137,7 +137,7 @@ void Player::checkBounds(int max_width, int max_height) {
         playerRect.y = max_height - playerRect.h;
 }
 
-void Player::updateAnimation() {
+void Player::updateAnimation(Uint32 ticks) {
     if(x_vel == 0 && y_vel == 0) {
         anim->reset();
         anim->stop();
@@ -158,10 +158,10 @@ void Player::updateAnimation() {
         setAnimation("up");
         anim->play();
     }
-    anim->update();
+    anim->update(ticks);
 }
 
-void Player::update(std::vector<Object*> objectList) {
+void Player::update(std::vector<Object*> objectList, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
 
@@ -177,7 +177,7 @@ void Player::update(std::vector<Object*> objectList) {
 	updateVelocity(x_deltav, y_deltav);
 
     //update animation
-    updateAnimation();
+    updateAnimation(ticks);
 
 	// Move box
 	updatePosition();
