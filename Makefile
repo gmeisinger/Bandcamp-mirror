@@ -69,3 +69,5 @@ os:
 
 clean:
 	rm obj/*.o
+	rm bandcamp
+	rm bandcamp.exe
