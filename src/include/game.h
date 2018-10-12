@@ -6,7 +6,6 @@
 #include <vector>
 #include <string>
 #include "credits.h"
-#include "sprite.h"
 #include "GSM.h"
 
 	extern int screen_w;

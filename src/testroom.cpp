@@ -4,6 +4,7 @@
 
 #include "include/object.h"
 #include "include/player.h"
+#include "include/spritesheet.h"
 #include "include/HUD.h"
 #include "include/testroom.h"
 #include "include/game.h"
@@ -20,9 +21,15 @@ TestRoom::TestRoom(int* roomNumber){
 
 void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
-	SDL_Rect player_box = {0, 0, tile_s, tile_s};
+	SDL_Rect player_box = {screen_w/2, screen_h/2, tile_s, tile_s};
 	p = Player(player_box);
-	
+	//set up player animations
+	p.setSpriteSheet(utils::loadTexture(rendererReference, "res/spaceman.png"), 4, 4);
+	p.addAnimation("down", Animation(p.getSheet().getRow(0)));
+	p.addAnimation("up", Animation(p.getSheet().getRow(1)));
+	p.addAnimation("left", Animation(p.getSheet().getRow(2)));
+	p.addAnimation("right", Animation(p.getSheet().getRow(3)));
+	p.setAnimation("down");
 	
 	h.init(reference);
 	p.init(reference);

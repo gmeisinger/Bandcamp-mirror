@@ -2,8 +2,8 @@
 #include <SDL_image.h>
 
 #include "include/GSM.h"
-#include "include/Credits.h"
-#include "include/TestRoom.h"
+#include "include/credits.h"
+#include "include/testroom.h"
 
 TestRoom testScreen = nullptr;
 

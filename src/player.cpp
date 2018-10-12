@@ -1,10 +1,16 @@
 #include <SDL.h>
 #include <vector>
+#include <unordered_map>
 
 #include "include/player.h"
 #include "include/game.h"
+#include "include/spritesheet.h"
 
 SDL_Rect playerRect;
+SDL_Rect* frame;
+SpriteSheet sheet;
+std::unordered_map<std::string, Animation*> anims;
+Animation* anim;
 int x_deltav;
 int y_deltav;
 int x_vel;
@@ -34,6 +40,26 @@ void Player::init(SDL_Renderer* gRenderer){
 	
 }
 
+void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
+    sheet = SpriteSheet(_sheet);
+    sheet.setClips(_cols, _rows, playerRect.w, playerRect.h);
+}
+
+SpriteSheet Player::getSheet() {
+    return sheet;
+}
+
+void Player::addAnimation(std::string tag, Animation anim) {
+    anims[tag] = anim;
+}
+
+Animation* Player::getAnimation(std::string tag) {
+    return &anims[tag];
+}
+
+void Player::setAnimation(std::string tag) {
+    anim = &anims[tag];
+}
 
 //returns width of Player
 int Player::getWidth() {
@@ -111,6 +137,30 @@ void Player::checkBounds(int max_width, int max_height) {
         playerRect.y = max_height - playerRect.h;
 }
 
+void Player::updateAnimation() {
+    if(x_vel == 0 && y_vel == 0) {
+        anim->reset();
+        anim->stop();
+    }
+    else if(x_vel > 0 && std::abs(x_vel) > std::abs(y_vel)) {
+        setAnimation("right");
+        anim->play();
+    }
+    else if(x_vel < 0 && std::abs(x_vel) > std::abs(y_vel)) {
+        setAnimation("left");
+        anim->play();
+    }
+    else if(y_vel > 0 && std::abs(y_vel) > std::abs(x_vel)) {
+        setAnimation("down");
+        anim->play();
+    }
+    else if(y_vel < 0 && std::abs(y_vel) > std::abs(x_vel)) {
+        setAnimation("up");
+        anim->play();
+    }
+    anim->update();
+}
+
 void Player::update(std::vector<Object*> objectList) {
 	int x_deltav = 0;
 	int y_deltav = 0;
@@ -125,6 +175,9 @@ void Player::update(std::vector<Object*> objectList) {
 		x_deltav += 1;
 
 	updateVelocity(x_deltav, y_deltav);
+
+    //update animation
+    updateAnimation();
 
 	// Move box
 	updatePosition();
@@ -142,8 +195,9 @@ void Player::input(const Uint8* keystate)
 }
 
 SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
-	SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-	SDL_RenderFillRect(renderer, &playerRect);
+	//SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+	//SDL_RenderFillRect(renderer, &playerRect);
+    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
 	
    return renderer;
 }

@@ -2,7 +2,11 @@
 #define BANDCAMP_PLAYER_H_
 
 #include <SDL.h>
+#include <unordered_map>
+#include <cmath>
 #include "object.h"
+#include "spritesheet.h"
+#include "animation.h"
 
 class Player : public Object
 {
@@ -16,7 +20,9 @@ class Player : public Object
 		bool down;
 		bool left;
 		bool right;
-		
+		SpriteSheet sheet;
+        std::unordered_map<std::string, Animation> anims;
+        Animation* anim;
     public:
         Player(SDL_Rect _rect);
 		Player();
@@ -25,7 +31,7 @@ class Player : public Object
 		void update(std::vector<Object*> objectList);
 		void input(const Uint8* keystate);
 		SDL_Renderer* draw(SDL_Renderer* gRenderer);
-		
+		void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
         void updateVelocity(int _xdv, int _ydv);
         void updatePosition();
         void checkBounds(int max_width, int max_height);
@@ -34,6 +40,11 @@ class Player : public Object
         int getX();
         int getY();
         SDL_Rect* getRect();
+        void addAnimation(std::string tag, Animation anim);
+        Animation* getAnimation(std::string tag);
+        void setAnimation(std::string tag);
+        void updateAnimation();
+        SpriteSheet getSheet();
 };
 
 #endif  //  BANDCAMP_PLAYER_H_
