@@ -8,6 +8,8 @@
 *.properties
 *.o
 bin/*
+*.swp
 
+.release_time
 .gradle
 /build/
