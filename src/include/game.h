@@ -6,7 +6,6 @@
 #include <vector>
 #include <string>
 #include "credits.h"
-#include "sprite.h"
 #include "GSM.h"
 
 	extern int screen_w;
@@ -26,7 +25,7 @@ class Game {
 		void run();
 		void close();
 		void input(const Uint8* keystate);
-		void update();
+		void update(Uint32 ticks);
 		void draw();
 };
 #endif	//	BANDCAMP_GAME_H_

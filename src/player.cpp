@@ -1,10 +1,19 @@
 #include <SDL.h>
 #include <vector>
+#include <unordered_map>
 
 #include "include/player.h"
 #include "include/game.h"
+#include "include/spritesheet.h"
+
+constexpr int MAX_SPEED = 2;
+constexpr int BORDER_SIZE = 32;
 
 SDL_Rect playerRect;
+SDL_Rect* frame;
+SpriteSheet sheet;
+std::unordered_map<std::string, Animation*> anims;
+Animation* anim;
 int x_deltav;
 int y_deltav;
 int x_vel;
@@ -34,6 +43,26 @@ void Player::init(SDL_Renderer* gRenderer){
 	
 }
 
+void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
+    sheet = SpriteSheet(_sheet);
+    sheet.setClips(_cols, _rows, playerRect.w, playerRect.h);
+}
+
+SpriteSheet Player::getSheet() {
+    return sheet;
+}
+
+void Player::addAnimation(std::string tag, Animation anim) {
+    anims[tag] = anim;
+}
+
+Animation* Player::getAnimation(std::string tag) {
+    return &anims[tag];
+}
+
+void Player::setAnimation(std::string tag) {
+    anim = &anims[tag];
+}
 
 //returns width of Player
 int Player::getWidth() {
@@ -80,15 +109,15 @@ void Player::updateVelocity(int _xdv, int _ydv) {
     y_vel += _ydv;
 
     // Check speed limits
-    if (x_vel < -5)
-        x_vel = -5;
-    else if (x_vel > 5)
-        x_vel = 5;
+    if (x_vel < -1 * MAX_SPEED)
+        x_vel = -1 * MAX_SPEED;
+    else if (x_vel > MAX_SPEED)
+        x_vel = MAX_SPEED;
 
-    if (y_vel < -5)
-        y_vel = -5;
-    else if (y_vel > 5)
-        y_vel = 5;
+    if (y_vel < -1 * MAX_SPEED)
+        y_vel = -1 * MAX_SPEED;
+    else if (y_vel > MAX_SPEED)
+        y_vel = MAX_SPEED;
 
     // Also update position
    this->updatePosition();
@@ -100,18 +129,42 @@ void Player::updatePosition() {
 }
 
 void Player::checkBounds(int max_width, int max_height) {
-    if (playerRect.x < 0)
-        playerRect.x = 0;
-    else if (playerRect.x + playerRect.w > max_width)
-        playerRect.x = max_width - playerRect.w;
+    if (playerRect.x < BORDER_SIZE)
+        playerRect.x = BORDER_SIZE;
+    else if (playerRect.x + playerRect.w > max_width - BORDER_SIZE)
+        playerRect.x = max_width - playerRect.w - BORDER_SIZE;
 
-    if (playerRect.y < 0)
-        playerRect.y = 0;
-    else if (playerRect.y + playerRect.h > max_height)
-        playerRect.y = max_height - playerRect.h;
+    if (playerRect.y < BORDER_SIZE)
+        playerRect.y = BORDER_SIZE;
+    else if (playerRect.y + playerRect.h > max_height - BORDER_SIZE)
+        playerRect.y = max_height - playerRect.h - BORDER_SIZE;
 }
 
-void Player::update(std::vector<Object*> objectList) {
+void Player::updateAnimation(Uint32 ticks) {
+    if(x_vel == 0 && y_vel == 0) {
+        anim->reset();
+        anim->stop();
+    }
+    else if(x_vel > 0 && std::abs(x_vel) > std::abs(y_vel)) {
+        setAnimation("right");
+        anim->play();
+    }
+    else if(x_vel < 0 && std::abs(x_vel) > std::abs(y_vel)) {
+        setAnimation("left");
+        anim->play();
+    }
+    else if(y_vel > 0 && std::abs(y_vel) > std::abs(x_vel)) {
+        setAnimation("down");
+        anim->play();
+    }
+    else if(y_vel < 0 && std::abs(y_vel) > std::abs(x_vel)) {
+        setAnimation("up");
+        anim->play();
+    }
+    anim->update(ticks);
+}
+
+void Player::update(std::vector<Object*> objectList, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
 
@@ -125,6 +178,9 @@ void Player::update(std::vector<Object*> objectList) {
 		x_deltav += 1;
 
 	updateVelocity(x_deltav, y_deltav);
+
+    //update animation
+    updateAnimation(ticks);
 
 	// Move box
 	updatePosition();
@@ -142,8 +198,9 @@ void Player::input(const Uint8* keystate)
 }
 
 SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
-	SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-	SDL_RenderFillRect(renderer, &playerRect);
+	//SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
+	//SDL_RenderFillRect(renderer, &playerRect);
+    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
 	
    return renderer;
 }

@@ -16,14 +16,17 @@ class TestRoom : public Screen
 		int* roomReference;
 		SDL_Renderer* rendererReference;
 		bool escape; //Have we pushed the escape key?
+		int updateCount;
+		int oldTemp;
+		int oldO2;
 	
 	public: 
 		TestRoom(int* roomReference);
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
-		void update();
+		void update(Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
-		void checkPickups();
+		void movePickup();
 };
 
 #endif  //  BANDCAMP_TESTROOM_H_

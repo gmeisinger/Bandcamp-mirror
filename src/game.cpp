@@ -54,7 +54,7 @@ bool Game::init() {
 		return false;
 	}
 	// Set renderer draw/clear color
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	
 	//Start the GSM
 	gsm.init(gRenderer);
@@ -63,13 +63,13 @@ bool Game::init() {
 	return true;
 }
 
-void Game::update() {
-	gsm.update();
+void Game::update(Uint32 ticks) {
+	gsm.update(ticks);
 }
 
 void Game::draw() {
 	//Clear the Screen
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen
@@ -85,6 +85,11 @@ void Game::input(const Uint8* keystate){
 void Game::run() {
 	//event handler
 	SDL_Event e;
+
+	//timer
+	Uint32 last_time = SDL_GetTicks();
+	Uint32 cur_time = 0;
+	Uint32 ticks = 0;
 	
 	//main loop
 	while(running) {
@@ -98,15 +103,17 @@ void Game::run() {
 		}
 		
 		const Uint8* keystate = SDL_GetKeyboardState( NULL );
-		
+		cur_time = SDL_GetTicks();
+		ticks = cur_time - last_time;
 		input(keystate);
-		update();
+		update(ticks);
 		draw();
+		last_time = cur_time;
 	}
 	//credits
-	Credits creds = Credits(gRenderer);
-	creds.load();
-	creds.play();
+	//Credits creds = Credits(gRenderer);
+	//creds.load();
+	//creds.play();
 	close();
 }
 
