@@ -1,3 +1,8 @@
+/* Team Bandcamp
+ * Class function: Calls game class
+ * 
+*/
+
 #include "include/game.h"
 
 int main(int argc, char* argv[]) {

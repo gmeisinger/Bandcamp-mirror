@@ -1,4 +1,7 @@
-
+/* Team Bandcamp
+ * Class function: Contains core game funtions
+ * 
+*/
 
 #include "include/game.h"
 #include "include/credits.h"

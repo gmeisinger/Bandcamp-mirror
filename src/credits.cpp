@@ -1,3 +1,8 @@
+/* Team Bandcamp
+ * Class function: 
+ * 
+*/
+
 #include "include/credits.h"
 
 bool init;
