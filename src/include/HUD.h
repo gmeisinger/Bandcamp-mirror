@@ -18,10 +18,11 @@ class HUD : public Object
 		void init(SDL_Renderer* _renderer);
 		void update(std::vector<Object*> objectList, Uint32 ticks);
 		void input(const Uint8* keystate);
-		SDL_Renderer* change_levels(SDL_Renderer* _renderer, int oxygen_level, int temperature_level);
+		SDL_Renderer* change_levels(SDL_Renderer* _renderer, int oxygen_level, int temperature_level, int health_level);
 		SDL_Renderer* draw(SDL_Renderer* gRenderer);
 		int currentTemp;
 		int currentOxygen;
+		int currentHealth;
 	private:
 		bool init_h;
 		std::vector<SDL_Texture*> hud;

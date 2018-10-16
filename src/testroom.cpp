@@ -8,6 +8,12 @@
 #include "include/HUD.h"
 #include "include/testroom.h"
 #include "include/game.h"
+
+constexpr int UPDATE_MAX = 100;
+int updateCount = 1;
+int oldTemp = 100;
+int oldO2 = 100;
+
 HUD h;
 Player p;
 Pickup currentP;
@@ -16,7 +22,6 @@ TestRoom::TestRoom(int* roomNumber){
 	start = false;
 	std::vector<Object*> objectList;
 	roomReference = roomNumber;
-	
 }
 
 void TestRoom::init(SDL_Renderer* reference){
@@ -34,25 +39,34 @@ void TestRoom::init(SDL_Renderer* reference){
 	h.init(reference);
 	p.init(reference);
 	
-	
 	//Player and HUD in the Room
 	objectList.push_back(&h);
 	objectList.push_back(&p);
 }
 
 void TestRoom::update(Uint32 ticks){
-	//Should we add a pickup?
-	checkPickups();
+	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup();
+	oldTemp = h.currentTemp;
+	oldO2 = h.currentOxygen;
 	for(int i=0; i < objectList.size(); i++){
 		objectList[i]->update(objectList, ticks);
 	}
+	if (updateCount == 0) {
+		h.currentTemp = std::max(0, h.currentTemp-5);
+		h.currentOxygen = std::max(0, h.currentOxygen-5);
+		if (h.currentTemp == 0) {
+			h.currentHealth = std::max(0, h.currentHealth-5);
+		}
+		if (h.currentOxygen == 0) {
+			h.currentHealth = std::max(0, h.currentHealth-5);
+		}
+	}
+	updateCount = (updateCount+1)%UPDATE_MAX;
 }
 
-void TestRoom::checkPickups(){
-	if (!(std::find(objectList.begin(), objectList.end(), &currentP) != objectList.end())) {
-		
-		int pickupX = rand()%(screen_w-tile_s);
-		int pickupY = rand()%(screen_h-tile_s);
+void TestRoom::movePickup() {
+		int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
+		int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
 		SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
 		
 		int pickupValue = rand()%25+25;
@@ -65,9 +79,10 @@ void TestRoom::checkPickups(){
 		else
 			type = 'o';
 		
+		currentP.used = false;
+		
 		currentP = Pickup(pickupBox, type, pickupValue, &p, &h);
 		objectList.push_back(&currentP);
-	}
 }
 
 void TestRoom::input(const Uint8* keystate){

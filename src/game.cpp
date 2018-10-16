@@ -110,9 +110,9 @@ void Game::run() {
 		last_time = cur_time;
 	}
 	//credits
-	Credits creds = Credits(gRenderer);
-	creds.load();
-	creds.play();
+	//Credits creds = Credits(gRenderer);
+	//creds.load();
+	//creds.play();
 	close();
 }
 

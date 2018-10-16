@@ -28,6 +28,7 @@ class Pickup : public Object
 		Pickup();
 		bool checkPickupOverlap(std::vector<Object*> objectList);
 		SDL_Rect* getPickupRect();
+		bool used;
 };
 
 #endif  //  BANDCAMP_PICKUP_H_

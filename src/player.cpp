@@ -6,6 +6,9 @@
 #include "include/game.h"
 #include "include/spritesheet.h"
 
+constexpr int MAX_SPEED = 2;
+constexpr int BORDER_SIZE = 32;
+
 SDL_Rect playerRect;
 SDL_Rect* frame;
 SpriteSheet sheet;
@@ -106,15 +109,15 @@ void Player::updateVelocity(int _xdv, int _ydv) {
     y_vel += _ydv;
 
     // Check speed limits
-    if (x_vel < -5)
-        x_vel = -5;
-    else if (x_vel > 5)
-        x_vel = 5;
+    if (x_vel < -1 * MAX_SPEED)
+        x_vel = -1 * MAX_SPEED;
+    else if (x_vel > MAX_SPEED)
+        x_vel = MAX_SPEED;
 
-    if (y_vel < -5)
-        y_vel = -5;
-    else if (y_vel > 5)
-        y_vel = 5;
+    if (y_vel < -1 * MAX_SPEED)
+        y_vel = -1 * MAX_SPEED;
+    else if (y_vel > MAX_SPEED)
+        y_vel = MAX_SPEED;
 
     // Also update position
    this->updatePosition();
@@ -126,15 +129,15 @@ void Player::updatePosition() {
 }
 
 void Player::checkBounds(int max_width, int max_height) {
-    if (playerRect.x < 0)
-        playerRect.x = 0;
-    else if (playerRect.x + playerRect.w > max_width)
-        playerRect.x = max_width - playerRect.w;
+    if (playerRect.x < BORDER_SIZE)
+        playerRect.x = BORDER_SIZE;
+    else if (playerRect.x + playerRect.w > max_width - BORDER_SIZE)
+        playerRect.x = max_width - playerRect.w - BORDER_SIZE;
 
-    if (playerRect.y < 0)
-        playerRect.y = 0;
-    else if (playerRect.y + playerRect.h > max_height)
-        playerRect.y = max_height - playerRect.h;
+    if (playerRect.y < BORDER_SIZE)
+        playerRect.y = BORDER_SIZE;
+    else if (playerRect.y + playerRect.h > max_height - BORDER_SIZE)
+        playerRect.y = max_height - playerRect.h - BORDER_SIZE;
 }
 
 void Player::updateAnimation(Uint32 ticks) {

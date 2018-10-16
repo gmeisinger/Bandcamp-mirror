@@ -1,3 +1,4 @@
+#include <algorithm>
 #include <vector>
 #include <SDL.h>
 
@@ -9,14 +10,19 @@ std::vector<SDL_Texture*> hud;
 SDL_Renderer* renderer_h;
 SDL_Rect Temp;
 SDL_Rect Oxygen;
+SDL_Rect Health;
 int currentTemp;
 int currentOxygen;
+int currentHealth;
 
 //Forward declaration
 
 HUD::HUD()
 {
     init_h = false;
+	currentTemp = 100;
+	currentOxygen = 100;
+	currentHealth = 90;
 }
 
 HUD::~HUD()
@@ -32,8 +38,10 @@ void HUD::init(SDL_Renderer* _renderer)
 	int imgFlags = IMG_INIT_PNG;
 	int retFlags = IMG_Init(imgFlags);
 	hud.push_back(utils::loadTexture(renderer_h, "Physics/HUD.png"));
+	hud.push_back(utils::loadTexture(renderer_h, "Physics/gitgud.png"));
 	SDL_Rect Temp = {54, 54, 33, 91};
 	SDL_Rect Oxygen = {109, 54, 33, 91};
+	SDL_Rect Health = {164, 54, 33, 91};
 	init_h = true;
 }
 
@@ -45,91 +53,122 @@ void HUD::input(const Uint8* keystate){
 	
 }
 
-SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level){
-	//replace the rectangle in the oxygen indicator down a set amount (5 for now)
-	SDL_SetRenderDrawColor(renderer_h, 0x00, 0xFF, 0xFF, 0xFF);
+SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level, int health_level) {
+	Oxygen = {109, std::min(144, 54+(91-(oxygen_level-9))), 33, std::max(1, oxygen_level-9)};
 	switch(oxygen_level)
 	{
-		case 100:
-			Oxygen = {109, 54, 33, 91};
+		case 91 ... 100:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xFB, 0x05, 0xFF);
 			break;
-		case 90:
-			Oxygen = {109, 64, 33, 81};
+		case 81 ... 90:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xE5, 0x05, 0xFF);
 			break;
-		case 80:
-			Oxygen = {109, 74, 33, 71};
+		case 71 ... 80:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xC9, 0x05, 0xFF);
 			break;
-		case 70:
-			Oxygen = {109, 84, 33, 61};
+		case 61 ... 70:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xB8, 0x05, 0xFF);
 			break;
-		case 60:
-			Oxygen = {109, 94, 33, 51};
+		case 51 ... 60:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xA5, 0x05, 0xFF);
 			break;
-		case 50:
-			Oxygen = {109, 104, 33, 41};
+		case 41 ... 50:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x95, 0x05, 0xFF);
 			break;
-		case 40:
-			Oxygen = {109, 114, 33, 31};
+		case 31 ... 40:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x78, 0x05, 0xFF);
 			break;
-		case 30:
-			Oxygen = {109, 124, 33, 21};
+		case 21 ... 30:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x54, 0x05, 0xFF);
 			break;
-		case 20:
-			Oxygen = {109, 134, 33, 11};
+		case 11 ... 20:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
 			break;
-		case 10:
-			Oxygen = {109, 144, 33, 1};
-			break;
-		case 0:
-			Oxygen = {109, 54, 33, 91};
+		case 0 ... 10:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Oxygen);
-	SDL_SetRenderDrawColor(renderer_h, 0x00, 0xFF, 0xFF, 0xFF);
+	
+	Temp = {54, std::min(144, 54+(91-(temperature_level-9))), 33, std::max(1, temperature_level-9)};
 	switch(temperature_level)
 	{
-		case 100:
-			Temp = {54, 54, 33, 91};
+		case 91 ... 100:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xFB, 0x05, 0xFF);
 			break;
-		case 90:
-			Temp = {54, 64, 33, 81};
+		case 81 ... 90:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xE5, 0x05, 0xFF);
 			break;
-		case 80:
-			Temp = {54, 74, 33, 71};
+		case 71 ... 80:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xC9, 0x05, 0xFF);
 			break;
-		case 70:
-			Temp = {54, 84, 33, 61};
+		case 61 ... 70:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xB8, 0x05, 0xFF);
 			break;
-		case 60:
-			Temp = {54, 94, 33, 51};
+		case 51 ... 60:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xA5, 0x05, 0xFF);
 			break;
-		case 50:
-			Temp = {54, 104, 33, 41};
+		case 41 ... 50:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x95, 0x05, 0xFF);
 			break;
-		case 40:
-			Temp = {54, 114, 33, 31};
+		case 31 ... 40:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x78, 0x05, 0xFF);
 			break;
-		case 30:
-			Temp = {54, 124, 33, 21};
+		case 21 ... 30:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x54, 0x05, 0xFF);
 			break;
-		case 20:
-			Temp = {54, 134, 33, 11};
+		case 11 ... 20:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
 			break;
-		case 10:
-			Temp = {54, 144, 33, 1};
-			break;
-		case 0:
-			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x00, 0x00, 0xFF);
-			Temp = {54, 54, 33, 91};
+		case 0 ... 10:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Temp);
+	
+	Health = {164, 54+(90- health_level), 33, health_level+1};
+	switch(health_level)
+	{
+		case 82 ... 90:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xFB, 0x05, 0xFF);
+			break;
+		case 73 ... 81:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xE5, 0x05, 0xFF);
+			break;
+		case 64 ... 72:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xC9, 0x05, 0xFF);
+			break;
+		case 55 ... 63:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xB8, 0x05, 0xFF);
+			break;
+		case 46 ... 54:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xA5, 0x05, 0xFF);
+			break;
+		case 37 ... 45:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x95, 0x05, 0xFF);
+			break;
+		case 28 ... 36:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x78, 0x05, 0xFF);
+			break;
+		case 19 ... 27:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x54, 0x05, 0xFF);
+			break;
+		case 10 ... 18:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
+			break;
+		case 0 ... 9:
+			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
+			break;
+	}
+	SDL_RenderFillRect(renderer_h, &Health);
+	
 	return renderer_h;
 }
 
 SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer){
-	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp);
+	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp, currentHealth);
 	SDL_SetRenderDrawColor(renderer_h, 0, 0, 0, 255);
 	SDL_RenderCopy(gRenderer, hud[0], NULL, NULL);
+	if (currentHealth == 0) SDL_RenderCopy(gRenderer, hud[1], NULL, NULL);
 	return gRenderer;
 }
