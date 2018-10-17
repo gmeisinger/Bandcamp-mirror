@@ -3,7 +3,15 @@
  * 
 */
 
-// #include "include/proc_gen.h"
+#include "include/proc_gen.h"
+
+
+// Depending on strategy may want to make the generator an object 
+// PROC_GEN::PROC_GEN(){
+
+// }
+
+
 
 // Generate a new frame for a floor of game for rooms to fit within
 bool genFloor(){
@@ -12,7 +20,7 @@ bool genFloor(){
 	return success;
 }
 
-// Validates that the floor fits within expected bounds 
+// Helper Function: Validates that the floor fits within expected bounds 
 bool validFloor(){
 	bool success = false;
 
@@ -34,7 +42,7 @@ bool genRoom(){
 	return success;
 }
 
-// Validates that the room wont inhibit game play
+// Helper Function: Validates that the room wont inhibit game play
 bool validRoom(){
 	bool success = false;
 
@@ -42,7 +50,7 @@ bool validRoom(){
 
 	// check limits of the room are acceptable for gameplay 
 
-	
+
 	return success;
 }
 
@@ -53,7 +61,7 @@ bool genItem(){
 	return success;
 }
 
-// Decides items to place 
+// Helper Function: Decides items to place 
 bool decideItem(){
 	bool success = false;
 
