@@ -14,21 +14,21 @@
 
 
 // Generate a new frame for a floor of game for rooms to fit within
-bool genFloor(){
+bool Proc_Gen::genFloor(){
 	bool success = false;
 
 	return success;
 }
 
 // Helper Function: Validates that the floor fits within expected bounds 
-bool validFloor(){
+bool Proc_Gen::validFloor(){
 	bool success = false;
 
 	return success;
 }
 
 // Generate a new room 
-bool genRoom(){
+bool Proc_Gen::genRoom(){
 	bool success = false;
 
 	// Generate walls 
@@ -43,7 +43,7 @@ bool genRoom(){
 }
 
 // Helper Function: Validates that the room wont inhibit game play
-bool validRoom(){
+bool Proc_Gen::validRoom(){
 	bool success = false;
 
 	// check that the player can enter and leave the room 
@@ -55,14 +55,14 @@ bool validRoom(){
 }
 
 // Generate items for gameplay 
-bool genItem(){
+bool Proc_Gen::genItem(){
 	bool success = false;
 
 	return success;
 }
 
 // Helper Function: Decides items to place 
-bool decideItem(){
+bool Proc_Gen::decideItem(){
 	bool success = false;
 
 	return success;
