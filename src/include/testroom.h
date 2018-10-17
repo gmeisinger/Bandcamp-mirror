@@ -26,7 +26,7 @@ class TestRoom : public Screen
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
-		void movePickup();
+		void movePickup(SDL_Renderer* reference);
 };
 
 #endif  //  BANDCAMP_TESTROOM_H_

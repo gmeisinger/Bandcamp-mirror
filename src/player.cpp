@@ -40,7 +40,13 @@ Player::~Player() {
 }
 
 void Player::init(SDL_Renderer* gRenderer){
-	
+	//set up player animations
+	setSpriteSheet(utils::loadTexture(gRenderer, "res/spaceman.png"), 4, 4);
+	addAnimation("down", Animation(getSheet().getRow(0)));
+	addAnimation("up", Animation(getSheet().getRow(1)));
+	addAnimation("left", Animation(getSheet().getRow(2)));
+	addAnimation("right", Animation(getSheet().getRow(3)));
+	setAnimation("down");
 }
 
 void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
@@ -164,7 +170,7 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::vector<Object*> objectList, Uint32 ticks) {
+void Player::update(std::vector<Object*> *objectList, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
 
