@@ -11,6 +11,7 @@ SDL_Color unpressed = {180, 180, 180};
 SDL_Color pressed = {90, 90, 90};
 SDL_Color text_color = {0, 0, 0. 0xFF};
 SDL_Surface *message = NULL;
+int is_pressed = 0;
 
 int label_x;
 int label_y;
@@ -29,13 +30,15 @@ Button::Button(char* l, SDL_Rect r) { //Constructs the button. For now, it is a 
 
 void Button::press() { //Any visual or sound effects for pressing may be set up here
 	color = pressed;
+	is_pressed = 1;
 }
 
 void Button::unpress() { //Any visual or sound effects for releasing may be set up here
 	color = unpressed;
+	is_pressed = 1;
+}
 
 Button::update(const Uint* keystate) {
-	
 	
 }
 
