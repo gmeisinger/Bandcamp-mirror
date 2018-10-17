@@ -1,3 +1,8 @@
+/* Team Bandcamp
+ * Class function: 
+ * 
+*/
+
 #include <SDL.h>
 #include <algorithm>
 #include <string>
