@@ -1,25 +1,33 @@
+/* Team Bandcamp
+ * Class function: Contains core game funtions
+ * 
+*/
+
 #include "include/game.h"
-#include "include/player.h"
-#include "include/HUD.h"
-//#include "include/sprite.h"
+#include "include/credits.h"
+#include "include/GSM.h"
 
 constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 constexpr int TILE_SIZE = 32;
 
-SDL_Rect player_box = {SCREEN_WIDTH/2-TILE_SIZE/2, SCREEN_HEIGHT/2-TILE_SIZE/2, TILE_SIZE, TILE_SIZE};
-Player temp_player = Player(player_box);
+int screen_w;
+int screen_h;
+int tile_s;
 
-//Constructor
-//starts new game
-Game::Game()
-{
+//Starts new game
+Game::Game() {
 	gWindow = nullptr;
 	gRenderer = nullptr;
 	running = false;
+	GSM gsm;
+	screen_w = SCREEN_WIDTH;
+	screen_h = SCREEN_HEIGHT;
+	tile_s = TILE_SIZE;
 }
 
-bool Game::init() {	
+bool Game::init() {
+	
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
 		return false;
@@ -45,69 +53,35 @@ bool Game::init() {
 	int imgFlags = IMG_INIT_PNG;
 	if( !( IMG_Init( imgFlags ) & imgFlags ) )
 	{
-		std::cout <<  "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
+		printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 		return false;
 	}
 	// Set renderer draw/clear color
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	
+	//Start the GSM
+	gsm.init(gRenderer);
+	
 	running = true;
 	return true;
 }
 
-
-void Game::loadMedia() {
-	//Player temp_player = Player(&player_box);
-
-	//Sprite new_sprite = Sprite(gRenderer);
-	//new_sprite.loadTexture("res/retroMe.png", TILE_SIZE, TILE_SIZE);
-	//new_sprite.setPosition(100,100);
-	//sprites.push_back(new_sprite);
-}
-
-void Game::update() {
-	updatePlayer();
-}
-
-void Game::updatePlayer() {
-	int x_deltav = 0;
-	int y_deltav = 0;
-
-	// Get array of current key states
-	// Note that array is indexed by scancodes, not keycodes
-	// https://wiki.libsdl.org/SDL_Scancode
-	const Uint8* keystate = SDL_GetKeyboardState(nullptr);
-	if (keystate[SDL_SCANCODE_W])
-		y_deltav -= 1;
-	if (keystate[SDL_SCANCODE_A])
-		x_deltav -= 1;
-	if (keystate[SDL_SCANCODE_S])
-		y_deltav += 1;
-	if (keystate[SDL_SCANCODE_D])
-		x_deltav += 1;
-
-	temp_player.updateVelocity(x_deltav, y_deltav);
-
-	// Move box
-	temp_player.updatePosition();
-
-	// Check you haven't moved off the screen
-	temp_player.checkBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
+void Game::update(Uint32 ticks) {
+	gsm.update(ticks);
 }
 
 void Game::draw() {
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+	//Clear the Screen
+	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	SDL_RenderClear(gRenderer);
-	//for(auto i : sprites) {
-		//i.setPosition(SCREEN_WIDTH/2, SCREEN_HEIGHT/2);
-	//	i.draw();
-		//std::cout << sprites.size() << std::endl;
-		//std::cout << i.getWidth() << std::endl;
-	//}
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0xFF, 0x00, 0xFF);
-	SDL_RenderFillRect(gRenderer, temp_player.getRect());
+	
+	//Draw the current Screen
+	gRenderer = gsm.draw(gRenderer);
+	SDL_RenderPresent(gRenderer);
+}
 
-	//Commented out because presentation is finalized in HUD
-	//SDL_RenderPresent(gRenderer);
+void Game::input(const Uint8* keystate){
+	gsm.input(keystate);
 }
 
 //main game loop
@@ -115,13 +89,11 @@ void Game::run() {
 	//event handler
 	SDL_Event e;
 
-	//Initialize HUD
-	HUD gameHud = HUD(gRenderer);
-	gameHud.init_HUD();
-
-	int temperature = 100;
-	int oxygen = 100;
-
+	//timer
+	Uint32 last_time = SDL_GetTicks();
+	Uint32 cur_time = 0;
+	Uint32 ticks = 0;
+	
 	//main loop
 	while(running) {
 		//handle events on queue
@@ -132,24 +104,19 @@ void Game::run() {
 			}
 		
 		}
-
-		oxygen -= 1;
-		temperature -= 1;
-		if(oxygen == 0){
-			oxygen = 100;
-		}
-		if(temperature == 0){
-			temperature = 100;
-		}
 		
-		update();
+		const Uint8* keystate = SDL_GetKeyboardState( NULL );
+		cur_time = SDL_GetTicks();
+		ticks = cur_time - last_time;
+		input(keystate);
+		update(ticks);
 		draw();
-		gameHud.change_levels(oxygen, temperature);
+		last_time = cur_time;
 	}
 	//credits
-	Credits creds = Credits(gRenderer);
-	creds.load();
-	creds.play();
+	//Credits creds = Credits(gRenderer);
+	//creds.load();
+	//creds.play();
 	close();
 }
 

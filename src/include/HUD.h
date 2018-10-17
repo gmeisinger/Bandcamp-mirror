@@ -7,15 +7,22 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include "utils.h"
+#include "object.h"
 
 //initialize the HUD
-class HUD
+class HUD : public Object
 {
 	public:
-		void init_HUD();
-		void change_levels(int oxygen_level, int temperature_level);
-		HUD(SDL_Renderer* _gRenderer);
+		HUD();
 		~HUD();
+		void init(SDL_Renderer* _renderer);
+		void update(std::vector<Object*> objectList, Uint32 ticks);
+		void input(const Uint8* keystate);
+		SDL_Renderer* change_levels(SDL_Renderer* _renderer, int oxygen_level, int temperature_level, int health_level); // int power_level) can add for power 
+		SDL_Renderer* draw(SDL_Renderer* gRenderer);
+		int currentTemp;
+		int currentOxygen;
+		int currentHealth;
 	private:
 		bool init_h;
 		std::vector<SDL_Texture*> hud;
