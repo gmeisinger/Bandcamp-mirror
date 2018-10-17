@@ -1,3 +1,8 @@
+/* Team Bandcamp
+ * Class function: 
+ * 
+*/
+
 #include "include/spritesheet.h"
 
 SDL_Texture* texture;
