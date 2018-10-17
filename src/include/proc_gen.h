@@ -1,7 +1,7 @@
 #ifndef BANDCAMP_PROC_GEN_H_
 #define BANDCAMP_PROC_GEN_H_
 
-class Room
+class Proc_Gen
 {
 	public:
 		bool genFloor();
