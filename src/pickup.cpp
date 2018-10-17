@@ -142,7 +142,6 @@ void Pickup::checkPickupOverlap(std::vector<Object*> *objectList) {
 		//This only works because there is only one instance of this object. We will eventually have to 
 		//make an ID system to Identify specific objects.
 		objectList->erase(std::remove(objectList->begin(), objectList->end(), this), objectList->end());
-		delete this;
 	}
 }
 
