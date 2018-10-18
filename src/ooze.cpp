@@ -1,11 +1,13 @@
 #include "include/ooze.h"
 
 // Default Constructor
-Ooze::Ooze() :state{roaming}, hostility{0} {}
+Ooze::Ooze():state{roaming}, hostility{0} {}
 
 //Constructor
-Ooze::Ooze(State state, int hostility) :state{state}, hostility{hostility} {}
+//Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
+//Destructor
+Ooze::~Ooze(){};
 
 void Ooze::increaseHostility() { if( hostility < 10 ) hostility++; }
 void Ooze::decreaseHostility() { if( hostility >  0 ) hostility--; }

@@ -10,11 +10,10 @@
 #include "animation.h"
 
 enum State { roaming, eating, attacking, approaching, retreating, dying, inCrack};
-
 int numOozes = 0;
 
 //
-class Ooze : public Object
+class Ooze //: public Object
 {
 private:
     SDL_Rect enemyRect;
@@ -23,16 +22,25 @@ private:
     //Player *player;
     
 public:
-    // Constructors & destructor
-    Ooze();
-    Ooze(State state, int hostility);
-    ~Ooze();
-    // SDL
-    void update(std::vector<Object*> objectList, Uint32 ticks);
-    SDL_Renderer* draw(SDL_Renderer *renderer);
     SpriteSheet sheet;
     Animation* animation;
+    // Constructors & destructor
+    Ooze();
+//    Ooze(State st, int hostil);
+    ~Ooze();
+    
+    //object.h virtuals
+// 		virtual void input(const Uint8* keystate) = 0;
+//    virtual void init(SDL_Renderer *renderer) = 0;
+//    virtual void update(std::vector<Object*> objectList, Uint32 ticks) = 0;
+//    virtual SDL_Renderer* draw(SDL_Renderer *renderer) = 0;
+    
+    
+    // SDL
+    void update(std::vector<Object*> objectList, Uint32 ticks);
+//    SDL_Renderer* draw(SDL_Renderer *renderer);
 //    std::unordered_map<std::string, Animation> anims;
+    
     // Math
     void increaseHostility();
     void decreaseHostility();
