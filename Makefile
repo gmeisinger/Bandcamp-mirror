@@ -12,8 +12,8 @@
 
 # declaring paths for source files
 OUT = ./bandcamp
-SRC = $(wildcard src/*.cpp)
-DEP = $(wildcard src/include/*.h)
+SRC = $(wildcard src/*.cpp wildcard AI/*.cpp)
+DEP = $(wildcard src/include/*.h wildcard AI/include/*.h)
 OBJ = $(patsubst src/%.cpp, obj/%.o, $(SRC))
 #OBJ = $(src:.c=.o) saw this syntax somewhere, threw it in for reference purposes
 
