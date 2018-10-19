@@ -44,8 +44,18 @@ Player::~Player() {
 
 }
 
+std::string Player::getInstanceName(){
+	return "Player"; //There should only be one instance in the current room
+}
+
 void Player::init(SDL_Renderer* gRenderer){
-	
+	//set up player animations
+	setSpriteSheet(utils::loadTexture(gRenderer, "res/spaceman.png"), 4, 4);
+	addAnimation("down", Animation(getSheet().getRow(0)));
+	addAnimation("up", Animation(getSheet().getRow(1)));
+	addAnimation("left", Animation(getSheet().getRow(2)));
+	addAnimation("right", Animation(getSheet().getRow(3)));
+	setAnimation("down");
 }
 
 void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
@@ -169,7 +179,7 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::vector<Object*> objectList, Uint32 ticks) {
+void Player::update(std::vector<Object*> *objectList, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
 
@@ -206,6 +216,5 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
 	//SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
 	//SDL_RenderFillRect(renderer, &playerRect);
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
-	
    return renderer;
 }
