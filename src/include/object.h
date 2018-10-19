@@ -8,6 +8,7 @@
 class Object
 {		
 	public:
+		virtual std::string getInstanceName() = 0; //A tag to determine instance names.
 		virtual void input(const Uint8* keystate) = 0;
 		virtual void init(SDL_Renderer *renderer) = 0;
 		virtual void update(std::vector<Object*> *objectList, Uint32 ticks) = 0;

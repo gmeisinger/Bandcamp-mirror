@@ -23,12 +23,14 @@ class HUD : public Object
 		int currentTemp;
 		int currentOxygen;
 		int currentHealth;
+		
 	private:
 		bool init_h;
 		std::vector<SDL_Texture*> hud;
 		SDL_Renderer* renderer_h;
 		SDL_Rect Temp;
 		SDL_Rect Oxygen;
+		std::string getInstanceName();
 };
 
 #endif  //  BANDCAMP_HUD_H_

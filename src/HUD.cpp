@@ -53,6 +53,10 @@ void HUD::input(const Uint8* keystate){
 	
 }
 
+std::string HUD::getInstanceName(){
+	return "HUD";
+}
+
 SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level, int health_level) {
 	Oxygen = {109, std::min(144, 54+(91-(oxygen_level-9))), 33, std::max(1, oxygen_level-9)};
 	switch(oxygen_level)

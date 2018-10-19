@@ -16,7 +16,6 @@ int oldO2 = 100;
 
 HUD h;
 Player p;
-Pickup currentP;
 
 TestRoom::TestRoom(int* roomNumber){
 	start = false;
@@ -72,12 +71,9 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 		else
 			type = 'o';
 		
-		currentP.used = false;
-		
-		currentP = Pickup(pickupBox, type, pickupValue, &p, &h);
-		currentP.init(reference);
-		objectList.push_back(&currentP);
-	
+		Pickup *newP  = new Pickup(pickupBox, type, pickupValue, &p, &h);
+		objectList.push_back(newP);
+		newP->init(reference);
 }
 
 void TestRoom::input(const Uint8* keystate){
@@ -87,7 +83,7 @@ void TestRoom::input(const Uint8* keystate){
 }
 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
-	for(int i=0; i < objectList.size(); i++){	
+	for(int i=0; i < objectList.size(); i++){
 		renderer = objectList[i]->draw(renderer);
 	}
 	return renderer;
