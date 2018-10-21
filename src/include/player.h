@@ -49,6 +49,7 @@ class Player : public Object
         void setAnimation(std::string tag);
         void updateAnimation(Uint32 ticks);
         SpriteSheet getSheet();
+        bool isUsed();
 };
 
 #endif  //  BANDCAMP_PLAYER_H_

@@ -24,6 +24,7 @@ int incrementY;		//How much the Image is displaced from the original spot.
 bool up;			//Is the image floating up or down.
 static int totalInstance = 0;//How many instances of the object exist?
 int instanceNumber = 0;
+bool used;
 
 //Constructor - takes a texture, width, height, pickup type, pickup value and player
 Pickup::Pickup(SDL_Rect _rect, char type, int value, Player *player, HUD *h) {
@@ -42,6 +43,7 @@ Pickup::Pickup(SDL_Rect _rect, char type, int value, Player *player, HUD *h) {
 	
 	std::string s = "SPAWNED: "+getInstanceName();
 	std::cout << s << std::endl;
+	used = false;
 }
 
 //Deconstructor
@@ -149,10 +151,14 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *object
 		//This only works because there is only one instance of this object. We will eventually have to 
 		//make an ID system to Identify specific objects.
 		//GOAL
-		objectList->erase(getInstanceName());
-		//shouldnt need this
-		delete this;
+		used = true;
+		//objectList->erase(getInstanceName());
+		//delete this;
 	}
+}
+
+bool Pickup::isUsed() {
+	return used;
 }
 
 SDL_Rect* Pickup::getPickupRect() {

@@ -176,3 +176,7 @@ SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer){
 	if (currentHealth == 0) SDL_RenderCopy(gRenderer, hud[1], NULL, NULL);
 	return gRenderer;
 }
+
+bool HUD::isUsed() {
+	return false;
+}

@@ -40,8 +40,13 @@ void TestRoom::update(Uint32 ticks){
 	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
-	for(std::pair<std::string, Object*> obj : objectList){
-		obj.second->update(&objectList, ticks);
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		it->second->update(&objectList, ticks);
+		if(it->second->isUsed()) {
+			it = objectList.erase(it);
+		}
+		it++;
 	}
 	if (updateCount == 0) {
 		h.currentTemp = std::max(0, h.currentTemp-5);
@@ -77,14 +82,18 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 }
 
 void TestRoom::input(const Uint8* keystate){
-	for(std::pair<std::string, Object*> obj : objectList){
-		obj.second->input(keystate);
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		it->second->input(keystate);
+		it++;
 	}
 }
 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
-	for(std::pair<std::string, Object*> obj : objectList){
-		renderer = obj.second->draw(renderer);
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		renderer = it->second->draw(renderer);
+		it++;
 	}
 	return renderer;
 }

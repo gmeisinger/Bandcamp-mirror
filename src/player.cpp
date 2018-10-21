@@ -213,3 +213,7 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
    return renderer;
 }
+
+bool Player::isUsed() {
+    return false;
+}

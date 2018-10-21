@@ -24,7 +24,7 @@ class HUD : public Object
 		int currentTemp;
 		int currentOxygen;
 		int currentHealth;
-		
+		bool isUsed();
 	private:
 		bool init_h;
 		std::vector<SDL_Texture*> hud;
