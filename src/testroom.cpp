@@ -19,7 +19,7 @@ Player p;
 
 TestRoom::TestRoom(int* roomNumber){
 	start = false;
-	std::vector<Object*> objectList;
+	std::unordered_map<std::string, Object*> objectList;
 	roomReference = roomNumber;
 }
 
@@ -32,16 +32,16 @@ void TestRoom::init(SDL_Renderer* reference){
 	p.init(reference);
 	
 	//Player and HUD in the Room
-	objectList.push_back(&h);
-	objectList.push_back(&p);
+	objectList["player"] = &h;
+	objectList["hud"] = &p;
 }
 
 void TestRoom::update(Uint32 ticks){
 	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
-	for(int i=0; i < objectList.size(); i++){
-		objectList[i]->update(&objectList, ticks);
+	for(std::pair<std::string, Object*> obj : objectList){
+		obj.second->update(&objectList, ticks);
 	}
 	if (updateCount == 0) {
 		h.currentTemp = std::max(0, h.currentTemp-5);
@@ -72,19 +72,19 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 			type = 'o';
 		
 		Pickup *newP  = new Pickup(pickupBox, type, pickupValue, &p, &h);
-		objectList.push_back(newP);
+		objectList[newP->getInstanceName()] = newP;
 		newP->init(reference);
 }
 
 void TestRoom::input(const Uint8* keystate){
-	for(int i=0; i < objectList.size(); i++){
-		objectList[i]->input(keystate);
+	for(std::pair<std::string, Object*> obj : objectList){
+		obj.second->input(keystate);
 	}
 }
 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
-	for(int i=0; i < objectList.size(); i++){
-		renderer = objectList[i]->draw(renderer);
+	for(std::pair<std::string, Object*> obj : objectList){
+		renderer = obj.second->draw(renderer);
 	}
 	return renderer;
 }

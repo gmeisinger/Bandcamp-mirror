@@ -39,7 +39,7 @@ else ifeq ($(shell uname -s), Darwin)
 	LFLAGScr = -framework SDL2 -framework SDL2_image -framework SDL2_ttf
 else
 	DETECTED_OS := $(shell uname -s)
-	CC = g++ -std=c++11
+	CC = g++ -std=c++11 -ggdb
 	CFLAGS = -c -I/usr/include/SDL2
 	INCLUDE = -I/usr/include/SDL2
 	LFLAGS = -lSDL2 -lSDL2_image -o $(OUT)

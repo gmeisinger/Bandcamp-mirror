@@ -45,7 +45,7 @@ void HUD::init(SDL_Renderer* _renderer)
 	init_h = true;
 }
 
-void HUD::update(std::vector<Object*> *objectList, Uint32 ticks){
+void HUD::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks){
 		
 }
 

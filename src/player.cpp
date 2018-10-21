@@ -174,7 +174,7 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::vector<Object*> *objectList, Uint32 ticks) {
+void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
 

@@ -90,7 +90,7 @@ void Pickup::init(SDL_Renderer *renderer){
 	}
 }
 		
-void Pickup::update(std::vector<Object*> *objectList, Uint32 ticks){
+void Pickup::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
 }
@@ -129,7 +129,7 @@ void Pickup::updatePosition(Uint32 ticks){
 }
 
 //Checks if the player overlapped with the pickup and acts accordingly
-void Pickup::checkPickupOverlap(std::vector<Object*> *objectList) {
+void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *objectList) {
 	bool overlap = pickupPlayer->getX() < pickupRect.x + pickupRect.w &&
 				   pickupPlayer->getX() + pickupPlayer->getWidth() > pickupRect.x &&
 				   pickupPlayer->getY() < pickupRect.y + pickupRect.h &&
@@ -149,7 +149,8 @@ void Pickup::checkPickupOverlap(std::vector<Object*> *objectList) {
 		//This only works because there is only one instance of this object. We will eventually have to 
 		//make an ID system to Identify specific objects.
 		//GOAL
-		objectList->erase(std::remove(objectList->begin(), objectList->end(), this), objectList->end());
+		objectList->erase(getInstanceName());
+		//shouldnt need this
 		delete this;
 	}
 }
