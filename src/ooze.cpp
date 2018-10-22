@@ -53,7 +53,7 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
 }
 
 bool Ooze::isUsed() {
-	return true;
+	return false;
 }
 
 SpriteSheet Ooze::getSheet() {
