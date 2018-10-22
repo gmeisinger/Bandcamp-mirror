@@ -13,6 +13,7 @@
 #include "include/HUD.h"
 #include "include/testroom.h"
 #include "include/game.h"
+#include "include/ooze.h"
 
 constexpr int UPDATE_MAX = 100;
 int updateCount = 1;
@@ -21,6 +22,7 @@ int oldO2 = 100;
 
 HUD h;
 Player p;
+Ooze o;
 
 TestRoom::TestRoom(int* roomNumber){
 	start = false;
@@ -30,15 +32,19 @@ TestRoom::TestRoom(int* roomNumber){
 
 void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
-	SDL_Rect player_box = {screen_w/2, screen_h/2, tile_s, tile_s};
+	SDL_Rect player_box = {screen_w/2, screen_h/4, tile_s, tile_s};
 	p = Player(player_box);
+	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/4, 30, 30};
+	o = Ooze(ooze_box);
 	
 	h.init(reference);
 	p.init(reference);
+	o.init(reference);
 	
 	//Player and HUD in the Room
-	objectList["player"] = &h;
-	objectList["hud"] = &p;
+	objectList["player"] = &p;
+	objectList["hud"] = &h;
+	objectList["ooze"] = &o;
 }
 
 void TestRoom::update(Uint32 ticks){
