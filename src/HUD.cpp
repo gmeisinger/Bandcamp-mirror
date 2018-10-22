@@ -1,3 +1,8 @@
+/* Team Bandcamp
+ * Class function: 
+ * 
+*/
+
 #include <algorithm>
 #include <vector>
 #include <SDL.h>
@@ -5,15 +10,22 @@
 #include "include/HUD.h"
 #include "include/utils.h"
 
+// Global Variables
 bool init_h;
 std::vector<SDL_Texture*> hud;
 SDL_Renderer* renderer_h;
+
+// Resource displays 
 SDL_Rect Temp;
 SDL_Rect Oxygen;
 SDL_Rect Health;
+// SDL_Rect Power;
+
+// Resource Values
 int currentTemp;
 int currentOxygen;
 int currentHealth;
+// int currentPower;
 
 //Forward declaration
 
@@ -23,6 +35,7 @@ HUD::HUD()
 	currentTemp = 100;
 	currentOxygen = 100;
 	currentHealth = 90;
+	// currentPower = 90;	// can add for power
 }
 
 HUD::~HUD()
@@ -42,6 +55,7 @@ void HUD::init(SDL_Renderer* _renderer)
 	SDL_Rect Temp = {54, 54, 33, 91};
 	SDL_Rect Oxygen = {109, 54, 33, 91};
 	SDL_Rect Health = {164, 54, 33, 91};
+	// SDL_Rect Power = {219, 94, 33,91};  // add for power 
 	init_h = true;
 }
 
@@ -165,12 +179,49 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Health);
-	
+
+	// Can add for power
+	// Power = {219, 54+(90- power_level), 33, power_level+1};
+	// switch(power_level)
+	// {
+	// 	case 82 ... 90:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xFB, 0x05, 0xFF);
+	// 		break;
+	// 	case 73 ... 81:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xE5, 0x05, 0xFF);
+	// 		break;
+	// 	case 64 ... 72:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xC9, 0x05, 0xFF);
+	// 		break;
+	// 	case 55 ... 63:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xB8, 0x05, 0xFF);
+	// 		break;
+	// 	case 46 ... 54:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0xA5, 0x05, 0xFF);
+	// 		break;
+	// 	case 37 ... 45:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x95, 0x05, 0xFF);
+	// 		break;
+	// 	case 28 ... 36:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x78, 0x05, 0xFF);
+	// 		break;
+	// 	case 19 ... 27:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x54, 0x05, 0xFF);
+	// 		break;
+	// 	case 10 ... 18:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
+	// 		break;
+	// 	case 0 ... 9:
+	// 		SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
+	// 		break;
+	// }
+	// SDL_RenderFillRect(renderer_h, &Power);
+
 	return renderer_h;
 }
 
 SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer){
-	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp, currentHealth);
+	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp, currentHealth); // , currentPower can add for power level
 	SDL_SetRenderDrawColor(renderer_h, 0, 0, 0, 255);
 	SDL_RenderCopy(gRenderer, hud[0], NULL, NULL);
 	if (currentHealth == 0) SDL_RenderCopy(gRenderer, hud[1], NULL, NULL);

@@ -1,8 +1,9 @@
-#include "include/utils.h"
-
-/*
-    Utility functions for Bandcamp
+/* Team Bandcamp
+ * Class function: contains utility functions 
+ * 
 */
+
+#include "include/utils.h"
 
 //loads image at specified path as a texture
 //fname = relative path to image
