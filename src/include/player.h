@@ -32,7 +32,7 @@ class Player : public Object
         ~Player();
 		std::string getInstanceName();
 		void init(SDL_Renderer* gRenderer);
-		void update(std::vector<Object*> *objectList, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
 		void input(const Uint8* keystate);
 		SDL_Renderer* draw(SDL_Renderer* gRenderer);
 		void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
@@ -49,6 +49,7 @@ class Player : public Object
         void setAnimation(std::string tag);
         void updateAnimation(Uint32 ticks);
         SpriteSheet getSheet();
+        bool isUsed();
 };
 
 #endif  //  BANDCAMP_PLAYER_H_

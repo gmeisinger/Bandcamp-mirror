@@ -3,6 +3,7 @@
 
 #include <SDL.h>
 #include <vector>
+#include <unordered_map>
 
 #include "screen.h"
 #include "object.h"
@@ -12,7 +13,7 @@ class TestRoom : public Screen
 { 
 	private:
 		bool start;
-		std::vector<Object*> objectList;
+		std::unordered_map<std::string, Object*> objectList;
 		int* roomReference;
 		SDL_Renderer* rendererReference;
 		bool escape; //Have we pushed the escape key?

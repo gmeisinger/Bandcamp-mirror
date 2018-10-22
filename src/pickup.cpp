@@ -29,6 +29,7 @@ int incrementY;		//How much the Image is displaced from the original spot.
 bool up;			//Is the image floating up or down.
 static int totalInstance = 0;//How many instances of the object exist?
 int instanceNumber = 0;
+bool used;
 
 //Constructor - takes a texture, width, height, pickup type, pickup value and player
 Pickup::Pickup(SDL_Rect _rect, char type, int value, Player *player, HUD *h) {
@@ -47,6 +48,7 @@ Pickup::Pickup(SDL_Rect _rect, char type, int value, Player *player, HUD *h) {
 	
 	std::string s = "SPAWNED: "+getInstanceName();
 	std::cout << s << std::endl;
+	used = false;
 }
 
 //Deconstructor
@@ -95,7 +97,7 @@ void Pickup::init(SDL_Renderer *renderer){
 	}
 }
 		
-void Pickup::update(std::vector<Object*> *objectList, Uint32 ticks){
+void Pickup::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
 }
@@ -134,7 +136,7 @@ void Pickup::updatePosition(Uint32 ticks){
 }
 
 //Checks if the player overlapped with the pickup and acts accordingly
-void Pickup::checkPickupOverlap(std::vector<Object*> *objectList) {
+void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *objectList) {
 	bool overlap = pickupPlayer->getX() < pickupRect.x + pickupRect.w &&
 				   pickupPlayer->getX() + pickupPlayer->getWidth() > pickupRect.x &&
 				   pickupPlayer->getY() < pickupRect.y + pickupRect.h &&
@@ -154,9 +156,14 @@ void Pickup::checkPickupOverlap(std::vector<Object*> *objectList) {
 		//This only works because there is only one instance of this object. We will eventually have to 
 		//make an ID system to Identify specific objects.
 		//GOAL
-		objectList->erase(std::remove(objectList->begin(), objectList->end(), this), objectList->end());
-		delete this;
+		used = true;
+		//objectList->erase(getInstanceName());
+		//delete this;
 	}
+}
+
+bool Pickup::isUsed() {
+	return used;
 }
 
 SDL_Rect* Pickup::getPickupRect() {

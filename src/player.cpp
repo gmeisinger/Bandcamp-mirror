@@ -179,7 +179,7 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::vector<Object*> *objectList, Uint32 ticks) {
+void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
 
@@ -217,4 +217,8 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
 	//SDL_RenderFillRect(renderer, &playerRect);
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
    return renderer;
+}
+
+bool Player::isUsed() {
+    return false;
 }

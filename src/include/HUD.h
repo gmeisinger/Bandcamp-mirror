@@ -4,6 +4,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <unordered_map>
 #include <SDL.h>
 #include <SDL_image.h>
 #include "utils.h"
@@ -16,14 +17,14 @@ class HUD : public Object
 		HUD();
 		~HUD();
 		void init(SDL_Renderer* _renderer);
-		void update(std::vector<Object*> *objectList, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
 		void input(const Uint8* keystate);
 		SDL_Renderer* change_levels(SDL_Renderer* _renderer, int oxygen_level, int temperature_level, int health_level); // int power_level) can add for power 
 		SDL_Renderer* draw(SDL_Renderer* gRenderer);
 		int currentTemp;
 		int currentOxygen;
 		int currentHealth;
-		
+		bool isUsed();
 	private:
 		bool init_h;
 		std::vector<SDL_Texture*> hud;
