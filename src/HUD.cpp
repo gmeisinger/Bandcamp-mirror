@@ -59,7 +59,7 @@ void HUD::init(SDL_Renderer* _renderer)
 	init_h = true;
 }
 
-void HUD::update(std::vector<Object*> objectList, Uint32 ticks){
+void HUD::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks){
 		
 }
 
@@ -67,7 +67,11 @@ void HUD::input(const Uint8* keystate){
 	
 }
 
-SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level, int health_level) { //, int power_level can add for power 
+std::string HUD::getInstanceName(){
+	return "HUD";
+}
+
+SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level, int health_level) {
 	Oxygen = {109, std::min(144, 54+(91-(oxygen_level-9))), 33, std::max(1, oxygen_level-9)};
 	switch(oxygen_level)
 	{
@@ -222,4 +226,8 @@ SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer){
 	SDL_RenderCopy(gRenderer, hud[0], NULL, NULL);
 	if (currentHealth == 0) SDL_RenderCopy(gRenderer, hud[1], NULL, NULL);
 	return gRenderer;
+}
+
+bool HUD::isUsed() {
+	return false;
 }
