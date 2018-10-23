@@ -1,10 +1,4 @@
-#include <SDL.h>
-
 #include "include/ooze.h"
-#include "include/spritesheet.h"
-#include "include/utils.h"
-#include "include/HUD.h"
-
 
 //SDL_Rect rect;
 //SpriteSheet sheet;
@@ -99,6 +93,7 @@ void Ooze::updateAnimation(Uint32 ticks) {
     if(true) { //ticks/10%2 == 2
         setAnimation("wandering");
         anim->play();
+        //std::cout << "ooze animating";
     }
     else {
         anim->reset();
