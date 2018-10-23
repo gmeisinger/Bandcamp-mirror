@@ -14,6 +14,8 @@
 #include "include/testroom.h"
 #include "include/game.h"
 #include "include/ooze.h"
+#include "include/circle.h"
+#include "include/collision.h"
 
 constexpr int UPDATE_MAX = 100;
 int updateCount = 1;
@@ -23,6 +25,10 @@ int oldO2 = 100;
 HUD h;
 Player p;
 Ooze o;
+SDL_Rect leftWall;
+SDL_Rect rightWall;
+SDL_Rect upperWall;
+Circle centerPillar;
 
 TestRoom::TestRoom(int* roomNumber){
 	start = false;
@@ -32,9 +38,9 @@ TestRoom::TestRoom(int* roomNumber){
 
 void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
-	SDL_Rect player_box = {screen_w/2, screen_h/4, tile_s, tile_s};
+	SDL_Rect player_box = {screen_w/2, screen_h/2, tile_s, tile_s};
 	p = Player(player_box);
-	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/4, 30, 30};
+	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
 	o = Ooze(ooze_box, &p, &h);
     
 	h.init(reference);
@@ -45,6 +51,12 @@ void TestRoom::init(SDL_Renderer* reference){
 	objectList["player"] = &p;
 	objectList["hud"] = &h;
 	objectList["ooze"] = &o;
+
+	//Init walls in the room
+	leftWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
+	rightWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
+	upperWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
+	centerPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 void TestRoom::update(Uint32 ticks){
@@ -73,12 +85,21 @@ void TestRoom::update(Uint32 ticks){
 }
 
 void TestRoom::movePickup(SDL_Renderer* reference) {
-		int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
-		int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
-		SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
-		
+	int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
+	int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
+	SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
+	
+	if(collision::checkCol(pickupBox, leftWall) 
+		|| collision::checkCol(pickupBox, rightWall)
+		|| collision::checkCol(pickupBox, upperWall)
+		|| collision::checkCol(pickupBox, centerPillar))
+	{
+		movePickup(reference);
+	}
+	else
+	{
 		int pickupValue = rand()%25+25;
-		
+	
 		int pickupType = rand()%2;
 		char type;
 		
@@ -90,6 +111,7 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 		Pickup *newP  = new Pickup(pickupBox, type, pickupValue, &p, &h);
 		objectList[newP->getInstanceName()] = newP;
 		newP->init(reference);
+	}
 }
 
 void TestRoom::input(const Uint8* keystate){
@@ -106,5 +128,13 @@ SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
 		renderer = it->second->draw(renderer);
 		it++;
 	}
+
+	//Draws walls in the room
+	SDL_SetRenderDrawColor(renderer, 0, 0xFF, 0, 0);
+	SDL_RenderFillRect(renderer, &leftWall);
+	SDL_RenderFillRect(renderer, &rightWall);
+	SDL_RenderFillRect(renderer, &upperWall);
+	centerPillar.drawCircle(renderer);
+
 	return renderer;
 }
