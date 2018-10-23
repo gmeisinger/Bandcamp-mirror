@@ -4,25 +4,25 @@
 #include "include/spritesheet.h"
 #include "include/utils.h"
 #include "include/HUD.h"
-#include "include/player.h"
 
-SDL_Rect oozeRect;
-SpriteSheet oozeSheet;
-static int totalOoze = 0;//How many instances of the object exist?
-int oozeNumber = 0;
-int damage = 20;
+
+//SDL_Rect rect;
+//SpriteSheet sheet;
+
+//initialize static member variables
+int Ooze::totalOoze = 0;
 
 // Default Constructor
 Ooze::Ooze():state{roaming}, hostility{0} {}
 
 //Constructor from rect
 Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} {
-    oozeRect = _rect;
+    rect = _rect;
     oozePlayer = player;
 	hud = h;
-	totalOoze++; //Increase instance Number
+	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
-    //Speed?
+    //Speed
     //x_deltav = 0;
     //y_deltav = 0;
     //x_vel = 0;
@@ -45,17 +45,22 @@ void Ooze::input(const Uint8* keystate){}
 //set ooze animation here, as per player.cpp
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
+    addAnimation("wandering", Animation(getSheet().getRow(0)));
+    setAnimation("wandering");
 }
 
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
-    oozeSheet = SpriteSheet(_sheet);
-    oozeSheet.setClips(_cols, _rows, oozeRect.w, oozeRect.h);
+    sheet = SpriteSheet(_sheet);
+    sheet.setClips(_cols, _rows, rect.w, rect.h);
 }
 
 //*********TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	checkOozeOverlap(objectList);
+    
+    //update animation
+    updateAnimation(ticks);
 }
 
 void Ooze::increaseHostility() {
@@ -68,53 +73,60 @@ void Ooze::decreaseHostility() {
 }
 
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
-    SDL_RenderCopy(renderer, oozeSheet.getTexture(), oozeSheet.get(0,0), getRect());
+    SDL_RenderCopy(renderer, sheet.getTexture(), sheet.get(0,0), getRect());
    return renderer;
 }
 
 //Checks if the player overlapped with the ooze and acts accordingly
 //based on pickup's method
 void Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList) {
-	bool overlap = oozePlayer->getX() < oozeRect.x + oozeRect.w &&
-				   oozePlayer->getX() + oozePlayer->getWidth() > oozeRect.x &&
-				   oozePlayer->getY() < oozeRect.y + oozeRect.h &&
-				   oozePlayer->getY() + oozePlayer->getHeight() > oozeRect.y;
+	bool overlap = oozePlayer->getX() < rect.x + rect.w &&
+				   oozePlayer->getX() + oozePlayer->getWidth() > rect.x &&
+				   oozePlayer->getY() < rect.y + rect.h &&
+				   oozePlayer->getY() + oozePlayer->getHeight() > rect.y;
 
 	if (overlap) {
 		hud->currentHealth = std::max(0, hud->currentHealth-damage);
+        //Player->speed = Player->speed / 2;
+        //void Player->updateVelocity(int _xdv, int _ydv); //would this work?
 		std::string s = "HIT: "+getInstanceName();
 		std::cout << s << std::endl;
 	}
 }
 
-bool Ooze::isUsed() {
-	return false;
+void Ooze::updateAnimation(Uint32 ticks) {
+
+    if(true) { //ticks/10%2 == 2
+        setAnimation("wandering");
+        anim->play();
+    }
+    else {
+        anim->reset();
+        anim->stop();
+    }
+    anim->update(ticks);
 }
 
-SpriteSheet Ooze::getSheet() {
-    return oozeSheet;
-}
+bool Ooze::isUsed() { return false; }
+
+Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
+
+void Ooze::setAnimation(std::string tag) { anim = &anims[tag]; }
+
+void Ooze::addAnimation(std::string tag, Animation anim) { anims[tag] = anim; }
+
+SpriteSheet Ooze::getSheet() { return sheet; }
 
 //returns width
-int Ooze::getWidth() {
-    return oozeRect.w;
-}
+int Ooze::getWidth() { return rect.w; }
 
 //returns height
-int Ooze::getHeight() {
-    return oozeRect.h;
-}
+int Ooze::getHeight() { return rect.h; }
 
 //returns x position
-int Ooze::getX() {
-    return oozeRect.x;
-}
+int Ooze::getX() { return rect.x; }
 
 //returns y position
-int Ooze::getY() {
-    return oozeRect.y;
-}
+int Ooze::getY() { return rect.y; }
 
-SDL_Rect* Ooze::getRect() {
-    return &oozeRect;
-}
+SDL_Rect* Ooze::getRect() { return &rect; }

@@ -12,26 +12,30 @@
 #include "HUD.h"
 #include "player.h"
 
-enum State { roaming, eating, attacking, approaching, retreating, dying, inCrack};
-//int numOozes = 0;
 
-//
+enum oozeState { roaming, eating, attacking, approaching, retreating, dying, inCrack};
+
 class Ooze : public Object
 {
 private:
-    SDL_Rect oozeRect;
-    State state;
+    SDL_Rect rect;
+    oozeState state;
     int hostility;
     Player *oozePlayer;
     HUD *hud;
+    SpriteSheet sheet;
+    Animation* anim;
+    std::unordered_map<std::string, Animation> anims;
     
 public:
-    SpriteSheet sheet;
-    Animation* animation;
+    // Variables
+    int oozeNumber;         // This ooze's ID #
+    static int totalOoze; //How many instances of the object exist? (initializes to 0)
+    int damage = 5;
     // Constructors & destructor
     Ooze();
     Ooze(SDL_Rect _rect, Player *player, HUD *h);
-//    Ooze(State st, int hostil);
+//    Ooze(oozeState st, int hostil);
     ~Ooze();
     
     // SDL
@@ -43,25 +47,23 @@ public:
     SDL_Renderer* draw(SDL_Renderer* renderer);
     void checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList);
     bool isUsed();
-
-//    std::unordered_map<std::string, Animation> anims;
     
     // Math
     void increaseHostility();
     void decreaseHostility();
 //    bool checkPlayerDistance(std::vector<Object*> objectList);
     // Getters
-    SpriteSheet getSheet();
     int getWidth();
     int getHeight();
     int getX();
     int getY();
     SDL_Rect* getRect();
-//    void addAnimation(std::string tag, Animation anim);
-//    Animation* getAnimation(std::string tag);
-//    void setAnimation(std::string tag);
-//    void updateAnimation(Uint32 ticks);
-//    SpriteSheet getSheet();
+    SpriteSheet getSheet();
+    void addAnimation(std::string tag, Animation anim);
+    Animation* getAnimation(std::string tag);
+    void setAnimation(std::string tag);
+    void updateAnimation(Uint32 ticks);
+
 
 };
 
