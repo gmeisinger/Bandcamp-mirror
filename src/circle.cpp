@@ -20,9 +20,9 @@ Circle::Circle(int varX, int varY, int varR)
 
 void Circle::updateCircle(int varX, int varY, int varR)
 {
-    x = x;
-    y = y;
-    r = r;
+    x = varX;
+    y = varY;
+    r = varR;
 }
 
 void Circle::drawCircle(SDL_Renderer* rend)
