@@ -1,5 +1,5 @@
 #include "include/ooze.h"
-
+#include "include/collision.h"
 //SDL_Rect rect;
 //SpriteSheet sheet;
 
@@ -73,11 +73,9 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
 
 //Checks if the player overlapped with the ooze and acts accordingly
 //based on pickup's method
-void Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
-	bool overlap = oozePlayer->getX() < rect.x + rect.w &&
-				   oozePlayer->getX() + oozePlayer->getWidth() > rect.x &&
-				   oozePlayer->getY() < rect.y + rect.h &&
-				   oozePlayer->getY() + oozePlayer->getHeight() > rect.y;
+bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+	SDL_Rect* pRect = oozePlayer->getRect();
+	bool overlap = collision::checkCol(rect, *pRect);
 
 	if (overlap) {
 		overlapTicks += ticks;
@@ -92,6 +90,10 @@ void Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 	} else {
 		overlapTicks = 0;
 	}
+
+	oozePlayer->setEnemy(overlap);
+
+	return overlap;
 }
 
 void Ooze::updateAnimation(Uint32 ticks) {

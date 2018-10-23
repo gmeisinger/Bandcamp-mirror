@@ -24,6 +24,8 @@ int x_deltav;
 int y_deltav;
 int x_vel;
 int y_vel;
+bool overlapEnemy;
+
 SDL_Rect lWall;
 SDL_Rect rWall;
 SDL_Rect uWall;
@@ -40,6 +42,7 @@ Player::Player(SDL_Rect _rect) {
 	down = false;
 	left = false;
 	right = false;
+    overlapEnemy = false;
 }
 
 Player::Player(){}
@@ -208,6 +211,9 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32
 
 	updateVelocity(x_deltav, y_deltav);
 
+    //Checks if you are overlapping an enemy, slows down velocity if you are
+    checkEnemy(x_deltav, y_deltav);
+
     //update animation
     updateAnimation(ticks);
 
@@ -240,11 +246,15 @@ bool Player::isUsed() {
     return false;
 }
 
+void Player::setEnemy(bool _overlap) {
+    overlapEnemy = _overlap;
+}
+
 void Player::checkCollision(int curX, int curY)
 {
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that
-    //represents an object. This shouldn't be too difficult
+    //represents what the player is colliding with. This shouldn't be too difficult
 
     //LEFT WALL
     if(collision::checkCol(playerRect, lWall))
@@ -290,4 +300,11 @@ void Player::checkCollision(int curX, int curY)
         playerRect.y = curY;
 		playerRect.x += x_vel;
     } 
+}
+
+void Player::checkEnemy(int _xdv, int _ydv){
+    if(overlapEnemy){
+        x_vel -= _xdv;
+        y_vel -= _ydv;
+    }
 }

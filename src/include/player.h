@@ -9,7 +9,6 @@
 #include "spritesheet.h"
 #include "animation.h"
 
-
 class Player : public Object
 {
     private:
@@ -51,6 +50,8 @@ class Player : public Object
         void updateAnimation(Uint32 ticks);
         SpriteSheet getSheet();
         bool isUsed();
+        void setEnemy(bool _overlap);
+        void checkEnemy(int _xdv, int _ydv);
 };
 
 #endif  //  BANDCAMP_PLAYER_H_
