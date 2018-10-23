@@ -35,10 +35,11 @@ void TestRoom::init(SDL_Renderer* reference){
 	SDL_Rect player_box = {screen_w/2, screen_h/4, tile_s, tile_s};
 	p = Player(player_box);
 	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/4, 30, 30};
-	o = Ooze(ooze_box);
-	
+
 	h.init(reference);
 	p.init(reference);
+
+	o = Ooze(ooze_box, &p, &h);
 	o.init(reference);
 	
 	//Player and HUD in the Room

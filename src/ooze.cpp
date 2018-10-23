@@ -3,15 +3,25 @@
 #include "include/ooze.h"
 #include "include/spritesheet.h"
 #include "include/utils.h"
+#include "include/HUD.h"
+#include "include/player.h"
 
 SDL_Rect oozeRect;
 SpriteSheet oozeSheet;
+static int totalOoze = 0;//How many instances of the object exist?
+int oozeNumber = 0;
+int damage = 20;
+
 // Default Constructor
 Ooze::Ooze():state{roaming}, hostility{0} {}
 
 //Constructor from rect
-Ooze::Ooze(SDL_Rect _rect):state{roaming}, hostility{0} {
+Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} {
     oozeRect = _rect;
+    oozePlayer = player;
+	hud = h;
+	totalOoze++; //Increase instance Number
+	oozeNumber = totalOoze;
     //Speed?
     //x_deltav = 0;
     //y_deltav = 0;
@@ -26,7 +36,7 @@ Ooze::Ooze(SDL_Rect _rect):state{roaming}, hostility{0} {
 Ooze::~Ooze(){};
 
 std::string Ooze::getInstanceName(){
-	return "Ooze"; //There is only one ooze at a time for now.
+	return "Ooze-"+std::to_string(oozeNumber);
 }
 
 void Ooze::input(const Uint8* keystate){}
@@ -42,14 +52,39 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     oozeSheet.setClips(_cols, _rows, oozeRect.w, oozeRect.h);
 }
 
-void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks){}
+//*********TO DO:
+//update motion here
+void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+	checkOozeOverlap(objectList);
+}
 
-void Ooze::increaseHostility() { if( hostility < 10 ) hostility++; }
-void Ooze::decreaseHostility() { if( hostility >  0 ) hostility--; }
+void Ooze::increaseHostility() {
+	if (hostility < 10)
+		hostility++;
+}
+void Ooze::decreaseHostility() {
+	if (hostility >  0)
+		hostility--;
+}
 
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
     SDL_RenderCopy(renderer, oozeSheet.getTexture(), oozeSheet.get(0,0), getRect());
    return renderer;
+}
+
+//Checks if the player overlapped with the ooze and acts accordingly
+//based on pickup's method
+void Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList) {
+	bool overlap = oozePlayer->getX() < oozeRect.x + oozeRect.w &&
+				   oozePlayer->getX() + oozePlayer->getWidth() > oozeRect.x &&
+				   oozePlayer->getY() < oozeRect.y + oozeRect.h &&
+				   oozePlayer->getY() + oozePlayer->getHeight() > oozeRect.y;
+
+	if (overlap) {
+		hud->currentHealth = std::max(0, hud->currentHealth-damage);
+		std::string s = "HIT: "+getInstanceName();
+		std::cout << s << std::endl;
+	}
 }
 
 bool Ooze::isUsed() {

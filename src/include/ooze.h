@@ -9,6 +9,8 @@
 #include "spritesheet.h"
 #include "animation.h"
 #include "utils.h"
+#include "HUD.h"
+#include "player.h"
 
 enum State { roaming, eating, attacking, approaching, retreating, dying, inCrack};
 //int numOozes = 0;
@@ -20,14 +22,15 @@ private:
     SDL_Rect oozeRect;
     State state;
     int hostility;
-    //Player *player;
+    Player *oozePlayer;
+    HUD *hud;
     
 public:
     SpriteSheet sheet;
     Animation* animation;
     // Constructors & destructor
     Ooze();
-    Ooze(SDL_Rect _rect);
+    Ooze(SDL_Rect _rect, Player *player, HUD *h);
 //    Ooze(State st, int hostil);
     ~Ooze();
     
@@ -38,6 +41,7 @@ public:
     void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     SDL_Renderer* draw(SDL_Renderer* renderer);
+    void checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList);
     bool isUsed();
 
 //    std::unordered_map<std::string, Animation> anims;
