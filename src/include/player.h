@@ -5,10 +5,11 @@
 #include <unordered_map>
 #include <cmath>
 #include <string>
+#include <vector>
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
-
+#include "include/game.h"
 
 class Player : public Object
 {

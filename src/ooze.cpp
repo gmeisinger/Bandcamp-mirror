@@ -108,6 +108,11 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
+void Ooze::updatePosition() {
+//    rect.x += x_vel;
+//    rect.y += y_vel;
+}
+
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }

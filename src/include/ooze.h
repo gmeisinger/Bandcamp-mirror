@@ -60,12 +60,13 @@ public:
     int getY();
     SDL_Rect* getRect();
     SpriteSheet getSheet();
-    //Animation
+    // Animation
     void addAnimation(std::string tag, Animation anim);
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
     void updateAnimation(Uint32 ticks);
-
+    // Movement
+    void updatePosition();
 };
 
 #endif  //  OOZE_H_

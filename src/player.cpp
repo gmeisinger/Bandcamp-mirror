@@ -2,14 +2,7 @@
  * Class function: 
  * 
 */
-
-#include <SDL.h>
-#include <vector>
-#include <unordered_map>
-
 #include "include/player.h"
-#include "include/game.h"
-#include "include/spritesheet.h"
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
@@ -135,7 +128,7 @@ void Player::updateVelocity(int _xdv, int _ydv) {
         y_vel = MAX_SPEED;
 
     // Also update position
-   this->updatePosition();
+//   this->updatePosition();
 }
 
 void Player::updatePosition() {
