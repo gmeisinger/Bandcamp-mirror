@@ -13,7 +13,7 @@
 #include "include/HUD.h"
 #include "include/testroom.h"
 #include "include/game.h"
-
+#include "include/gsm.h"
 constexpr int UPDATE_MAX = 100;
 int updateCount = 1;
 int oldTemp = 100;
@@ -23,10 +23,10 @@ HUD h;
 Player p;
 Pickup currentP;
 
-TestRoom::TestRoom(int* roomNumber){
+TestRoom::TestRoom(){
 	start = false;
 	std::vector<Object*> objectList;
-	roomReference = roomNumber;
+	//roomReference = &currentScreen;
 }
 
 void TestRoom::init(SDL_Renderer* reference){
@@ -96,7 +96,7 @@ void TestRoom::input(const Uint8* keystate){
 	}
 }
 
-SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
+SDL_Renderer* TestRoom::draw(SDL_Renderer * renderer){
 	for(int i=0; i < objectList.size(); i++){	
 		renderer = objectList[i]->draw(renderer);
 	}

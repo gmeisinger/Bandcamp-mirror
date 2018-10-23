@@ -9,23 +9,26 @@
 #include "include/GSM.h"
 #include "include/credits.h"
 #include "include/testroom.h"
+#include "include/menu.h"
 
-TestRoom testScreen = nullptr;
-
+TestRoom testScreen;
+int GSM::currentScreen = 0;
 GSM::GSM(){
 	currentScreen = 0;
 	
 	//Init Screens
 	//They all get passed the pointer to the
 	//Current Screen so they can change it when they see fit.
-	testScreen = TestRoom(&currentScreen);
-	
+	testScreen = TestRoom();
+	testMenu = new Menu();
+	roomList.push_back(testMenu);
 	roomList.push_back(&testScreen);
 	previousScreen = 0;
 	running = false;
 }
 
 void GSM::init(SDL_Renderer* reference){
+	std::cout << "Init GSM" << std::endl;
 	//When Objects need to load their sprites, they will be passed this renderer
 	//As a reference for their init method.
 	rendererReference = reference;

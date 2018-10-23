@@ -7,7 +7,7 @@
 #include "screen.h"
 #include "object.h"
 #include "pickup.h"
-
+#include "gsm.h"
 class TestRoom : public Screen 
 { 
 	private:
@@ -15,17 +15,17 @@ class TestRoom : public Screen
 		std::vector<Object*> objectList;
 		int* roomReference;
 		SDL_Renderer* rendererReference;
-		bool escape; //Have we pushed the escape key?
+		bool escape; //Have we pushed the escape key ?
 		int updateCount;
 		int oldTemp;
 		int oldO2;
 	
 	public: 
-		TestRoom(int* roomReference);
+		TestRoom();
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
-		SDL_Renderer* draw(SDL_Renderer* renderer);
+		SDL_Renderer* draw(SDL_Renderer * renderer);
 		void movePickup();
 };
 

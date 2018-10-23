@@ -56,8 +56,14 @@ bool Game::init() {
 		std::cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
 		return false;
 	}
+	if( TTF_Init() == -1 )
+    {
+        std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        return false;
+    }
 	// Set renderer draw/clear color
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	
 	
 	//Start the GSM
 	gsm.init(gRenderer);
@@ -88,7 +94,7 @@ void Game::input(const Uint8* keystate){
 void Game::run() {
 	//event handler
 	SDL_Event e;
-
+	std::cout << "Running" << std::endl;
 	//timer
 	Uint32 last_time = SDL_GetTicks();
 	Uint32 cur_time = 0;
