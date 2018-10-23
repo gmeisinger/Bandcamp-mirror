@@ -3,6 +3,7 @@
 //SDL_Rect rect;
 //SpriteSheet sheet;
 
+constexpr int BORDER_SIZE = 32;
 //initialize static member variables
 int Ooze::totalOoze = 0;
 
@@ -21,8 +22,8 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} 
     //Speed
     //x_deltav = 0;
     //y_deltav = 0;
-    //x_vel = 0;
-    //y_vel = 0;
+    x_vel = 1;
+    y_vel = -1;
 }
 
 //Other constructor?
@@ -56,6 +57,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
     //update animation
     updateAnimation(ticks);
     updatePosition();
+    checkBounds(screen_w, screen_h);
 }
 
 void Ooze::increaseHostility() {
@@ -110,8 +112,32 @@ void Ooze::updateAnimation(Uint32 ticks) {
 }
 
 void Ooze::updatePosition() {
-    rect.x += 1;//x_vel;
-    rect.y += 1;//y_vel;
+    rect.x += x_vel;
+    rect.y += y_vel;
+}
+
+void Ooze::updateVelocity() {
+
+}
+
+void Ooze::checkBounds(int max_width, int max_height) {
+    if (rect.x < BORDER_SIZE){
+        rect.x = BORDER_SIZE;
+        x_vel = -x_vel;
+    }
+    else if (rect.x + rect.w > max_width - BORDER_SIZE){
+        rect.x = max_width - rect.w - BORDER_SIZE;
+        x_vel = -x_vel;
+    }
+    
+    if (rect.y < BORDER_SIZE){
+        rect.y = BORDER_SIZE;
+        y_vel = -y_vel;
+    }
+    else if (rect.y + rect.h > max_height - BORDER_SIZE){
+        rect.y = max_height - rect.h - BORDER_SIZE;
+        y_vel = -y_vel;
+    }
 }
 
 bool Ooze::isUsed() { return false; }

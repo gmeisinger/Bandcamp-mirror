@@ -19,6 +19,8 @@ class Ooze : public Object
 {
 private:
     SDL_Rect rect;
+    int x_vel;
+    int y_vel;
     oozeState state;
     int hostility;
     Player *oozePlayer;
@@ -67,6 +69,8 @@ public:
     void updateAnimation(Uint32 ticks);
     // Movement
     void updatePosition();
+    void updateVelocity();
+    void checkBounds(int max_width, int max_height);
 };
 
 #endif  //  OOZE_H_
