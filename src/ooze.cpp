@@ -81,7 +81,7 @@ void Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 
 	if (overlap) {
 		overlapTicks += ticks;
-		if (overlapTicks > 1000) {
+		if (overlapTicks > 20) {
 			hud->currentHealth = std::max(0, hud->currentHealth-damage);
 			//Player->speed = Player->speed / 2;
         	//void Player->updateVelocity(int _xdv, int _ydv); //would this work?

@@ -32,7 +32,7 @@ public:
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
-    int damage = 5;
+    int damage = 1;
     // Constructors & destructor
     Ooze();
     Ooze(SDL_Rect _rect, Player *player, HUD *h);
