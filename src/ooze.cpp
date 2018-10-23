@@ -55,6 +55,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
     
     //update animation
     updateAnimation(ticks);
+    updatePosition();
 }
 
 void Ooze::increaseHostility() {
@@ -109,8 +110,8 @@ void Ooze::updateAnimation(Uint32 ticks) {
 }
 
 void Ooze::updatePosition() {
-//    rect.x += x_vel;
-//    rect.y += y_vel;
+    rect.x += 1;//x_vel;
+    rect.y += 1;//y_vel;
 }
 
 bool Ooze::isUsed() { return false; }

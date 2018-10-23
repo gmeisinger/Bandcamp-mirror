@@ -9,7 +9,7 @@
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
-#include "include/game.h"
+#include "game.h"
 
 class Player : public Object
 {
