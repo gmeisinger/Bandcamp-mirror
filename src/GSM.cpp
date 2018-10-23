@@ -14,7 +14,6 @@
 TestRoom testScreen;
 int GSM::currentScreen = 0;
 GSM::GSM(){
-	currentScreen = 0;
 	
 	//Init Screens
 	//They all get passed the pointer to the
@@ -33,25 +32,29 @@ void GSM::init(SDL_Renderer* reference){
 	//As a reference for their init method.
 	rendererReference = reference;
 	
-	roomList[currentScreen]->init(reference);
+	roomList[GSM::currentScreen]->init(reference);
 	running = true;
 }
 
 void GSM::update(Uint32 ticks){
-	previousScreen = currentScreen;
+	previousScreen = GSM::currentScreen;
 	
 	roomList[currentScreen]->update(ticks);
 	
 	//Checking if we changed screens this loop
 	//If so, then call the init to the new screen.
-	if(previousScreen != currentScreen)
-		roomList[currentScreen]->init(rendererReference);
+	if(previousScreen != GSM::currentScreen) {
+		std::cout << "Changing room" << std::endl;
+		roomList[GSM::currentScreen]->init(rendererReference);
+	}
 }
 
 SDL_Renderer* GSM::draw(SDL_Renderer *renderer){
-	return roomList[currentScreen]->draw(renderer);
+	return roomList[GSM::currentScreen]->draw(renderer);
 }
 
 void GSM::input(const Uint8* keystate){
-	roomList[currentScreen]->input(keystate);
+	roomList[GSM::currentScreen]->input(keystate);
 }
+
+void GSM::setCurrentScreen(int newScreen) { GSM::currentScreen = newScreen; }

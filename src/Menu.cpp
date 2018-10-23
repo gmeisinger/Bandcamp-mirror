@@ -10,7 +10,6 @@
 
 //This is the basis for a repurposable object-oriented menu. The primary idea here is that each menu item (buttons, sliders, etc.)
 //will be added to a data structure in this menu class, which will then manage input and detect when the items have been activated.
-//Development was cut short for the week of 10/17, because of issues that need to be further discussed with the team
 
 
 Button *test_button = nullptr; //test button for proof of concept
@@ -22,10 +21,9 @@ Menu::Menu() { //Constructs a test button; in the future, this should be more fl
 }
 
 void Menu::init(SDL_Renderer* renderer) {
-	std::cout << "Init Menu" << std::endl;
-	int clicked = 0;
-	r.x = 400;
-	r.y = 300;
+	int clicked = 0; //Flag value for 
+	r.x = 300;
+	r.y = 250;
 	r.w = 200;
 	r.h = 100;
 	menu_rect.x = 40;
@@ -34,11 +32,10 @@ void Menu::init(SDL_Renderer* renderer) {
 	menu_rect.h = screen_h - 80;
 	test_button = new Button("Start", r);
 	test_button->init(renderer);
-	std::cout << "Init menu done" << std::endl;
 }
 
-void Menu::update(Uint32 ticks) { //Blank update function for future use
-	
+void Menu::update(Uint32 ticks) { //If the button was clicked, we need to change the game screen!
+	if(clicked == 1) GSM::currentScreen = 1;
 }
 
 void Menu::input(const Uint8* keystate) { //In the future, the input will probably look similar, but instead of checking against only the test_button when clicked it will
@@ -51,13 +48,9 @@ void Menu::input(const Uint8* keystate) { //In the future, the input will probab
 		test_button->unpress();
 	}
 	if(SDL_GetMouseState(&mx, &my) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-		std::cout << "Clicked mouse; x: " << mx << ", y: " << my << std::endl;
-		std::cout << "Rectangle: x: " << r.x << ", y: " << r.y << ", x2: " << r.x + r.w << ", y2: " << r.y + r.h << std::endl;
-		if(mx >= r.x && mx <= (r.x + r.w) && my >= r.y && my >= (r.y + r.h)) {
-			std::cout << "Clicked button" << std::endl;
+		if(mx >= r.x && mx <= (r.x + r.w) && my >= r.y && my <= (r.y + r.h)) { //This compares the mouse location with the rectangle of the button. If the button is clicked, the flag is set
 			clicked = 1;
 			test_button->press();
-			GSM::currentScreen = 1;
 		}
 	}
 }

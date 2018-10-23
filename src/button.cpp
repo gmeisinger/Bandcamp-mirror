@@ -19,8 +19,6 @@ SDL_Color unpressed = {180, 180, 180};
 SDL_Color pressed = {90, 90, 90};
 SDL_Color text_color = {240, 240, 240};
 
-//Text will be rendered to a surface and then blitted to the screen
-
 int is_pressed = 0;
 SDL_Rect label_rect = {0, 0, 0, 0};
 const int label_offset = 15;
@@ -33,27 +31,29 @@ Button::Button(char* l, SDL_Rect r) { //Constructs the button. For now, it is a 
 	rectangle = r;
 	color = unpressed;
 	
-	
-	
-	//The text will be vertically centered on the button and slightly offset from the left side.
 	label_rect.x = rectangle.x;
-	label_rect.y = rectangle.y;
-	
+	label_rect.y = rectangle.y;	
 }
 
 void Button::init(SDL_Renderer *renderer) {
+	//This code writes the text to an SDL surface, then renders it to a texture.
 	text_color = {250, 250, 250};
-	std::cout << "Init Button" << std::endl;
-	font = TTF_OpenFont("res/OpenSans-Regular.ttf", 32);
+	font = TTF_OpenFont("res/OpenSans-Regular.ttf", 32); //Opens a font file
 	if(font == NULL) std::cout << "Error loading text!" << std::endl;
-	message = TTF_RenderText_Solid(font, label, text_color);
-	message_texture = SDL_CreateTextureFromSurface(renderer, message);
+	
+	message = TTF_RenderText_Solid(font, label, text_color); //Writes text to surface
+	message_texture = SDL_CreateTextureFromSurface(renderer, message); //Renders the surface as a texture on video memory
+	
 	if(message_texture == NULL) {
 		std::cout << "Failed to create button texture." << std::endl;
 	}
+	//The proper size of the texture is taken from the surface rendered earlier
 	label_rect.w = message->w;
 	label_rect.h = message->h;
-	std::cout <<"Width: " << label_rect.w << " Height: " << label_rect.h << std::endl;
+	
+	//The following code centers the label by finding the midpoint of the button and offsetting by the size of the label
+	label_rect.x = label_rect.x + (rectangle.w / 2) - (label_rect.w / 2);
+	label_rect.y = label_rect.y + (rectangle.h / 2) - (label_rect.h / 2);
 }
 
 void Button::press() { //Any visual or sound effects for pressing may be set up here
@@ -74,7 +74,7 @@ void Button::input(const Uint8* keystate) {
 	
 }
 
-SDL_Renderer* Button::draw(SDL_Renderer *renderer) { //Text is rendered to texture and drawn to screen
+SDL_Renderer* Button::draw(SDL_Renderer *renderer) { //A rectangle and the texture is drawn to the screen
 	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 0xFF);
 	SDL_RenderFillRect(renderer, &rectangle);
 	

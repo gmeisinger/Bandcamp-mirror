@@ -23,6 +23,7 @@ class GSM {
 		GSM();
 		//~GSM();
 		static int currentScreen;
+		static void setCurrentScreen(int newScreen);
 		void init(SDL_Renderer *renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);

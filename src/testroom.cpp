@@ -30,6 +30,7 @@ TestRoom::TestRoom(){
 }
 
 void TestRoom::init(SDL_Renderer* reference){
+	std::cout << "Init TestRoom" << std::endl;
 	rendererReference = reference;
 	SDL_Rect player_box = {screen_w/2, screen_h/2, tile_s, tile_s};
 	p = Player(player_box);
