@@ -26,6 +26,7 @@ int x_vel;
 int y_vel;
 bool overlapEnemy;
 
+//This should be removed ASAP
 SDL_Rect lWall;
 SDL_Rect rWall;
 SDL_Rect uWall;
@@ -64,6 +65,8 @@ void Player::init(SDL_Renderer* gRenderer){
 	addAnimation("left", Animation(getSheet().getRow(2)));
 	addAnimation("right", Animation(getSheet().getRow(3)));
 	setAnimation("down");
+
+    //This should be removed ASAP
     lWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
 	rWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
 	uWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
