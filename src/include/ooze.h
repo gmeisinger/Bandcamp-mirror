@@ -25,6 +25,7 @@ private:
     HUD *hud;
     SpriteSheet sheet;
     Animation* anim;
+    int overlapTicks;
     std::unordered_map<std::string, Animation> anims;
     
 public:
@@ -45,7 +46,7 @@ public:
     void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     SDL_Renderer* draw(SDL_Renderer* renderer);
-    void checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList);
+    void checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     bool isUsed();
     
     // Math

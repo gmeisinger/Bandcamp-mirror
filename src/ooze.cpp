@@ -17,6 +17,7 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} 
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	Animation* anim;
+	int overlapTicks = 0;
     //Speed
     //x_deltav = 0;
     //y_deltav = 0;
@@ -36,8 +37,6 @@ std::string Ooze::getInstanceName(){
 
 void Ooze::input(const Uint8* keystate){}
 
-//********TO DO:
-//set ooze animation here, as per player.cpp
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
@@ -52,7 +51,7 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 //*********TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
-	checkOozeOverlap(objectList);
+	checkOozeOverlap(objectList, ticks);
     
     //update animation
     updateAnimation(ticks);
@@ -74,18 +73,24 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
 
 //Checks if the player overlapped with the ooze and acts accordingly
 //based on pickup's method
-void Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList) {
+void Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	bool overlap = oozePlayer->getX() < rect.x + rect.w &&
 				   oozePlayer->getX() + oozePlayer->getWidth() > rect.x &&
 				   oozePlayer->getY() < rect.y + rect.h &&
 				   oozePlayer->getY() + oozePlayer->getHeight() > rect.y;
 
 	if (overlap) {
-		hud->currentHealth = std::max(0, hud->currentHealth-damage);
-        //Player->speed = Player->speed / 2;
-        //void Player->updateVelocity(int _xdv, int _ydv); //would this work?
-		std::string s = "HIT: "+getInstanceName();
-		std::cout << s << std::endl;
+		overlapTicks += ticks;
+		if (overlapTicks > 1000) {
+			hud->currentHealth = std::max(0, hud->currentHealth-damage);
+			//Player->speed = Player->speed / 2;
+        	//void Player->updateVelocity(int _xdv, int _ydv); //would this work?
+			std::string s = "HIT: "+getInstanceName();
+			std::cout << s << std::endl;
+			overlapTicks = 0;
+		}
+	} else {
+		overlapTicks = 0;
 	}
 }
 
