@@ -16,6 +16,7 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} 
 	hud = h;
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
+	Animation* anim;
     //Speed
     //x_deltav = 0;
     //y_deltav = 0;
@@ -67,7 +68,7 @@ void Ooze::decreaseHostility() {
 }
 
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
-    SDL_RenderCopy(renderer, sheet.getTexture(), sheet.get(0,0), getRect());
+    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
    return renderer;
 }
 
