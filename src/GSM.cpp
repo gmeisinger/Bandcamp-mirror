@@ -1,5 +1,5 @@
 /* Team Bandcamp
- * Class function: 
+ * Class function: Game state manger 
  * 
 */
 
@@ -13,7 +13,7 @@
 TestRoom testScreen = nullptr;
 
 GSM::GSM(){
-	currentScreen = 0;
+	currentScreen = 0;	// Should describe this here 
 	
 	//Init Screens
 	//They all get passed the pointer to the
@@ -22,7 +22,7 @@ GSM::GSM(){
 	
 	roomList.push_back(&testScreen);
 	previousScreen = 0;
-	running = false;
+	running = false;		// does this refer to the game running bool? its own from GSM.h
 }
 
 void GSM::init(SDL_Renderer* reference){

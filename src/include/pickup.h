@@ -2,6 +2,7 @@
 #define BANDCAMP_PICKUP_H_
 
 #include <vector>
+#include <unordered_map>
 #include <SDL.h>
 #include <string>
 
@@ -13,6 +14,7 @@ class Pickup : public Object
 {
 	private:
 		SDL_Rect pickupRect;
+		SDL_Rect drawBox;
 		char pickupType;
 		int pickupValue;
 		Player *pickupPlayer;
@@ -21,14 +23,16 @@ class Pickup : public Object
 	public:
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
-		void update(std::vector<Object*> objectList, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+		std::string getInstanceName();
 		SDL_Renderer* draw(SDL_Renderer *renderer);
 		Pickup(SDL_Rect _rect, char type, int value, Player* player, HUD* h);
         ~Pickup();
 		Pickup();
-		bool checkPickupOverlap(std::vector<Object*> objectList);
+		void checkPickupOverlap(std::unordered_map<std::string, Object*> *objectList);
 		SDL_Rect* getPickupRect();
-		bool used;
+		void updatePosition(Uint32 ticks);
+		bool isUsed();
 };
 
 #endif  //  BANDCAMP_PICKUP_H_
