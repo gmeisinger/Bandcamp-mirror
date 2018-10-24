@@ -6,7 +6,6 @@
 //SDL_Rect rect;
 //SpriteSheet sheet;
 
-constexpr int BORDER_SIZE = 32;
 //initialize static member variables
 int Ooze::totalOoze = 0;
 
@@ -31,11 +30,11 @@ Ooze::Ooze():state{roaming}, hostility{0} {}
 Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} {
     rect = _rect;
     oozePlayer = player;
-	  hud = h;
-	  totalOoze++; //Increase # of instances counter
-	  oozeNumber = totalOoze;
-	  Animation* anim;
-	  int overlapTicks = 0;
+	hud = h;
+	totalOoze++; //Increase # of instances counter
+	oozeNumber = totalOoze;
+	Animation* anim;
+	int overlapTicks = 0;
     //Speed
     o_x_deltav = 0;
     o_y_deltav = 0;
@@ -111,8 +110,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 	}
     //update animation
     updateAnimation(ticks);
-    updatePosition();
-    checkBounds(screen_w, screen_h);
 }
 
 void Ooze::increaseHostility() {
@@ -137,7 +134,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 
 	if (overlap) {
 		overlapTicks += ticks;
-		if (overlapTicks > 20) {
+		if (overlapTicks > 1000) {
 			hud->currentHealth = std::max(0, hud->currentHealth-damage);
 			//Player->speed = Player->speed / 2;
         	//void Player->updateVelocity(int _xdv, int _ydv); //would this work?
@@ -166,35 +163,6 @@ void Ooze::updateAnimation(Uint32 ticks) {
         anim->stop();
     }
     anim->update(ticks);
-}
-
-void Ooze::updatePosition() {
-    rect.x += x_vel;
-    rect.y += y_vel;
-}
-
-void Ooze::updateVelocity() {
-
-}
-
-void Ooze::checkBounds(int max_width, int max_height) {
-    if (rect.x < BORDER_SIZE){
-        rect.x = BORDER_SIZE;
-        x_vel = -x_vel;
-    }
-    else if (rect.x + rect.w > max_width - BORDER_SIZE){
-        rect.x = max_width - rect.w - BORDER_SIZE;
-        x_vel = -x_vel;
-    }
-    
-    if (rect.y < BORDER_SIZE){
-        rect.y = BORDER_SIZE;
-        y_vel = -y_vel;
-    }
-    else if (rect.y + rect.h > max_height - BORDER_SIZE){
-        rect.y = max_height - rect.h - BORDER_SIZE;
-        y_vel = -y_vel;
-    }
 }
 
 bool Ooze::isUsed() { return false; }
