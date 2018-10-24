@@ -2,11 +2,6 @@
  * Class function: 
  * 
 */
-
-#include <SDL.h>
-#include <vector>
-#include <unordered_map>
-
 #include "include/player.h"
 #include "include/game.h"
 #include "include/collision.h"
@@ -150,7 +145,7 @@ void Player::updateVelocity(int _xdv, int _ydv) {
         y_vel = MAX_SPEED;
 
     // Also update position
-   this->updatePosition();
+//   this->updatePosition();
 }
 
 void Player::updatePosition() {

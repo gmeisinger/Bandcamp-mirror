@@ -19,6 +19,8 @@ class Ooze : public Object
 {
 private:
     SDL_Rect rect;
+    int x_vel;
+    int y_vel;
     oozeState state;
     int hostility;
     Player *oozePlayer;
@@ -32,7 +34,7 @@ public:
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
-    int damage = 5;
+    int damage = 1;
     // Constructors & destructor
     Ooze();
     Ooze(SDL_Rect _rect, Player *player, HUD *h);
@@ -66,12 +68,15 @@ public:
     int getY();
     SDL_Rect* getRect();
     SpriteSheet getSheet();
-    //Animation
+    // Animation
     void addAnimation(std::string tag, Animation anim);
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
     void updateAnimation(Uint32 ticks);
-
+    // Movement
+    void updatePosition();
+    void updateVelocity();
+    void checkBounds(int max_width, int max_height);
 };
 
 #endif  //  OOZE_H_

@@ -5,9 +5,11 @@
 #include <unordered_map>
 #include <cmath>
 #include <string>
+#include <vector>
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
+#include "game.h"
 
 class Player : public Object
 {
@@ -17,24 +19,24 @@ class Player : public Object
         int y_deltav;
         int x_vel;
         int y_vel;
-		bool up;
-		bool down;
-		bool left;
-		bool right;
-		SpriteSheet sheet;
+		    bool up;
+		    bool down;
+		    bool left;
+		    bool right;
+		    SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;
         Animation* anim;
 		
     public:
         Player(SDL_Rect _rect);
-		Player();
+		    Player();
         ~Player();
-		std::string getInstanceName();
-		void init(SDL_Renderer* gRenderer);
-		void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
-		void input(const Uint8* keystate);
-		SDL_Renderer* draw(SDL_Renderer* gRenderer);
-		void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
+		    std::string getInstanceName();
+		    void init(SDL_Renderer* gRenderer);
+		    void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+		    void input(const Uint8* keystate);
+		    SDL_Renderer* draw(SDL_Renderer* gRenderer);
+		    void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
         void updateVelocity(int _xdv, int _ydv);
         void updatePosition();
         void checkBounds(int max_width, int max_height);
