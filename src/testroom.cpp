@@ -19,15 +19,18 @@ int updateCount = 1;
 int oldTemp = 100;
 int oldO2 = 100;
 
+// Heads up display 
 HUD h;
 Player p;
 
+// ADD COMMENTS 
 TestRoom::TestRoom(int* roomNumber){
 	start = false;
 	std::unordered_map<std::string, Object*> objectList;
 	roomReference = roomNumber;
 }
 
+// ADD COMMENTS 
 void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
 	SDL_Rect player_box = {screen_w/2, screen_h/2, tile_s, tile_s};
@@ -41,6 +44,7 @@ void TestRoom::init(SDL_Renderer* reference){
 	objectList["hud"] = &p;
 }
 
+// ADD COMMENTS 
 void TestRoom::update(Uint32 ticks){
 	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
@@ -66,6 +70,7 @@ void TestRoom::update(Uint32 ticks){
 	updateCount = (updateCount+1)%UPDATE_MAX;
 }
 
+// ADD COMMENTS 
 void TestRoom::movePickup(SDL_Renderer* reference) {
 		int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
 		int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
@@ -86,6 +91,7 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 		newP->init(reference);
 }
 
+// ADD COMMENTS 
 void TestRoom::input(const Uint8* keystate){
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
@@ -94,6 +100,7 @@ void TestRoom::input(const Uint8* keystate){
 	}
 }
 
+// ADD COMMENTS 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){

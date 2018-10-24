@@ -19,24 +19,37 @@ int tile_s;
 Game::Game() {
 	gWindow = nullptr;
 	gRenderer = nullptr;
-	running = false;
-	GSM gsm;
+	running = false;			// Flag variable: runs the game while true
+	GSM gsm;					// 
 	screen_w = SCREEN_WIDTH;
 	screen_h = SCREEN_HEIGHT;
 	tile_s = TILE_SIZE;
 }
 
+/* Called from Main 
+ * Set up the game
+*/ 
 bool Game::init() {
 	
+	// Initialize SDL 
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
 		return false;
 	}
-
+	// 
 	if(!SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1")) {
 		std::cout << "Warning: Linear texture filtering not enabled!" << std::endl;
 	}
 	
+	/* Creating the window
+	 * Arguments:
+	 *   Window title
+	 *   x position (we don't care in this example)
+	 *   y position (we don't care in this example)
+	 *   window width
+	 *   window height
+	 *   flags, see API for possible flags
+	 */
 	gWindow = SDL_CreateWindow("Bandcamp", SDL_WINDOWPOS_UNDEFINED, SDL_WINDOWPOS_UNDEFINED, SCREEN_WIDTH, SCREEN_HEIGHT, SDL_WINDOW_SHOWN);
 	if (gWindow == nullptr) {
 		std::cout << "Window could not be created! SDL_Error: " << SDL_GetError() << std::endl;
@@ -51,8 +64,7 @@ bool Game::init() {
 	}
 	//Initialize PNG loading
 	int imgFlags = IMG_INIT_PNG;
-	if( !( IMG_Init( imgFlags ) & imgFlags ) )
-	{
+	if( !( IMG_Init( imgFlags ) & imgFlags ) ){
 		printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 		return false;
 	}
@@ -62,6 +74,7 @@ bool Game::init() {
 	//Start the GSM
 	gsm.init(gRenderer);
 	
+	// Initialization Successful
 	running = true;
 	return true;
 }
@@ -80,6 +93,9 @@ void Game::draw() {
 	SDL_RenderPresent(gRenderer);
 }
 
+/* keystate = a pointer to an array of key states.  1 means key depressed, 0 means not.  
+ * Processes the updare 
+*/
 void Game::input(const Uint8* keystate){
 	gsm.input(keystate);
 }
@@ -94,7 +110,7 @@ void Game::run() {
 	Uint32 cur_time = 0;
 	Uint32 ticks = 0;
 	
-	//main loop
+	//main loop 
 	while(running) {
 		//handle events on queue
 		while(SDL_PollEvent(&e) != 0) {
@@ -105,7 +121,8 @@ void Game::run() {
 		
 		}
 		
-		const Uint8* keystate = SDL_GetKeyboardState( NULL );
+		// keystate = a pointer to an array of key states.  1 means key depressed, 0 means not.  
+		const Uint8* keystate = SDL_GetKeyboardState( NULL );		// Should this be declared in constructor? 
 		cur_time = SDL_GetTicks();
 		ticks = cur_time - last_time;
 		input(keystate);
@@ -113,14 +130,18 @@ void Game::run() {
 		draw();
 		last_time = cur_time;
 	}
+
 	//credits
 	//Credits creds = Credits(gRenderer);
 	//creds.load();
 	//creds.play();
+
+	// Tear down and end.  Returns to main
 	close();
 }
 
-//free memory and quit
+// free memory and quit
+// Returns main after completion
 void Game::close() {
 	
 	SDL_DestroyRenderer(gRenderer);
