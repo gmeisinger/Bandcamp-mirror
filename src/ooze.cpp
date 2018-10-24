@@ -1,7 +1,4 @@
 #include "include/ooze.h"
-#include "include/collision.h"
-#include "include/circle.h"
-#include "include/game.h"
 
 //SDL_Rect rect;
 //SpriteSheet sheet;
@@ -9,16 +6,9 @@
 //initialize static member variables
 int Ooze::totalOoze = 0;
 
-int o_x_deltav;
-int o_y_deltav;
-int o_x_vel;
-int o_y_vel;
 
-//This should be removed ASAP
-SDL_Rect o_lWall;
-SDL_Rect o_rWall;
-SDL_Rect o_uWall;
-Circle o_cPillar;
+//int x_vel;
+//int y_vel;
 
 constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
@@ -36,10 +26,10 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} 
 	  Animation* anim;
 	  int overlapTicks = 0;
     //Speed
-    o_x_deltav = 0;
-    o_y_deltav = 0;
-    o_x_vel = 0;
-    o_y_vel = 0;
+    x_deltav = 0;
+    y_deltav = 0;
+    x_vel = 0;
+    y_vel = 0;
 }
 
 //Other constructor?
@@ -49,7 +39,7 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} 
 Ooze::~Ooze(){};
 
 std::string Ooze::getInstanceName(){
-	return "Ooze-"+std::to_string(oozeNumber);
+	return "Ooze-"+ std::to_string(oozeNumber);
 }
 
 void Ooze::input(const Uint8* keystate){}
@@ -59,11 +49,13 @@ void Ooze::init(SDL_Renderer* gRenderer) {
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
 	
+    
+
 	//This should be removed ASAP
-    o_lWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
-	o_rWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
-	o_uWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
-	o_cPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
+    lWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
+	rWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
+	uWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
+	cPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
@@ -75,8 +67,8 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	
-	int o_x_deltav = 0;
-	int o_y_deltav = 0;
+	int x_deltav = 0;
+	int y_deltav = 0;
     
     //Get the position of the player before they move
     //Needed for collision detection
@@ -89,22 +81,21 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 
 		//check which direction the player is
 		if (oozePlayer->getY() > rect.y)
-			o_y_deltav += 1;
+			y_deltav += 1;
 		if (oozePlayer->getX() > rect.x)
-			o_x_deltav += 1;
+			x_deltav += 1;
 		if (oozePlayer->getY() < rect.y)
-			o_y_deltav -= 1;
+			y_deltav -= 1;
 		if (oozePlayer->getX() < rect.x)
-			o_x_deltav -= 1;
-
-		updateVelocity(o_x_deltav, o_y_deltav);
-
-
+			x_deltav -= 1;
+        
+        updateVelocity();
 	}
     //Check you haven't collided with object
     checkCollision(curX, curY);
     //update animation
     updateAnimation(ticks);
+
     updatePosition();
     checkBounds(screen_w, screen_h);
 }
@@ -131,10 +122,8 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 
 	if (overlap) {
 		overlapTicks += ticks;
-		if (overlapTicks > 20) {
+		if (overlapTicks > 10) {
 			hud->currentHealth = std::max(0, hud->currentHealth-damage);
-			//Player->speed = Player->speed / 2;
-        	//void Player->updateVelocity(int _xdv, int _ydv); //would this work?
 			std::string s = "HIT: "+getInstanceName();
 			std::cout << s << std::endl;
 			overlapTicks = 0;
@@ -212,38 +201,37 @@ int Ooze::getY() { return rect.y; }
 SDL_Rect* Ooze::getRect() { return &rect; }
 
 void Ooze::updateVelocity(int _xdv, int _ydv) {
+    /*
     // If we dont want out dot to be in a frictionless vacuum...
     if (_xdv == 0) {
         // No user-supplied "push", return to rest
-        if (o_x_vel > 0)
+        if (x_vel > 0)
             _xdv = -1;
-        else if (o_x_vel < 0)
+        else if (x_vel < 0)
             _xdv = 1;
     }
     if (_ydv == 0) {
-        if (o_y_vel > 0)
+        if (y_vel > 0)
             _ydv = -1;
-        else if (o_y_vel < 0)
+        else if (y_vel < 0)
             _ydv = 1;
     }
+     */
     
     // Speed up/slow down
-    o_x_vel += _xdv;
-    o_y_vel += _ydv;
+    x_vel += _xdv;
+    y_vel += _ydv;
 
     // Check speed limits
-    if (o_x_vel < -1 * MAX_SPEED)
-        o_x_vel = -1 * MAX_SPEED;
-    else if (o_x_vel > MAX_SPEED)
-        o_x_vel = MAX_SPEED;
+    if (x_vel < -1 * MAX_SPEED)
+        x_vel = -1 * MAX_SPEED;
+    else if (x_vel > MAX_SPEED)
+        x_vel = MAX_SPEED;
 
-    if (o_y_vel < -1 * MAX_SPEED)
-        o_y_vel = -1 * MAX_SPEED;
-    else if (o_y_vel > MAX_SPEED)
-        o_y_vel = MAX_SPEED;
-
-    // Also update position
-   this->updatePosition();
+    if (y_vel < -1 * MAX_SPEED)
+        y_vel = -1 * MAX_SPEED;
+    else if (y_vel > MAX_SPEED)
+        y_vel = MAX_SPEED;
 }
 
 void Ooze::checkCollision(int curX, int curY)
@@ -253,47 +241,47 @@ void Ooze::checkCollision(int curX, int curY)
     //represents what the player is colliding with. This shouldn't be too difficult
 
     //LEFT WALL
-    if(collision::checkCol(rect, o_lWall))
+    if(collision::checkCol(rect, lWall))
     {
         rect.x = curX;
     }
-    if(collision::checkCol(rect, o_lWall))
+    if(collision::checkCol(rect, lWall))
     {
         rect.y = curY;
 		//If this is not included the x movement will lock when colliding with y
-		rect.x += o_x_vel;
+		rect.x += x_vel;
     }
 
     //RIGHT WALL
-    if(collision::checkCol(rect, o_rWall))
+    if(collision::checkCol(rect, rWall))
     {
         rect.x = curX;
     }
-    if(collision::checkCol(rect, o_rWall))
+    if(collision::checkCol(rect, rWall))
     {
         rect.y = curY;
-		rect.x += o_x_vel;
+		rect.x += x_vel;
     }
 
     //UPPER WALL
-    if(collision::checkCol(rect, o_uWall))
+    if(collision::checkCol(rect, uWall))
     {
         rect.x = curX;
     }
-    if(collision::checkCol(rect, o_uWall))
+    if(collision::checkCol(rect, uWall))
     {
         rect.y = curY;
-		rect.x += o_x_vel;
+		rect.x += x_vel;
     }
 
     //PILLAR - very difficult to implement with this style
-    if(collision::checkCol(rect, o_cPillar))
+    if(collision::checkCol(rect, cPillar))
     {
         rect.x = curX;
     }
-    if(collision::checkCol(rect, o_cPillar))
+    if(collision::checkCol(rect, cPillar))
     {
         rect.y = curY;
-		rect.x += o_x_vel;
+		rect.x += x_vel;
     } 
 }

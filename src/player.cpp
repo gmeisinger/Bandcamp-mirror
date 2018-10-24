@@ -302,7 +302,7 @@ void Player::checkCollision(int curX, int curY)
 
 void Player::checkEnemy(int _xdv, int _ydv){
     if(overlapEnemy){
-        x_vel -= _xdv;
-        y_vel -= _ydv;
+        x_vel -= x_vel/2;
+        y_vel -= y_vel/2;
     }
 }

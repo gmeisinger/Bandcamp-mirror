@@ -11,6 +11,9 @@
 #include "utils.h"
 #include "HUD.h"
 #include "player.h"
+#include "collision.h"
+#include "circle.h"
+#include "game.h"
 
 
 enum oozeState { roaming, eating, attacking, approaching, retreating, dying, inCrack};
@@ -18,9 +21,17 @@ enum oozeState { roaming, eating, attacking, approaching, retreating, dying, inC
 class Ooze : public Object
 {
 private:
+    //This should be removed ASAP
+    SDL_Rect lWall;
+    SDL_Rect rWall;
+    SDL_Rect uWall;
+    Circle cPillar;
+    //
     SDL_Rect rect;
     int x_vel;
     int y_vel;
+    int x_deltav;
+    int y_deltav;
     oozeState state;
     int hostility;
     Player *oozePlayer;
