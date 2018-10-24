@@ -19,27 +19,28 @@ class Player : public Object
         int y_deltav;
         int x_vel;
         int y_vel;
-		bool up;
-		bool down;
-		bool left;
-		bool right;
-		SpriteSheet sheet;
+		    bool up;
+		    bool down;
+		    bool left;
+		    bool right;
+		    SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;
         Animation* anim;
 		
     public:
         Player(SDL_Rect _rect);
-		Player();
+		    Player();
         ~Player();
-		std::string getInstanceName();
-		void init(SDL_Renderer* gRenderer);
-		void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
-		void input(const Uint8* keystate);
-		SDL_Renderer* draw(SDL_Renderer* gRenderer);
-		void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
+		    std::string getInstanceName();
+		    void init(SDL_Renderer* gRenderer);
+		    void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+		    void input(const Uint8* keystate);
+		    SDL_Renderer* draw(SDL_Renderer* gRenderer);
+		    void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
         void updateVelocity(int _xdv, int _ydv);
         void updatePosition();
         void checkBounds(int max_width, int max_height);
+        void checkCollision(int curX, int curY);
         int getWidth();
         int getHeight();
         int getX();
@@ -51,6 +52,8 @@ class Player : public Object
         void updateAnimation(Uint32 ticks);
         SpriteSheet getSheet();
         bool isUsed();
+        void setEnemy(bool _overlap);
+        void checkEnemy(int _xdv, int _ydv);
 };
 
 #endif  //  BANDCAMP_PLAYER_H_

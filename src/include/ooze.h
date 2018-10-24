@@ -48,8 +48,14 @@ public:
     void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     SDL_Renderer* draw(SDL_Renderer* renderer);
-    void checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+    bool checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     bool isUsed();
+
+    //Movement
+    void updateVelocity(int _xdv, int _ydv); 
+    void updatePosition();
+    void checkBounds(int max_width, int max_height);
+    void checkCollision(int curX, int curY);
     
     // Math
     void increaseHostility();

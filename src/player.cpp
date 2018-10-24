@@ -3,6 +3,9 @@
  * 
 */
 #include "include/player.h"
+#include "include/game.h"
+#include "include/collision.h"
+#include "include/spritesheet.h"
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
@@ -16,6 +19,13 @@ int x_deltav;
 int y_deltav;
 int x_vel;
 int y_vel;
+bool overlapEnemy;
+
+//This should be removed ASAP
+SDL_Rect lWall;
+SDL_Rect rWall;
+SDL_Rect uWall;
+Circle cPillar;
 
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
@@ -28,6 +38,7 @@ Player::Player(SDL_Rect _rect) {
 	down = false;
 	left = false;
 	right = false;
+    overlapEnemy = false;
 }
 
 Player::Player(){}
@@ -49,6 +60,12 @@ void Player::init(SDL_Renderer* gRenderer){
 	addAnimation("left", Animation(getSheet().getRow(2)));
 	addAnimation("right", Animation(getSheet().getRow(3)));
 	setAnimation("down");
+
+    //This should be removed ASAP
+    lWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
+	rWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
+	uWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
+	cPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
@@ -175,6 +192,11 @@ void Player::updateAnimation(Uint32 ticks) {
 void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
+    
+    //Get the position of the player before they move
+    //Needed for collision detection
+    int curX = playerRect.x;
+    int curY = playerRect.y;
 
 	if (up)
 		y_deltav -= 1;
@@ -187,6 +209,9 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32
 
 	updateVelocity(x_deltav, y_deltav);
 
+    //Checks if you are overlapping an enemy, slows down velocity if you are
+    checkEnemy(x_deltav, y_deltav);
+
     //update animation
     updateAnimation(ticks);
 
@@ -195,6 +220,9 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32
 
 	// Check you haven't moved off the screen
 	checkBounds(screen_w, screen_h);
+
+    //Check you haven't collided with object
+    checkCollision(curX, curY);
 }
 
 void Player::input(const Uint8* keystate)
@@ -214,4 +242,67 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
 
 bool Player::isUsed() {
     return false;
+}
+
+void Player::setEnemy(bool _overlap) {
+    overlapEnemy = _overlap;
+}
+
+void Player::checkCollision(int curX, int curY)
+{
+    //Checks the collision of each object and determines where the player should stop
+    //In the future, we might need to alter this function to take in an object that
+    //represents what the player is colliding with. This shouldn't be too difficult
+
+    //LEFT WALL
+    if(collision::checkCol(playerRect, lWall))
+    {
+        playerRect.x = curX;
+    }
+    if(collision::checkCol(playerRect, lWall))
+    {
+        playerRect.y = curY;
+		//If this is not included the x movement will lock when colliding with y
+		playerRect.x += x_vel;
+    }
+
+    //RIGHT WALL
+    if(collision::checkCol(playerRect, rWall))
+    {
+        playerRect.x = curX;
+    }
+    if(collision::checkCol(playerRect, rWall))
+    {
+        playerRect.y = curY;
+		playerRect.x += x_vel;
+    }
+
+    //UPPER WALL
+    if(collision::checkCol(playerRect, uWall))
+    {
+        playerRect.x = curX;
+    }
+    if(collision::checkCol(playerRect, uWall))
+    {
+        playerRect.y = curY;
+		playerRect.x += x_vel;
+    }
+
+    //PILLAR - very difficult to implement with this style
+    if(collision::checkCol(playerRect, cPillar))
+    {
+        playerRect.x = curX;
+    }
+    if(collision::checkCol(playerRect, cPillar))
+    {
+        playerRect.y = curY;
+		playerRect.x += x_vel;
+    } 
+}
+
+void Player::checkEnemy(int _xdv, int _ydv){
+    if(overlapEnemy){
+        x_vel -= _xdv;
+        y_vel -= _ydv;
+    }
 }
