@@ -6,7 +6,6 @@
 //SDL_Rect rect;
 //SpriteSheet sheet;
 
-constexpr int BORDER_SIZE = 32;
 //initialize static member variables
 int Ooze::totalOoze = 0;
 
@@ -100,15 +99,10 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 
 		updateVelocity(o_x_deltav, o_y_deltav);
 
-		// Move box
-		updatePosition();
 
-		// Check you haven't moved off the screen
-		checkBounds(screen_w, screen_h);
-
-		//Check you haven't collided with object
-		checkCollision(curX, curY);
 	}
+    //Check you haven't collided with object
+    checkCollision(curX, curY);
     //update animation
     updateAnimation(ticks);
     updatePosition();
@@ -171,10 +165,6 @@ void Ooze::updateAnimation(Uint32 ticks) {
 void Ooze::updatePosition() {
     rect.x += x_vel;
     rect.y += y_vel;
-}
-
-void Ooze::updateVelocity() {
-
 }
 
 void Ooze::checkBounds(int max_width, int max_height) {
@@ -254,23 +244,6 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
 
     // Also update position
    this->updatePosition();
-}
-
-void Ooze::updatePosition() {
-    rect.x += o_x_vel;
-    rect.y += o_y_vel;
-}
-
-void Ooze::checkBounds(int max_width, int max_height) {
-    if (rect.x < BORDER_SIZE)
-        rect.x = BORDER_SIZE;
-    else if (rect.x + rect.w > max_width - BORDER_SIZE)
-        rect.x = max_width - rect.w - BORDER_SIZE;
-
-    if (rect.y < BORDER_SIZE)
-        rect.y = BORDER_SIZE;
-    else if (rect.y + rect.h > max_height - BORDER_SIZE)
-        rect.y = max_height - rect.h - BORDER_SIZE;
 }
 
 void Ooze::checkCollision(int curX, int curY)

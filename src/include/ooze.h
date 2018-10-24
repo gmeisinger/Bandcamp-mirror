@@ -73,10 +73,6 @@ public:
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
     void updateAnimation(Uint32 ticks);
-    // Movement
-    void updatePosition();
-    void updateVelocity();
-    void checkBounds(int max_width, int max_height);
 };
 
 #endif  //  OOZE_H_
