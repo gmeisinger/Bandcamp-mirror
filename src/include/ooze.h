@@ -34,7 +34,7 @@ private:
     int y_deltav;
     oozeState state;
     int hostility;
-    Player *oozePlayer;
+    Player *player;
     HUD *hud;
     SpriteSheet sheet;
     Animation* anim;

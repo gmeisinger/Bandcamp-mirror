@@ -17,9 +17,9 @@ constexpr int BORDER_SIZE = 32;
 Ooze::Ooze():state{roaming}, hostility{0} {}
 
 //Constructor from rect
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} {
+Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{roaming}, hostility{0} {
     rect = _rect;
-    oozePlayer = player;
+    this->player = player;
 	  hud = h;
 	  totalOoze++; //Increase # of instances counter
 	  oozeNumber = totalOoze;
@@ -28,8 +28,8 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} 
     //Speed
     x_deltav = 0;
     y_deltav = 0;
-    x_vel = 0;
-    y_vel = 0;
+    x_vel = 1;
+    y_vel = 1;
 }
 
 //Other constructor?
@@ -80,24 +80,24 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 	if(!overlap){
 
 		//check which direction the player is
-		if (oozePlayer->getY() > rect.y)
+		if (player->getY() > rect.y + rect.h)
 			y_deltav += 1;
-		if (oozePlayer->getX() > rect.x)
+		if (player->getX() > rect.x + rect.w)
 			x_deltav += 1;
-		if (oozePlayer->getY() < rect.y)
+		if (player->getY() + player->getHeight() < rect.y)
 			y_deltav -= 1;
-		if (oozePlayer->getX() < rect.x)
+		if (player->getX() + player->getWidth() < rect.x)
 			x_deltav -= 1;
         
-        updateVelocity();
+        updateVelocity(x_deltav,y_deltav);
 	}
-    //Check you haven't collided with object
-    checkCollision(curX, curY);
     //update animation
     updateAnimation(ticks);
 
     updatePosition();
     checkBounds(screen_w, screen_h);
+    //Check you haven't collided with object
+    checkCollision(curX, curY);
 }
 
 void Ooze::increaseHostility() {
@@ -117,12 +117,12 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
 //Checks if the player overlapped with the ooze and acts accordingly
 //based on pickup's method
 bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
-	SDL_Rect* pRect = oozePlayer->getRect();
+	SDL_Rect* pRect = player->getRect();
 	bool overlap = collision::checkCol(rect, *pRect);
 
 	if (overlap) {
 		overlapTicks += ticks;
-		if (overlapTicks > 10) {
+		if (overlapTicks > 25) {
 			hud->currentHealth = std::max(0, hud->currentHealth-damage);
 			std::string s = "HIT: "+getInstanceName();
 			std::cout << s << std::endl;
@@ -132,7 +132,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 		overlapTicks = 0;
 	}
 
-	oozePlayer->setEnemy(overlap);
+	player->setEnemy(overlap);
 
 	return overlap;
 }
