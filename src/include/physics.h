@@ -13,7 +13,7 @@ class Room
 		void adv_lower_oxygen();
 		void raise_oxygen(int resource_value);
 		void lower_temperature();
-		void adv_lower_temperature;
+		void adv_lower_temperature();
 		void raise_temperature(int resource_value);
 	private:
 		int oxygen, temperature, pressure;
