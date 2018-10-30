@@ -10,15 +10,13 @@
 
 SDL_Rect rectangle = {0, 0, 0, 0}; //area of the button
 char* label = nullptr; //Text to be displayed by the button
-SDL_Color color = {0, 0, 0}; //Current button color
 SDL_Surface * message = nullptr;
 SDL_Texture * message_texture = nullptr;
 
 //Default pressed, unpressed, and text colors
-SDL_Color unpressed = {180, 180, 180};
-SDL_Color pressed = {90, 90, 90};
+Uint8 unpressed = 150;
+Uint8 pressed = 80;
 SDL_Color text_color = {240, 240, 240};
-
 int is_pressed = 0;
 SDL_Rect label_rect = {0, 0, 0, 0};
 const int label_offset = 15;
@@ -29,7 +27,6 @@ Button::Button(char* l, SDL_Rect r) { //Constructs the button. For now, it is a 
 	label = l;
 	
 	rectangle = r;
-	color = unpressed;
 	
 	label_rect.x = rectangle.x;
 	label_rect.y = rectangle.y;	
@@ -38,6 +35,7 @@ Button::Button(char* l, SDL_Rect r) { //Constructs the button. For now, it is a 
 void Button::init(SDL_Renderer *renderer) {
 	//This code writes the text to an SDL surface, then renders it to a texture.
 	text_color = {250, 250, 250};
+	is_pressed = 0;
 	font = TTF_OpenFont("res/OpenSans-Regular.ttf", 32); //Opens a font file
 	if(font == NULL) std::cout << "Error loading text!" << std::endl;
 	
@@ -57,12 +55,12 @@ void Button::init(SDL_Renderer *renderer) {
 }
 
 void Button::press() { //Any visual or sound effects for pressing may be set up here
-	color = pressed;
+	
 	is_pressed = 1;
 }
 
 void Button::unpress() { //Any visual or sound effects for releasing may be set up here
-	color = unpressed;
+	
 	is_pressed = 0;
 }
 
@@ -75,7 +73,10 @@ void Button::input(const Uint8* keystate) {
 }
 
 SDL_Renderer* Button::draw(SDL_Renderer *renderer) { //A rectangle and the texture is drawn to the screen
-	SDL_SetRenderDrawColor(renderer, color.r, color.g, color.b, 0xFF);
+	Uint8 color = 0;
+	if(is_pressed == 1) color = 80;
+	else color = 160;
+	SDL_SetRenderDrawColor(renderer, color, color, color, 255);
 	SDL_RenderFillRect(renderer, &rectangle);
 	
 	SDL_RenderCopy(renderer, message_texture, NULL, &label_rect);

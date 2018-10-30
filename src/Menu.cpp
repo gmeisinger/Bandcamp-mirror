@@ -14,7 +14,7 @@
 
 Button *test_button = nullptr; //test button for proof of concept
 SDL_Rect menu_rect = {0, 0, 0, 0};
-
+std::vector<Object*> fake_list;
 Menu::Menu() { //Constructs a test button; in the future, this should be more flexible and adding items will happen via another method.
 	roomReference = &GSM::currentScreen;
 	
@@ -35,7 +35,9 @@ void Menu::init(SDL_Renderer* renderer) {
 }
 
 void Menu::update(Uint32 ticks) { //If the button was clicked, we need to change the game screen!
-	if(clicked == 1) GSM::currentScreen = 1;
+	if(clicked == 2) GSM::currentScreen = 1;
+	
+	test_button->update(fake_list, ticks);
 }
 
 void Menu::input(const Uint8* keystate) { //In the future, the input will probably look similar, but instead of checking against only the test_button when clicked it will
@@ -43,16 +45,25 @@ void Menu::input(const Uint8* keystate) { //In the future, the input will probab
 //mouse x and mouse y
 	int mx;
 	int my;
-	if(clicked == 1) {
-		clicked = 0;
-		test_button->unpress();
-	}
+	
 	if(SDL_GetMouseState(&mx, &my) & SDL_BUTTON(SDL_BUTTON_LEFT)) {
-		if(mx >= r.x && mx <= (r.x + r.w) && my >= r.y && my <= (r.y + r.h)) { //This compares the mouse location with the rectangle of the button. If the button is clicked, the flag is set
+		if(mx >= r.x && mx <= (r.x + r.w) && my >= r.y && my <= (r.y + r.h) && clicked != 1) { //This compares the mouse location with the rectangle of the button. If the button is clicked, the flag is set
 			clicked = 1;
 			test_button->press();
 		}
 	}
+	
+	else if(clicked == 1) {
+		if(mx >= r.x && mx <= (r.x + r.w) && my >= r.y && my <= (r.y + r.h)) { //This compares the mouse location with the rectangle of the button. If the button is clicked, the flag is set
+			clicked = 2;
+		}
+		else {
+			clicked = 0;
+			test_button->unpress();
+		}
+	}
+	
+	
 }
 
 
