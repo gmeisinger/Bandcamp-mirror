@@ -85,7 +85,7 @@ void Room::lower_temperature()
 	temperature-=5;
 }
 
-void Room::adv_lower_temperature //k=T1/P1 T2=k*P2
+void Room::adv_lower_temperature() //k=T1/P1 T2=k*P2
 {
 	int k = temperature/previous_pressure;
 	int temp = k*pressure;
