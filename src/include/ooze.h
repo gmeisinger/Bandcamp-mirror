@@ -11,6 +11,7 @@
 #include "utils.h"
 #include "HUD.h"
 #include "player.h"
+#include "pickup.h"
 
 
 enum oozeState {
@@ -37,11 +38,6 @@ private:
     std::unordered_map<std::string, Animation> anims;
     
 public:
-    //lmao
-    void something(std::unordered_map<std::string, Object*> *objectList);
-
-
-
 
     // Variables
     int oozeNumber;         // This ooze's ID #
@@ -53,6 +49,11 @@ public:
 //    Ooze(oozeState st, int hostil);
     ~Ooze();
     
+    // NEW
+    Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);
+    bool foundFood(Pickup* pickUp);
+
+
     // Updates
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     bool updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);

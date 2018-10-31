@@ -165,6 +165,10 @@ bool Pickup::isUsed() {
 	return used;
 }
 
+void Pickup::use() {
+	used = true;
+}
+
 SDL_Rect* Pickup::getPickupRect() {
     return &pickupRect;
 }

@@ -86,6 +86,9 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
     int pickupX;
     int pickupY;
 	
+
+    foundFood(getPickup(objectList));
+
     //might move order of update calls
     bool stateChange = updateState(objectList, ticks);
 
@@ -113,21 +116,36 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 
 		//Check you haven't collided with object
 		checkCollision(curX, curY);
-	} else {
-        something(objectList);
-    }
+	}
     //update animation
     updateAnimation(ticks);
 }
 
-void Ooze::something(std::unordered_map<std::string, Object*> *objectList) {
+Pickup* Ooze::getPickup(std::unordered_map<std::string, Object*> *objectList) {
     std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
     while(it != objectList->end()){
         if (!it->first.substr(0,6).compare("Pickup")) {
-            std::cout << "there is a pickup :)" << std::endl;
+            //std::cout << "there is a pickup :) " << std::endl;
+            return (Pickup*)it->second;
         }
         it++;
     }
+    return NULL;
+}
+
+// Checks for overlap between ooze and a given pickup
+// TODO: combine this with the overlap method below, which
+//       checks for overlap betw. ooze and player
+bool Ooze::foundFood(Pickup* food) {
+    if (food) {
+        SDL_Rect* fRect = food->getPickupRect();
+        bool overlap = collision::checkCol(rect, *fRect);
+        if (overlap) {
+            food->use();
+            return true;
+        }
+    }
+    return false;
 }
 
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
