@@ -8,14 +8,15 @@
 #include <vector>
 #include "screen.h"
 
+
 class GSM {
 	private:
 		std::vector<Screen*> roomList;
-		int currentScreen;
 		int previousScreen; //To check if we changed rooms
 		bool running;
 		SDL_Renderer* rendererReference;
 	public:
+		
 		GSM();
 		//~GSM();
 		void init(SDL_Renderer *renderer);
