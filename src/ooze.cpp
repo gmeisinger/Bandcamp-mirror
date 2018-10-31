@@ -24,10 +24,10 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{roaming}, hostility{0} {}
+Ooze::Ooze():state{ROAMING}, hostility{0} {}
 
 //Constructor from rect
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{roaming}, hostility{0} {
+Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{ROAMING}, hostility{0} {
     rect = _rect;
     oozePlayer = player;
 	hud = h;
@@ -82,7 +82,13 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
     //Needed for collision detection
     int curX = rect.x;
     int curY = rect.y;
+
+    int pickupX;
+    int pickupY;
 	
+    //might move order of update calls
+    bool stateChange = updateState(objectList, ticks);
+
 	bool overlap = checkOozeOverlap(objectList, ticks);
     
 	if(!overlap){
@@ -107,9 +113,25 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 
 		//Check you haven't collided with object
 		checkCollision(curX, curY);
-	}
+	} else {
+        something(objectList);
+    }
     //update animation
     updateAnimation(ticks);
+}
+
+void Ooze::something(std::unordered_map<std::string, Object*> *objectList) {
+    std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+    while(it != objectList->end()){
+        if (!it->first.substr(0,6).compare("Pickup")) {
+            std::cout << "there is a pickup :)" << std::endl;
+        }
+        it++;
+    }
+}
+
+bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+    return false;
 }
 
 void Ooze::increaseHostility() {
@@ -229,6 +251,7 @@ void Ooze::updatePosition() {
     rect.y += o_y_vel;
 }
 
+//checks bounds of screen
 void Ooze::checkBounds(int max_width, int max_height) {
     if (rect.x < BORDER_SIZE)
         rect.x = BORDER_SIZE;
@@ -241,6 +264,7 @@ void Ooze::checkBounds(int max_width, int max_height) {
         rect.y = max_height - rect.h - BORDER_SIZE;
 }
 
+//currently checks collisions with room features (walls etc.)
 void Ooze::checkCollision(int curX, int curY)
 {
     //Checks the collision of each object and determines where the player should stop
