@@ -28,20 +28,13 @@ Player p;
 
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
-//TestRoom::TestRoom() : Screen(){} from merge
+TestRoom::TestRoom() : Screen(){} //from merge
 
 Ooze o;
 SDL_Rect leftWall;
 SDL_Rect rightWall;
 SDL_Rect upperWall;
 Circle centerPillar;
-
-// ADD COMMENTS 
-TestRoom::TestRoom(int* roomNumber){
-	start = false;
-	std::unordered_map<std::string, Object*> objectList;
-	roomReference = roomNumber;
-}
 
 
 // ADD COMMENTS 
