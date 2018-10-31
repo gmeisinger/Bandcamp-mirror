@@ -123,6 +123,9 @@ void TestRoom::input(const Uint8* keystate){
 }
 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
+	//draw map before objects
+
+	//draw objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
 		renderer = it->second->draw(renderer);
