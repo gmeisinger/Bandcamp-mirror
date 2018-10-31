@@ -14,6 +14,10 @@
 #include "include/testroom.h"
 #include "include/game.h"
 #include "include/gsm.h"
+#include "include/ooze.h"
+#include "include/circle.h"
+#include "include/collision.h"
+
 constexpr int UPDATE_MAX = 100;
 int updateCount = 1;
 int oldTemp = 100;
@@ -21,12 +25,16 @@ int oldO2 = 100;
 
 HUD h;
 Player p;
-Pickup currentP;
+Ooze o;
+SDL_Rect leftWall;
+SDL_Rect rightWall;
+SDL_Rect upperWall;
+Circle centerPillar;
 
 TestRoom::TestRoom(){
 	start = false;
-	std::vector<Object*> objectList;
-	//roomReference = &currentScreen;
+	std::unordered_map<std::string, Object*> objectList;
+	roomReference = roomNumber;
 }
 
 void TestRoom::init(SDL_Renderer* reference){
@@ -34,28 +42,36 @@ void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
 	SDL_Rect player_box = {screen_w/2, screen_h/2, tile_s, tile_s};
 	p = Player(player_box);
-	//set up player animations
-	p.setSpriteSheet(utils::loadTexture(rendererReference, "res/spaceman.png"), 4, 4);
-	p.addAnimation("down", Animation(p.getSheet().getRow(0)));
-	p.addAnimation("up", Animation(p.getSheet().getRow(1)));
-	p.addAnimation("left", Animation(p.getSheet().getRow(2)));
-	p.addAnimation("right", Animation(p.getSheet().getRow(3)));
-	p.setAnimation("down");
-	
+	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
+	o = Ooze(ooze_box, &p, &h);
+    
 	h.init(reference);
 	p.init(reference);
+	o.init(reference);
 	
 	//Player and HUD in the Room
-	objectList.push_back(&h);
-	objectList.push_back(&p);
+	objectList["player"] = &p;
+	objectList["hud"] = &h;
+	objectList["ooze"] = &o;
+
+	//Init walls in the room
+	leftWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
+	rightWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
+	upperWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
+	centerPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 void TestRoom::update(Uint32 ticks){
-	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup();
+	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
-	for(int i=0; i < objectList.size(); i++){
-		objectList[i]->update(objectList, ticks);
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		it->second->update(&objectList, ticks);
+		if(it->second->isUsed()) {
+			it = objectList.erase(it);
+		}
+		it++;
 	}
 	if (updateCount == 0) {
 		h.currentTemp = std::max(0, h.currentTemp-5);
@@ -70,13 +86,22 @@ void TestRoom::update(Uint32 ticks){
 	updateCount = (updateCount+1)%UPDATE_MAX;
 }
 
-void TestRoom::movePickup() {
-		int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
-		int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
-		SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
-		
+void TestRoom::movePickup(SDL_Renderer* reference) {
+	int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
+	int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
+	SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
+	
+	if(collision::checkCol(pickupBox, leftWall) 
+		|| collision::checkCol(pickupBox, rightWall)
+		|| collision::checkCol(pickupBox, upperWall)
+		|| collision::checkCol(pickupBox, centerPillar))
+	{
+		movePickup(reference);
+	}
+	else
+	{
 		int pickupValue = rand()%25+25;
-		
+	
 		int pickupType = rand()%2;
 		char type;
 		
@@ -85,21 +110,34 @@ void TestRoom::movePickup() {
 		else
 			type = 'o';
 		
-		currentP.used = false;
-		
-		currentP = Pickup(pickupBox, type, pickupValue, &p, &h);
-		objectList.push_back(&currentP);
+		Pickup *newP  = new Pickup(pickupBox, type, pickupValue, &p, &h);
+		objectList[newP->getInstanceName()] = newP;
+		newP->init(reference);
+	}
 }
 
 void TestRoom::input(const Uint8* keystate){
-	for(int i=0; i < objectList.size(); i++){
-		objectList[i]->input(keystate);
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		it->second->input(keystate);
+		it++;
 	}
 }
 
-SDL_Renderer* TestRoom::draw(SDL_Renderer * renderer){
-	for(int i=0; i < objectList.size(); i++){	
-		renderer = objectList[i]->draw(renderer);
+
+SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		renderer = it->second->draw(renderer);
+		it++;
 	}
+
+	//Draws walls in the room
+	SDL_SetRenderDrawColor(renderer, 0, 0xFF, 0, 0);
+	SDL_RenderFillRect(renderer, &leftWall);
+	SDL_RenderFillRect(renderer, &rightWall);
+	SDL_RenderFillRect(renderer, &upperWall);
+	centerPillar.drawCircle(renderer);
+
 	return renderer;
 }
