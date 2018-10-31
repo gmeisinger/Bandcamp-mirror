@@ -29,6 +29,7 @@ SDL_Rect leftWall;
 SDL_Rect rightWall;
 SDL_Rect upperWall;
 Circle centerPillar;
+Tilemap map;
 
 TestRoom::TestRoom(int* roomNumber){
 	start = false;
@@ -42,10 +43,12 @@ void TestRoom::init(SDL_Renderer* reference){
 	p = Player(player_box);
 	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
 	o = Ooze(ooze_box, &p, &h);
+	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 25, 18, 32);
     
 	h.init(reference);
 	p.init(reference);
 	o.init(reference);
+	map.init();
 	
 	//Player and HUD in the Room
 	objectList["player"] = &p;
@@ -124,7 +127,7 @@ void TestRoom::input(const Uint8* keystate){
 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
 	//draw map before objects
-
+	map.draw(renderer);
 	//draw objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){

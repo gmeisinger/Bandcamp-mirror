@@ -4,6 +4,7 @@
 #include <SDL.h>
 #include <unordered_map>
 #include <vector>
+#include <string>
 
 class Tilemap
 {
@@ -19,6 +20,9 @@ public:
 	Tilemap();
 	~Tilemap();
 	void init();
+	int getMask(int row, int col);
+	SDL_Rect getWall(int row, int col);
+	//void setWalls();
 	SDL_Renderer* draw(SDL_Renderer* render);
 };
 
