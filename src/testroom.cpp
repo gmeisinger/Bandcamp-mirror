@@ -21,13 +21,9 @@ int oldO2 = 100;
 
 HUD h;
 Player p;
-Pickup currentP;
+bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
-TestRoom::TestRoom(int* roomNumber){
-	start = false;
-	std::vector<Object*> objectList;
-	roomReference = roomNumber;
-}
+TestRoom::TestRoom() : Screen(){}
 
 void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
@@ -38,16 +34,28 @@ void TestRoom::init(SDL_Renderer* reference){
 	p.init(reference);
 	
 	//Player and HUD in the Room
-	objectList.push_back(&h);
-	objectList.push_back(&p);
+	objectList["player"] = &h;
+	objectList["hud"] = &p;
 }
 
 void TestRoom::update(Uint32 ticks){
+	if(pauseB)
+	{ //If you set the currentScreen in the Input method it will cause an array out of bounds error.
+		pauseB = false;
+		enterHeld = true;
+		currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
+	}
+	
 	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
-	for(int i=0; i < objectList.size(); i++){
-		objectList[i]->update(&objectList, ticks);
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		it->second->update(&objectList, ticks);
+		if(it->second->isUsed()) {
+			it = objectList.erase(it);
+		}
+		it++;
 	}
 	if (updateCount == 0) {
 		h.currentTemp = std::max(0, h.currentTemp-5);
@@ -77,23 +85,36 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 		else
 			type = 'o';
 		
-		currentP.used = false;
-		
-		currentP = Pickup(pickupBox, type, pickupValue, &p, &h);
-		currentP.init(reference);
-		objectList.push_back(&currentP);
-	
+		Pickup *newP  = new Pickup(pickupBox, type, pickupValue, &p, &h);
+		objectList[newP->getInstanceName()] = newP;
+		newP->init(reference);
 }
 
 void TestRoom::input(const Uint8* keystate){
-	for(int i=0; i < objectList.size(); i++){
-		objectList[i]->input(keystate);
+	//If you push the pause button
+	
+	//When you come back into the room after a pause, you will most likely still be holding down
+	//the enter key. This prevents you from going straight back into the pause menu.
+	if(enterHeld && keystate[SDL_SCANCODE_RETURN])
+		pauseB = false;
+	else
+	{
+		enterHeld = false;
+		pauseB = keystate[SDL_SCANCODE_RETURN];
+		
+		std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+		while(it != objectList.end()){
+			it->second->input(keystate);
+			it++;
+		}
 	}
 }
 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
-	for(int i=0; i < objectList.size(); i++){	
-		renderer = objectList[i]->draw(renderer);
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		renderer = it->second->draw(renderer);
+		it++;
 	}
 	return renderer;
 }
