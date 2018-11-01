@@ -90,5 +90,7 @@ bool collision::checkCol(SDL_Rect rect, std::vector<std::vector<int>> grid, int 
     if(tile == 1) {
         return false;
     }
-    else return true;
+    else {
+        return true;
+    }
 }

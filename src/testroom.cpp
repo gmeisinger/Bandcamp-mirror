@@ -27,10 +27,10 @@ int oldO2 = 100;
 HUD h;
 Player p;
 Ooze o;
-SDL_Rect leftWall;
-SDL_Rect rightWall;
-SDL_Rect upperWall;
-Circle centerPillar;
+//SDL_Rect leftWall;
+//SDL_Rect rightWall;
+//SDL_Rect upperWall;
+//Circle centerPillar;
 Tilemap map;
 SDL_Rect camera;
 
@@ -42,11 +42,11 @@ TestRoom::TestRoom(int* roomNumber){
 
 void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
-	SDL_Rect player_box = {screen_w/2, screen_h/2, tile_s, tile_s};
+	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
 	p = Player(player_box);
 	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
 	o = Ooze(ooze_box, &p, &h);
-	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 50, 36, 32);
+	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 10, 10, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
     
 	h.init(reference);
@@ -102,13 +102,14 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 	int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
 	SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
 	
-	if(collision::checkCol(pickupBox, leftWall) 
+	/*if(collision::checkCol(pickupBox, leftWall) 
 		|| collision::checkCol(pickupBox, rightWall)
 		|| collision::checkCol(pickupBox, upperWall)
 		|| collision::checkCol(pickupBox, centerPillar))
 	{
 		movePickup(reference);
-	}
+	}*/
+	if(false){}
 	else
 	{
 		int pickupValue = rand()%25+25;
