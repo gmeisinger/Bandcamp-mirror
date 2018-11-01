@@ -33,7 +33,6 @@ class Pickup : public Object
 		void checkPickupOverlap(std::unordered_map<std::string, Object*> *objectList);
 		SDL_Rect* getPickupRect();
 		void updatePosition(Uint32 ticks);
-		void use();
 		bool isUsed();
 };
 

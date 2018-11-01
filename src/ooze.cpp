@@ -40,6 +40,8 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{ROAMING}, hostility{0} 
     o_y_deltav = 0;
     o_x_vel = 0;
     o_y_vel = 0;
+
+    ate = 0;
 }
 
 //Other constructor?
@@ -86,9 +88,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
     int pickupX;
     int pickupY;
 	
-
-    foundFood(getPickup(objectList));
-
     //might move order of update calls
     bool stateChange = updateState(objectList, ticks);
 
@@ -117,10 +116,13 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 		//Check you haven't collided with object
 		checkCollision(curX, curY);
 	}
+    //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
 }
 
+// Might not need this function. Original purpose was to parse through object list and
+// find a pickup. Instead, search for an ooze from the pickup.cpp's perspective.
 Pickup* Ooze::getPickup(std::unordered_map<std::string, Object*> *objectList) {
     std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
     while(it != objectList->end()){
@@ -141,11 +143,18 @@ bool Ooze::foundFood(Pickup* food) {
         SDL_Rect* fRect = food->getPickupRect();
         bool overlap = collision::checkCol(rect, *fRect);
         if (overlap) {
-            food->use();
+            //food->use();
+            ate = ate + 1;
+            std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
+            std::cout << s << std::endl;
             return true;
         }
     }
     return false;
+}
+
+int Ooze::getAte() {
+    return ate;
 }
 
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
