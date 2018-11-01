@@ -5,6 +5,8 @@
 #include <unordered_map>
 #include <cmath>
 #include <string>
+#include <vector>
+
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"

@@ -7,6 +7,8 @@
 #include <unordered_map>
 #include <SDL.h>
 #include <SDL_image.h>
+#include <algorithm>
+
 #include "utils.h"
 #include "object.h"
 

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <SDL.h>
 #include <string>
+#include <algorithm>
 
 #include "player.h"
 #include "HUD.h"
