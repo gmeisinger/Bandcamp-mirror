@@ -82,7 +82,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 		if (player->getY() + player->getHeight() < rect.y)
 			y_deltav -= 1;
 		if (player->getX() + player->getWidth() < rect.x)
-			x_deltav -= 1;
+			x_deltav -= 1; 
         
         updateVelocity(x_deltav,y_deltav);
 	}
@@ -90,9 +90,12 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     updateAnimation(ticks);
 
     updatePosition();
+
     checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
-    checkCollision(curX, curY);
+    checkCollision(curX, curY, grid, true);
+
+    std::cout << drawLine(grid) << std::endl;
 }
 
 void Ooze::increaseHostility() {
@@ -233,10 +236,85 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
         y_vel = MAX_SPEED;
 }
 
-void Ooze::checkCollision(int curX, int curY)
-{
-    //Checks the collision of each object and determines where the player should stop
-    //In the future, we might need to alter this function to take in an object that
-    //represents what the player is colliding with. This shouldn't be too difficult
+bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move) {
+    //Checks the collision of each object and determines where the ooze should stop
+    //Also checks to see if ooze has line of sight
+    
+    if(move) {
+        if(collision::checkCol(rect, grid, 32)) {
+            rect.x = curX;
+        }
+        if(collision::checkCol(rect, grid, 32)) {
+            rect.y = curY;
+            rect.x += x_vel;
+        }
+    }
+    else {
+        if(collision::checkCol(colRect, grid, 32)) {
+            return false;
+        } 
+
+        return true;
+    }
+}
+
+//Uses Bresenham's alg to check to see if we have a line of sight with the player
+bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
+    int deltaX = player->getX() - rect.x;
+    int deltaY = player->getY() - rect.y;
+    int startX = rect.x;
+    int startY = rect.y;
+    int endX = player->getX();
+    int endY = player->getY();
+    colRect = {startX, startY, rect.w, rect.h};
+    int slope;
+    int xDir;
+    int yDir;
+    bool sight = false;
+
+    if (player->getY() > rect.y)
+		yDir = 1;
+	if (player->getX() > rect.x)
+		xDir = 1;
+	if (player->getY() < rect.y)
+		yDir = -1;
+	if (player->getX() < rect.x)
+		xDir = -1;
+
+    deltaX = abs(deltaX * 2);
+    deltaY = abs(deltaY * 2);
+
+    if(deltaX > deltaY) {
+        slope = deltaY * 2 - deltaX;
+        while(startX != endX) {
+            if(slope >= 0) {
+                startY += yDir;
+                colRect.y += yDir;
+                slope -= deltaX;
+            }
+
+            startX += xDir;
+            colRect.x += xDir;
+            slope += deltaY;
+            sight = checkCollision(colRect.x, colRect.y, grid, false);
+            return sight;
+        }
+    }
+    else {
+        slope = deltaX * 2 - deltaY;
+        while(startY != endY) {
+            if(slope >= 0) {
+                startX += xDir;
+                slope -= deltaY;
+            }
+
+            startY += yDir;
+            slope += deltaX;
+            colRect.x = startX;
+            colRect.y = startY;
+            sight = checkCollision(colRect.x, colRect.y, grid, false);
+            return sight;
+        }
+    }
 
 }

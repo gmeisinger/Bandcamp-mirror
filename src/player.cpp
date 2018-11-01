@@ -254,6 +254,7 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
         playerRect.y = curY;
         playerRect.x += x_vel;
     }
+
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that
     //represents what the player is colliding with. This shouldn't be too difficult
