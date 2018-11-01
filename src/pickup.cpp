@@ -100,6 +100,7 @@ void Pickup::init(SDL_Renderer *renderer){
 void Pickup::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
+	if (used) TestRoom::setSpawnPickup(true);
 }
 
 SDL_Renderer* Pickup::draw(SDL_Renderer *renderer){
@@ -176,6 +177,10 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *object
 
 bool Pickup::isUsed() {
 	return used;
+}
+
+int Pickup::getTotal() {
+	return totalInstance;
 }
 
 SDL_Rect* Pickup::getRect() {

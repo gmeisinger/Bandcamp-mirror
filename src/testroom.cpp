@@ -16,6 +16,7 @@
 #include "include/ooze.h"
 #include "include/circle.h"
 #include "include/collision.h"
+#include "include/pickup.h"
 
 constexpr int UPDATE_MAX = 100;
 int updateCount = 1;
@@ -23,6 +24,7 @@ int oldTemp = 100;
 int oldO2 = 100;
 int oldAte = 0;
 
+bool spawnPickup = true;
 // Heads up display 
 HUD h;
 Player p;
@@ -72,11 +74,13 @@ void TestRoom::update(Uint32 ticks){
 		currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 	
+
+	if (spawnPickup) movePickup(rendererReference); //new way of deciding when to spawn pickup
 	// TODO: better way to check for pickup being consumed?
-	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2 || o.getAte() > oldAte) movePickup(rendererReference);
+	/*if (h.currentTemp > oldTemp || h.currentOxygen > oldO2 || o.getAte() > oldAte) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
-	oldAte = o.getAte();
+	oldAte = o.getAte();*/
 
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
@@ -127,9 +131,14 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 		Pickup *newP  = new Pickup(pickupBox, type, pickupValue, &p, &h);
 		objectList[newP->getInstanceName()] = newP;
 		newP->init(reference);
+		spawnPickup = false; //don't need a new pickup; one was just made
 	}
 }
 
+// used to allow other objects to tell testroom to spawn a pickup
+void TestRoom::setSpawnPickup(bool set) {
+	spawnPickup = set;
+}
 // ADD COMMENTS 
 void TestRoom::input(const Uint8* keystate){
 	//If you push the pause button

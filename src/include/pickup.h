@@ -22,6 +22,7 @@ class Pickup : public Object
 		bool up;			//Is the image floating up or down.
 
 	public:
+		//static int totalInstance;
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
 		void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
@@ -34,6 +35,7 @@ class Pickup : public Object
 		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
+		static int getTotal();
 };
 
 #endif  //  BANDCAMP_PICKUP_H_
