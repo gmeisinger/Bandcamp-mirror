@@ -12,7 +12,7 @@ SDL_Rect rectangle = {0, 0, 0, 0}; //area of the button
 char* label = nullptr; //Text to be displayed by the button
 SDL_Surface * message = nullptr;
 SDL_Texture * message_texture = nullptr;
-
+int buttonNumber = 0;
 //Default pressed, unpressed, and text colors
 Uint8 unpressed = 150;
 Uint8 pressed = 80;
@@ -25,7 +25,7 @@ TTF_Font *font = nullptr;
 
 Button::Button(char* l, SDL_Rect r) { //Constructs the button. For now, it is a simply a text label, a rectangle, and a color.
 	label = l;
-	
+	buttonNumber = 0;
 	rectangle = r;
 	
 	label_rect.x = rectangle.x;
@@ -64,8 +64,16 @@ void Button::unpress() { //Any visual or sound effects for releasing may be set 
 	is_pressed = 0;
 }
 
-void Button::update(std::vector<Object*> objectList, Uint32 ticks) {
+void Button::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	
+}
+
+std::string Button::getInstanceName() {
+	return "Button-0";
+}
+
+bool Button::isUsed() {
+	return true;
 }
 
 void Button::input(const Uint8* keystate) {

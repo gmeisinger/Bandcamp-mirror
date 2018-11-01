@@ -3,16 +3,7 @@
  * 
 */
 
-#include <algorithm>
-#include <vector>
-#include <string>
-
-#include "include/physics.h"
 #include "include/pickup.h"
-#include "include/player.h"
-#include "include/HUD.h"
-#include "include/utils.h"
-#include "include/testroom.h"
 
 constexpr int HOVER_SPEED = 150;
 
@@ -62,7 +53,11 @@ Pickup::Pickup(){
 void Pickup::input(const Uint8* keystate){}
 
 std::string Pickup::getInstanceName(){
-	return "Pickup-"+std::to_string(instanceNumber);
+  std::ostringstream ss;
+  ss << instanceNumber;
+  
+  std::string p = "Pickup-" + std::toString(instanceNumber);
+	return p;
 }
 
 void Pickup::init(SDL_Renderer *renderer){

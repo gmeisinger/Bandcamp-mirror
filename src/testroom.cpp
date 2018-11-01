@@ -34,7 +34,6 @@ Circle centerPillar;
 TestRoom::TestRoom(){
 	start = false;
 	std::unordered_map<std::string, Object*> objectList;
-	roomReference = roomNumber;
 }
 
 void TestRoom::init(SDL_Renderer* reference){

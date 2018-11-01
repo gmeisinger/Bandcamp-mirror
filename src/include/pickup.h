@@ -4,11 +4,23 @@
 #include <vector>
 #include <unordered_map>
 #include <SDL.h>
-#include <string>
-
 #include "player.h"
 #include "HUD.h"
 #include "object.h"
+
+#include <string>
+#include <algorithm>
+
+#include "physics.h"
+
+
+#include "utils.h"
+#include "testroom.h"
+
+#include <sstream>
+#include <iostream>
+
+class Player;
 
 class Pickup : public Object
 {

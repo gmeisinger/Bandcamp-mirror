@@ -24,11 +24,14 @@ class Button : public Object
 		SDL_Texture * message_texture;
 
 	public:
+		int buttonNumber;
 		Button(char * l, SDL_Rect r);
 		void init(SDL_Renderer* renderer);
 		void press();
 		void unpress();
-		void update(std::vector<Object*> objectList, const Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> *objectList, const Uint32 ticks);
+		std::string getInstanceName();
+		bool isUsed();
 		void input(const Uint8* keystate);
 		SDL_Renderer* draw(SDL_Renderer *renderer);
 };

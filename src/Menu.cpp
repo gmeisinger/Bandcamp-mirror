@@ -14,7 +14,7 @@
 
 Button *test_button = nullptr; //test button for proof of concept
 SDL_Rect menu_rect = {0, 0, 0, 0};
-std::vector<Object*> fake_list;
+std::unordered_map<std::string, Object*> * object_list;
 Menu::Menu() { //Constructs a test button; in the future, this should be more flexible and adding items will happen via another method.
 	roomReference = &GSM::currentScreen;
 	
@@ -37,7 +37,7 @@ void Menu::init(SDL_Renderer* renderer) {
 void Menu::update(Uint32 ticks) { //If the button was clicked, we need to change the game screen!
 	if(clicked == 2) GSM::currentScreen = 1;
 	
-	test_button->update(fake_list, ticks);
+	test_button->update(object_list, ticks);
 }
 
 void Menu::input(const Uint8* keystate) { //In the future, the input will probably look similar, but instead of checking against only the test_button when clicked it will

@@ -20,7 +20,7 @@ Game::Game() {
 	gWindow = nullptr;
 	gRenderer = nullptr;
 	running = false;
-	GSM gsm;
+	GSM * gsm;
 	screen_w = SCREEN_WIDTH;
 	screen_h = SCREEN_HEIGHT;
 	tile_s = TILE_SIZE;
@@ -66,14 +66,17 @@ bool Game::init() {
 	
 	
 	//Start the GSM
-	gsm.init(gRenderer);
+  
+  gsm = new GSM();
+  
+	gsm->init(gRenderer);
 	
 	running = true;
 	return true;
 }
 
 void Game::update(Uint32 ticks) {
-	gsm.update(ticks);
+	gsm->update(ticks);
 }
 
 void Game::draw() {
@@ -82,12 +85,12 @@ void Game::draw() {
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen
-	gRenderer = gsm.draw(gRenderer);
+	gRenderer = gsm->draw(gRenderer);
 	SDL_RenderPresent(gRenderer);
 }
 
 void Game::input(const Uint8* keystate){
-	gsm.input(keystate);
+	gsm->input(keystate);
 }
 
 //main game loop

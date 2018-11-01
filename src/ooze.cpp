@@ -39,7 +39,9 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{roaming}
 Ooze::~Ooze(){};
 
 std::string Ooze::getInstanceName(){
-	return "Ooze-"+ std::to_string(oozeNumber);
+	std::ostringstream ss;
+  ss << oozeNumber;
+	return "Ooze-"+ss.str();
 }
 
 void Ooze::input(const Uint8* keystate){}
