@@ -184,7 +184,7 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+void Player::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -214,10 +214,10 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32
 	updatePosition();
 
 	// Check you haven't moved off the screen
-	checkBounds(screen_w, screen_h);
+	//checkBounds(screen_w, screen_h);
 
     //Check you haven't collided with object
-    checkCollision(curX, curY);
+    checkCollision(curX, curY, grid);
 }
 
 void Player::input(const Uint8* keystate)
@@ -245,8 +245,13 @@ void Player::setEnemy(bool _overlap) {
     overlapEnemy = _overlap;
 }
 
-void Player::checkCollision(int curX, int curY)
+void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
+    if(collision::checkCol(playerRect, grid, 32)) {
+        playerRect.x = curX;
+        playerRect.y = curY;
+        //playerRect.x += x_vel;
+    }
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that
     //represents what the player is colliding with. This shouldn't be too difficult

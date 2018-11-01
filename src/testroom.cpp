@@ -74,7 +74,7 @@ void TestRoom::update(Uint32 ticks){
 	//update all objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
-		it->second->update(&objectList, ticks);
+		it->second->update(&objectList, map.getGrid(), ticks);
 		if(it->second->isUsed()) {
 			it = objectList.erase(it);
 		}

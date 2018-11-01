@@ -65,7 +65,7 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 
 //*********TO DO:
 //update motion here
-void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
 	
 	int x_deltav = 0;
 	int y_deltav = 0;
