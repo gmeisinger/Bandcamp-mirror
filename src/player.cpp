@@ -61,11 +61,6 @@ void Player::init(SDL_Renderer* gRenderer){
 	addAnimation("right", Animation(getSheet().getRow(3)));
 	setAnimation("down");
 
-    //This should be removed ASAP
-    lWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
-	rWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
-	uWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
-	cPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
@@ -254,7 +249,7 @@ void Player::checkCollision(int curX, int curY)
     //In the future, we might need to alter this function to take in an object that
     //represents what the player is colliding with. This shouldn't be too difficult
 
-    //LEFT WALL
+    /*LEFT WALL
     if(collision::checkCol(playerRect, lWall))
     {
         playerRect.x = curX;
@@ -297,7 +292,7 @@ void Player::checkCollision(int curX, int curY)
     {
         playerRect.y = curY;
 		playerRect.x += x_vel;
-    } 
+    } */
 }
 
 void Player::checkEnemy(int _xdv, int _ydv){

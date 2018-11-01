@@ -19,10 +19,10 @@ public:
 	Tilemap(SDL_Texture* tex, int _width, int _height, int _tilesize);
 	Tilemap();
 	~Tilemap();
+	std::vector< std::vector < int > > getGrid();
+	void setGrid(std::vector< std::vector < int > > _grid);
+	void genTestRoom();
 	void init();
-	int getMask(int row, int col);
-	SDL_Rect getWall(int row, int col);
-	//void setWalls();
 	SDL_Renderer* draw(SDL_Renderer* render);
 };
 

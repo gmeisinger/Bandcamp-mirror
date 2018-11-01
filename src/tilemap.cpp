@@ -30,78 +30,54 @@ Tilemap::~Tilemap() {
 
 }
 
-//setup tiles
-void Tilemap::init() {
+//returns the grid as 2d vector
+std::vector< std::vector < int > > Tilemap::getGrid() {
+	return grid;
+}
+
+//sets the grid
+// takes a 2d vector
+void Tilemap::setGrid(std::vector< std::vector < int > > _grid) {
+	grid = _grid;
+}
+
+//generates the grid for our testroom
+void Tilemap::genTestRoom() {
+	//init to all floor
 	grid = std::vector<std::vector<int>>(height, std::vector<int>(width, 1));
-	//just going to hardcode testroom
+
+	//just going to hardcode walls
 	for(int row=0;row<height;row++) {
 		grid[row][0] = 2;
 		grid[row][width-1] = 2;
+		grid[row][width/2] = 2;
 	}
 	for(int col=0;col<width;col++) {
 		grid[0][col] = 2;
 		grid[height-1][col] = 2;
 	}
+	//lets put a hole in the wall so we can peep while the ooze asexually reproduces ;)
+	grid[height/2][width/2] = 1;
+}
+
+//setup tiles
+void Tilemap::init() {
+	grid = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
+	
 	//ground tile
 	tiles[0] = {0,0,tilesize,tilesize};
-	//wall tiles based on bitmasking
-	tiles[6] = {tilesize,0,tilesize,tilesize};
-	tiles[10] = {2*tilesize,0,tilesize,tilesize}; //n but could be s
-	tiles[12] = {3*tilesize,0,tilesize,tilesize};
-	tiles[5] = {tilesize,tilesize,tilesize,tilesize}; //w but could be e
-	//tiles["e_wall"] = {3*tilesize,tilesize,tilesize,tilesize};//e but could be w
-	tiles[3] = {tilesize,2*tilesize,tilesize,tilesize};
-	//tiles["s_wall"] = {2*tilesize,2*tilesize,tilesize,tilesize};//s but could be n
-	tiles[9] = {3*tilesize,2*tilesize,tilesize,tilesize};
+	//wall tile
+	tiles[1] = {0,tilesize,tilesize,tilesize};
 }
-
-int Tilemap::getMask(int row, int col) {
-	int bmask = 0;
-	if(row > 0 && grid[row-1][col] == 2) {
-		bmask += 1;
-	}
-	if(col < (width-1) && grid[row][col+1] == 2) {
-		bmask += 2;
-	}
-	if(row < (height-1) && grid[row+1][col] == 2) {
-		bmask += 4;
-	}
-	if(col > width && grid[row][col-1] == 2) {
-		bmask += 8;
-	}
-	return bmask;
-}
-
-SDL_Rect Tilemap::getWall(int row, int col) {
-	//gonna use some bitmasking to get the right wall tile
-	int mask = getMask(row, col);
-	
-	//need to deal with n/s e/w
-	return tiles[mask];
-}
-
-/*use bit masking to get correct wall tiles
-void Tilemap::setWalls() {
-	for(int row=0;row<height;row++) {
-		for(int col=0;col<width;col++) {
-			if(grid[row][col] == 0) {
-				//floor
-				
-			}
-			else if(grid[row][col] == 1) {
-				//wall
-				tile = getWall(row, col);
-			}
-			//draw tile
-		}
-	}
-}*/
 
 //draw the tiles
 SDL_Renderer* Tilemap::draw(SDL_Renderer* render) {
 	for(int row=0;row<height;row++) {
 		for(int col=0;col<width;col++) {
 			//check if tile is floor or wall
+			//0 = nothing
+			//1 = ground
+			//2 = wall
 			SDL_Rect tile;
 			if(grid[row][col] == 1) {
 				//floor
@@ -109,7 +85,7 @@ SDL_Renderer* Tilemap::draw(SDL_Renderer* render) {
 			}
 			else if(grid[row][col] == 2) {
 				//wall
-				tile = getWall(row, col);
+				tile = tiles[1];
 			}
 			//draw tile
 			SDL_Rect dest = {col*tilesize, row*tilesize, tilesize, tilesize};

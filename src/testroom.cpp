@@ -49,6 +49,7 @@ void TestRoom::init(SDL_Renderer* reference){
 	p.init(reference);
 	o.init(reference);
 	map.init();
+	map.genTestRoom();
 	
 	//Player and HUD in the Room
 	objectList["player"] = &p;
@@ -56,10 +57,10 @@ void TestRoom::init(SDL_Renderer* reference){
 	objectList["ooze"] = &o;
 
 	//Init walls in the room
-	leftWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
-	rightWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
-	upperWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
-	centerPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
+	//leftWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
+	//rightWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
+	//upperWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
+	//centerPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 void TestRoom::update(Uint32 ticks){
@@ -136,11 +137,11 @@ SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
 	}
 
 	//Draws walls in the room
-	SDL_SetRenderDrawColor(renderer, 0, 0xFF, 0, 0);
-	SDL_RenderFillRect(renderer, &leftWall);
-	SDL_RenderFillRect(renderer, &rightWall);
-	SDL_RenderFillRect(renderer, &upperWall);
-	centerPillar.drawCircle(renderer);
+	//SDL_SetRenderDrawColor(renderer, 0, 0xFF, 0, 0);
+	//SDL_RenderFillRect(renderer, &leftWall);
+	//SDL_RenderFillRect(renderer, &rightWall);
+	//SDL_RenderFillRect(renderer, &upperWall);
+	//centerPillar.drawCircle(renderer);
 
 	return renderer;
 }
