@@ -4,10 +4,6 @@
  * 
 */
 
-#include <SDL.h>
-#include <algorithm>
-#include <string>
-
 #include "include/spritesheet.h"
 #include "include/PauseMenu.h"
 #include "include/game.h"

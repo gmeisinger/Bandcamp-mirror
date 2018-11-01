@@ -2,11 +2,6 @@
  * Class function: 
  * 
 */
-
-#include <algorithm>
-#include <vector>
-#include <string>
-
 #include "include/physics.h"
 #include "include/pickup.h"
 #include "include/player.h"

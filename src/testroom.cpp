@@ -3,10 +3,6 @@
  * 
 */
 
-#include <SDL.h>
-#include <algorithm>
-#include <string>
-
 #include "include/object.h"
 #include "include/player.h"
 #include "include/spritesheet.h"
