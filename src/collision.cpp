@@ -86,7 +86,7 @@ bool collision::checkCol(SDL_Rect rect, std::vector<std::vector<int>> grid, int 
     int normalX = rect.x/tilesize;
     int normalY = rect.y/tilesize;
     //printf("x: %d || y: %d\n", normalX, normalY);
-    int tile = grid[normalX][normalY];
+    int tile = grid[normalY][normalX];
     if(tile == 1) {
         return false;
     }

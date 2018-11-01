@@ -51,11 +51,6 @@ void Ooze::init(SDL_Renderer* gRenderer) {
 	
     
 
-	//This should be removed ASAP
-    lWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
-	rWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
-	uWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
-	cPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
@@ -161,7 +156,7 @@ void Ooze::updatePosition() {
 }
 
 void Ooze::checkBounds(int max_width, int max_height) {
-    if (rect.x < BORDER_SIZE){
+    /*if (rect.x < BORDER_SIZE){
         rect.x = BORDER_SIZE;
         x_vel = -x_vel;
     }
@@ -177,7 +172,7 @@ void Ooze::checkBounds(int max_width, int max_height) {
     else if (rect.y + rect.h > max_height - BORDER_SIZE){
         rect.y = max_height - rect.h - BORDER_SIZE;
         y_vel = -y_vel;
-    }
+    }*/
 }
 
 bool Ooze::isUsed() { return false; }
@@ -244,48 +239,4 @@ void Ooze::checkCollision(int curX, int curY)
     //In the future, we might need to alter this function to take in an object that
     //represents what the player is colliding with. This shouldn't be too difficult
 
-    //LEFT WALL
-    if(collision::checkCol(rect, lWall))
-    {
-        rect.x = curX;
-    }
-    if(collision::checkCol(rect, lWall))
-    {
-        rect.y = curY;
-		//If this is not included the x movement will lock when colliding with y
-		rect.x += x_vel;
-    }
-
-    //RIGHT WALL
-    if(collision::checkCol(rect, rWall))
-    {
-        rect.x = curX;
-    }
-    if(collision::checkCol(rect, rWall))
-    {
-        rect.y = curY;
-		rect.x += x_vel;
-    }
-
-    //UPPER WALL
-    if(collision::checkCol(rect, uWall))
-    {
-        rect.x = curX;
-    }
-    if(collision::checkCol(rect, uWall))
-    {
-        rect.y = curY;
-		rect.x += x_vel;
-    }
-
-    //PILLAR - very difficult to implement with this style
-    if(collision::checkCol(rect, cPillar))
-    {
-        rect.x = curX;
-    }
-    if(collision::checkCol(rect, cPillar))
-    {
-        rect.y = curY;
-		rect.x += x_vel;
-    } 
 }
