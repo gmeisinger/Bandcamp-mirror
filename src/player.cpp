@@ -255,14 +255,22 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
     if(collision::checkColX(hitRect, grid, 32)) {
         playerRect.x = curX;
         hitRect.x = curX;
+        playerRect.y = curY;
+        hitRect.y = curY+SHORTEN_DIST;
+        //playerRect.y += y_vel;
+        //hitRect.y += y_vel;
     }
     if(collision::checkColX(hitRect, grid, 32)) {
         playerRect.x += x_vel;
         hitRect.x += x_vel;
     }
     if(collision::checkColY(hitRect, grid, 32)) {
+        playerRect.x = curX;
+        hitRect.x = curX;
         playerRect.y = curY;
-        hitRect.y = curY+6;
+        hitRect.y = curY+SHORTEN_DIST;
+        //playerRect.x += x_vel;
+        //hitRect.x += x_vel;
     }
     if(collision::checkColY(hitRect, grid, 32)) {
         playerRect.y += y_vel;
