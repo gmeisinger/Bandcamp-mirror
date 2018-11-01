@@ -1,5 +1,5 @@
 /* Team Bandcamp
- * Class function: 
+ * Class function: Game state manger 
  * 
 */
 
@@ -11,9 +11,16 @@
 #include "include/testroom.h"
 #include "include/menu.h"
 
+#include "include/PauseMenu.h"
+
+int currentScreen = 0;
 TestRoom testScreen;
-int GSM::currentScreen = 0;
+PauseMenu pauseMenu;
+bool pause;	//Is the game paused
+int tempScreen; //What was the room before you paused?
+
 GSM::GSM(){
+	currentScreen = 0;	// Should describe this here 
 	
 	//Init Screens
 	//They all get passed the pointer to the
@@ -21,9 +28,11 @@ GSM::GSM(){
 	testScreen = TestRoom();
 	testMenu = new Menu();
 	roomList.push_back(testMenu);
+	pauseMenu = PauseMenu();
 	roomList.push_back(&testScreen);
 	previousScreen = 0;
-	running = false;
+	pause = false;
+	running = false;		// does this refer to the game running bool? its own from GSM.h
 }
 
 void GSM::init(SDL_Renderer* reference){
@@ -39,22 +48,44 @@ void GSM::init(SDL_Renderer* reference){
 void GSM::update(Uint32 ticks){
 	previousScreen = GSM::currentScreen;
 	
-	roomList[currentScreen]->update(ticks);
+	if(pause)
+		pauseMenu.update(ticks);
+	else
+		roomList[currentScreen]->update(ticks);
 	
 	//Checking if we changed screens this loop
 	//If so, then call the init to the new screen.
-	if(previousScreen != GSM::currentScreen) {
-		std::cout << "Changing room" << std::endl;
-		roomList[GSM::currentScreen]->init(rendererReference);
+	if(previousScreen != currentScreen)
+	{	
+		if(currentScreen == -1){ //The Pause Command
+			pause = true;
+			tempScreen = previousScreen;
+			pauseMenu.init(rendererReference);
+		}
+		else if(currentScreen == -2){ //The Unpause Command
+			pause = false;
+			currentScreen = tempScreen;
+		}
+		else
+			roomList[currentScreen]->init(rendererReference);
 	}
 }
 
 SDL_Renderer* GSM::draw(SDL_Renderer *renderer){
-	return roomList[GSM::currentScreen]->draw(renderer);
+	if(pause)
+	{
+		renderer = roomList[tempScreen]->draw(renderer); //So long as you don't put game logic in your draw method, this should work.
+		renderer = pauseMenu.draw(renderer); //Draw the pause menu
+	}
+	else
+		renderer = roomList[currentScreen]->draw(renderer);
+	
+	return renderer;	
 }
 
 void GSM::input(const Uint8* keystate){
-	roomList[GSM::currentScreen]->input(keystate);
+	if(pause)
+		pauseMenu.input(keystate);
+	else
+		roomList[currentScreen]->input(keystate);
 }
-
-void GSM::setCurrentScreen(int newScreen) { GSM::currentScreen = newScreen; }

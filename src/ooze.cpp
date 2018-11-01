@@ -19,12 +19,12 @@ Ooze::Ooze():state{roaming}, hostility{0} {}
 //Constructor from rect
 Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{roaming}, hostility{0} {
     rect = _rect;
-    this->player = player;
-	  hud = h;
-	  totalOoze++; //Increase # of instances counter
-	  oozeNumber = totalOoze;
-	  Animation* anim;
-	  int overlapTicks = 0;
+    oozePlayer = player;
+	hud = h;
+	totalOoze++; //Increase # of instances counter
+	oozeNumber = totalOoze;
+	Animation* anim;
+	int overlapTicks = 0;
     //Speed
     x_deltav = 0;
     y_deltav = 0;
@@ -95,11 +95,10 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 	}
     //update animation
     updateAnimation(ticks);
-
-    updatePosition();
-    checkBounds(screen_w, screen_h);
+    //updatePosition();
+    //checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
-    checkCollision(curX, curY);
+    //checkCollision(curX, curY);
 }
 
 void Ooze::increaseHostility() {
@@ -124,7 +123,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 
 	if (overlap) {
 		overlapTicks += ticks;
-		if (overlapTicks > 25) {
+		if (overlapTicks > 1000) {
 			hud->currentHealth = std::max(0, hud->currentHealth-damage);
 			std::string s = "HIT: "+getInstanceName();
 			std::cout << s << std::endl;
@@ -153,6 +152,7 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
+/* <<<<<<< HEAD
 void Ooze::updatePosition() {
     rect.x += x_vel;
     rect.y += y_vel;
@@ -178,6 +178,8 @@ void Ooze::checkBounds(int max_width, int max_height) {
     }
 }
 
+=======
+>>>>>>> origin/master */
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }

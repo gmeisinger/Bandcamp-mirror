@@ -11,15 +11,16 @@
 #include "testroom.h"
 
 
+
 class GSM {
 	private:
 		std::vector<Screen*> roomList;
-		
 		int previousScreen; //To check if we changed rooms
 		bool running;
 		SDL_Renderer* rendererReference;
 		Menu * testMenu;
 	public:
+		
 		GSM();
 		//~GSM();
 		static int currentScreen;

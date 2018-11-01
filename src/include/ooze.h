@@ -28,10 +28,13 @@ private:
     Circle cPillar;
     //
     SDL_Rect rect;
+/* <<<<<<< HEAD
     int x_vel;
     int y_vel;
     int x_deltav;
     int y_deltav;
+=======
+>>>>>>> origin/master */
     oozeState state;
     int hostility;
     Player *player;
@@ -45,7 +48,7 @@ public:
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
-    int damage = 1;
+    int damage = 5;
     // Constructors & destructor
     Ooze();
     Ooze(SDL_Rect _rect, Player *player, HUD *h);
@@ -79,7 +82,7 @@ public:
     int getY();
     SDL_Rect* getRect();
     SpriteSheet getSheet();
-    // Animation
+    //Animation
     void addAnimation(std::string tag, Animation anim);
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);

@@ -17,7 +17,6 @@ SDL_Rect currentClip, shadowClip;
 SDL_Rect drawBox, shadowBox;	//Where the Image is drawn on screen
 Uint32 fTicks;
 int incrementY;		//How much the Image is displaced from the original spot.
-bool up;			//Is the image floating up or down.
 static int totalInstance = 0;//How many instances of the object exist?
 int instanceNumber = 0;
 bool used;

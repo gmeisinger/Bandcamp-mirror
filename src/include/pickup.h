@@ -31,6 +31,7 @@ class Pickup : public Object
 		int pickupValue;
 		Player *pickupPlayer;
 		HUD *hud;
+		bool up;			//Is the image floating up or down.
 
 	public:
 		void input(const Uint8* keystate);
