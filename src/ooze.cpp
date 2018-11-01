@@ -97,7 +97,9 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
     //target = getPickup(objectList)->getRect();
 	if(!overlap){
 
-        target = pickTarget(objectList);
+        //uncomment the line below to change the ooze to chasing the pickups
+        //target = pickTarget(objectList);
+
 		//check which direction the player is
         if (target->y > rect.y)
             o_y_deltav += 1;
