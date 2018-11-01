@@ -221,7 +221,7 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 	return renderer_h;
 }
 
-SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer){
+SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer, SDL_Rect cam){
 	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp, currentHealth); // , currentPower can add for power level
 	SDL_SetRenderDrawColor(renderer_h, 0, 0, 0, 255);
 	SDL_RenderCopy(gRenderer, hud[0], NULL, NULL);

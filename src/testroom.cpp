@@ -18,6 +18,8 @@
 #include "include/collision.h"
 
 constexpr int UPDATE_MAX = 100;
+constexpr int CAM_WIDTH = 800;
+constexpr int CAM_HEIGHT = 600;
 int updateCount = 1;
 int oldTemp = 100;
 int oldO2 = 100;
@@ -30,6 +32,7 @@ SDL_Rect rightWall;
 SDL_Rect upperWall;
 Circle centerPillar;
 Tilemap map;
+SDL_Rect camera;
 
 TestRoom::TestRoom(int* roomNumber){
 	start = false;
@@ -43,7 +46,8 @@ void TestRoom::init(SDL_Renderer* reference){
 	p = Player(player_box);
 	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
 	o = Ooze(ooze_box, &p, &h);
-	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 25, 18, 32);
+	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 50, 36, 32);
+	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
     
 	h.init(reference);
 	p.init(reference);
@@ -67,6 +71,7 @@ void TestRoom::update(Uint32 ticks){
 	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
+	//update all objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
 		it->second->update(&objectList, ticks);
@@ -75,6 +80,10 @@ void TestRoom::update(Uint32 ticks){
 		}
 		it++;
 	}
+	//update camera to player position
+	camera.x = p.getX() - (camera.w/2);
+	camera.y = p.getY() - (camera.h/2);
+
 	if (updateCount == 0) {
 		h.currentTemp = std::max(0, h.currentTemp-5);
 		h.currentOxygen = std::max(0, h.currentOxygen-5);
@@ -128,11 +137,11 @@ void TestRoom::input(const Uint8* keystate){
 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
 	//draw map before objects
-	map.draw(renderer);
+	map.draw(renderer, camera);
 	//draw objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
-		renderer = it->second->draw(renderer);
+		renderer = it->second->draw(renderer, camera);
 		it++;
 	}
 

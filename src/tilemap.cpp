@@ -71,7 +71,7 @@ void Tilemap::init() {
 }
 
 //draw the tiles
-SDL_Renderer* Tilemap::draw(SDL_Renderer* render) {
+SDL_Renderer* Tilemap::draw(SDL_Renderer* render, SDL_Rect cam) {
 	for(int row=0;row<height;row++) {
 		for(int col=0;col<width;col++) {
 			//check if tile is floor or wall
@@ -87,8 +87,10 @@ SDL_Renderer* Tilemap::draw(SDL_Renderer* render) {
 				//wall
 				tile = tiles[1];
 			}
+
 			//draw tile
-			SDL_Rect dest = {col*tilesize, row*tilesize, tilesize, tilesize};
+			//SDL_Rect dest = {col*tilesize, row*tilesize, tilesize, tilesize};
+			SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
 			SDL_RenderCopy(render, image, &tile, &dest);
 		}
 	}

@@ -35,7 +35,7 @@ class Player : public Object
 		    void init(SDL_Renderer* gRenderer);
 		    void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
 		    void input(const Uint8* keystate);
-		    SDL_Renderer* draw(SDL_Renderer* gRenderer);
+		    SDL_Renderer* draw(SDL_Renderer* gRenderer, SDL_Rect cam);
 		    void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
         void updateVelocity(int _xdv, int _ydv);
         void updatePosition();

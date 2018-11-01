@@ -109,8 +109,12 @@ void Ooze::decreaseHostility() {
 		hostility--;
 }
 
-SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
-    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
+SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
+    SDL_Rect* dest = new SDL_Rect;
+    *dest = rect;
+    dest->x -= cam.x;
+    dest->y -= cam.y;
+    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
    return renderer;
 }
 

@@ -58,7 +58,7 @@ public:
     void init(SDL_Renderer* gRenderer);
     void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
-    SDL_Renderer* draw(SDL_Renderer* renderer);
+    SDL_Renderer* draw(SDL_Renderer* renderer, SDL_Rect cam);
     bool checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     bool isUsed();
 

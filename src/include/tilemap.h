@@ -23,7 +23,7 @@ public:
 	void setGrid(std::vector< std::vector < int > > _grid);
 	void genTestRoom();
 	void init();
-	SDL_Renderer* draw(SDL_Renderer* render);
+	SDL_Renderer* draw(SDL_Renderer* render, SDL_Rect cam);
 };
 
 #endif  //  BANDCAMP_TILEMAP_H_

@@ -228,10 +228,12 @@ void Player::input(const Uint8* keystate)
 	right = keystate[SDL_SCANCODE_D];
 }
 
-SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
-	//SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-	//SDL_RenderFillRect(renderer, &playerRect);
-    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
+SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
+    SDL_Rect* dest = new SDL_Rect;
+    *dest = playerRect;
+    dest->x -= cam.x;
+    dest->y -= cam.y;
+    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
    return renderer;
 }
 
