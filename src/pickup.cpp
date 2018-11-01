@@ -178,6 +178,6 @@ bool Pickup::isUsed() {
 	return used;
 }
 
-SDL_Rect* Pickup::getPickupRect() {
+SDL_Rect* Pickup::getRect() {
     return &pickupRect;
 }

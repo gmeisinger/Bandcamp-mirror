@@ -30,6 +30,7 @@ Ooze::Ooze():state{ROAMING}, hostility{0} {}
 Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):state{ROAMING}, hostility{0} {
     rect = _rect;
     oozePlayer = player;
+    target = player->getRect();
 	hud = h;
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
@@ -93,9 +94,20 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 
 	bool overlap = checkOozeOverlap(objectList, ticks);
     
+    //target = getPickup(objectList)->getRect();
 	if(!overlap){
 
+        target = pickTarget(objectList);
 		//check which direction the player is
+        if (target->y > rect.y)
+            o_y_deltav += 1;
+        if (target->x > rect.x)
+            o_x_deltav += 1;
+        if (target->y < rect.y)
+            o_y_deltav -= 1;
+        if (target->x < rect.x)
+            o_x_deltav -= 1;
+        /*
 		if (oozePlayer->getY() > rect.y)
 			o_y_deltav += 1;
 		if (oozePlayer->getX() > rect.x)
@@ -103,7 +115,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 t
 		if (oozePlayer->getY() < rect.y)
 			o_y_deltav -= 1;
 		if (oozePlayer->getX() < rect.x)
-			o_x_deltav -= 1;
+			o_x_deltav -= 1;*/
 
 		updateVelocity(o_x_deltav, o_y_deltav);
 
@@ -135,12 +147,25 @@ Pickup* Ooze::getPickup(std::unordered_map<std::string, Object*> *objectList) {
     return NULL;
 }
 
+SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList) {
+    std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+    while(it != objectList->end()){
+        if (!it->first.substr(0,6).compare("Pickup")) {
+            //std::cout << "there is a pickup :) " << std::endl;
+            Pickup* temp = (Pickup*)it->second;
+            return temp->getRect();
+        }
+        it++;
+    }
+    return oozePlayer->getRect();
+}
+
 // Checks for overlap between ooze and a given pickup
 // TODO: combine this with the overlap method below, which
 //       checks for overlap betw. ooze and player
 bool Ooze::foundFood(Pickup* food) {
     if (food) {
-        SDL_Rect* fRect = food->getPickupRect();
+        SDL_Rect* fRect = food->getRect();
         bool overlap = collision::checkCol(rect, *fRect);
         if (overlap) {
             //food->use();

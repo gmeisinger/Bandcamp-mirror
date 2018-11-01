@@ -37,6 +37,7 @@ private:
     int overlapTicks;
     std::unordered_map<std::string, Animation> anims;
     int ate;
+    SDL_Rect *target;
     
 public:
 
@@ -52,6 +53,7 @@ public:
     
     // NEW
     Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);
+    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList);
     bool foundFood(Pickup* pickUp);
     int getAte();
 
