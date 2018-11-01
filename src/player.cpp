@@ -9,6 +9,7 @@
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
+constexpr int SHORTEN_DIST = 6;
 
 SDL_Rect playerRect;
 SDL_Rect hitRect;
@@ -31,7 +32,7 @@ Circle cPillar;
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
     playerRect = _rect;
-    hitRect = {playerRect.x, playerRect.y +6, playerRect.w, playerRect.h - 6};
+    hitRect = {playerRect.x, playerRect.y +SHORTEN_DIST, playerRect.w, playerRect.h - SHORTEN_DIST};
     x_deltav = 0;
     y_deltav = 0;
     x_vel = 0;
@@ -251,15 +252,21 @@ void Player::setEnemy(bool _overlap) {
 
 void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
-    if(collision::checkCol(hitRect, grid, 32)) {
+    if(collision::checkColX(hitRect, grid, 32)) {
         playerRect.x = curX;
         hitRect.x = curX;
     }
-    if(collision::checkCol(hitRect, grid, 32)) {
-        playerRect.y = curY;
-        hitRect.y = curY+6;
+    if(collision::checkColX(hitRect, grid, 32)) {
         playerRect.x += x_vel;
         hitRect.x += x_vel;
+    }
+    if(collision::checkColY(hitRect, grid, 32)) {
+        playerRect.y = curY;
+        hitRect.y = curY+6;
+    }
+    if(collision::checkColY(hitRect, grid, 32)) {
+        playerRect.y += y_vel;
+        hitRect.y += y_vel;
     }
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that
