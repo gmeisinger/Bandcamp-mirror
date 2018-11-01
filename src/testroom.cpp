@@ -17,6 +17,7 @@ constexpr int UPDATE_MAX = 100;
 int updateCount = 1;
 int oldTemp = 100;
 int oldO2 = 100;
+int oldAte = 0;
 
 // Heads up display 
 HUD h;
@@ -48,6 +49,7 @@ void TestRoom::init(SDL_Renderer* reference){
 	//Player and HUD in the Room
 	objectList["player"] = &p;
 	objectList["hud"] = &h;
+	// Change to add ooze to list as initialized
 	objectList["ooze"] = &o;
 
 	//Init walls in the room
@@ -66,9 +68,12 @@ void TestRoom::update(Uint32 ticks){
 		currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 	
-	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
+	// TODO: better way to check for pickup being consumed?
+	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2 || o.getAte() > oldAte) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
+	oldAte = o.getAte();
+
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
 		it->second->update(&objectList, ticks);
