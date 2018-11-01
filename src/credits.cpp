@@ -34,7 +34,7 @@ void Credits::load()
 	credits.push_back(utils::loadTexture(renderer, "Group Member Icons/gm_credit.png"));
 	credits.push_back(utils::loadTexture(renderer, "Group Member Icons/vc_credit.png"));
 	credits.push_back(utils::loadTexture(renderer, "Group Member Icons/jbader_credit.png"));
-//	Wating on Justin...
+	credits.push_back(utils::loadTexture(renderer, "Group Member Icons/justin_budd_credit.png"));
     init = true;
 }
 
