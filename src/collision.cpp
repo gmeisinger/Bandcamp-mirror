@@ -87,7 +87,7 @@ bool collision::checkCol(SDL_Rect rect, std::vector<std::vector<int>> grid, int 
     int normTopY = rect.y/tilesize;
     int normRightX = (rect.x + rect.w)/tilesize;
     int normBottomY = (rect.y + rect.h)/tilesize;
-    //printf("x: %d || y: %d\n", normalX, normalY);
+    
     int tileLT = grid[normTopY][normLeftX];
     int tileRT = grid[normTopY][normRightX];
     int tileLB = grid[normBottomY][normLeftX];

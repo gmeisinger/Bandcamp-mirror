@@ -15,6 +15,7 @@ class Player : public Object
 {
     private:
         SDL_Rect playerRect;
+        SDL_Rect hitRect;
         int x_deltav;
         int y_deltav;
         int x_vel;
