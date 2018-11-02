@@ -10,7 +10,7 @@
 #include "screen.h"
 #include "object.h"
 #include "pickup.h"
-#include "gsm.h"
+#include "GSM.h"
 #include "tilemap.h"
 
 class TestRoom : public Screen 

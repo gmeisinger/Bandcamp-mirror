@@ -9,7 +9,7 @@
 #include "include/HUD.h"
 #include "include/testroom.h"
 #include "include/game.h"
-#include "include/gsm.h"
+#include "include/GSM.h"
 #include "include/ooze.h"
 #include "include/circle.h"
 #include "include/collision.h"

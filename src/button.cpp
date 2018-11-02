@@ -3,7 +3,7 @@
 #include <SDL_ttf.h>
 #include "include/button.h"
 #include "include/game.h"
-#include "include/gsm.h"
+#include "include/GSM.h"
 
 //Framework for a basic object oriented button. In the future, this may be inheritable so that different types
 //of buttons can be made, or more flexible parameters will be added allowing for different images and effects to be loaded

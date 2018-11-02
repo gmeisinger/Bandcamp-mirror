@@ -8,10 +8,7 @@
 #include <SDL_ttf.h>
 #include "utils.h"
 
-#ifdef BANDCAMP_GSM_H_
-#include "gsm.h"
-#endif
-
+//#include "GSM.h"
 #include "button.h"
 
 class Menu : public Screen
