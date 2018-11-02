@@ -64,7 +64,7 @@ void Button::unpress() { //Any visual or sound effects for releasing may be set 
 	is_pressed = 0;
 }
 
-void Button::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+void Button::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
 	
 }
 
@@ -80,7 +80,7 @@ void Button::input(const Uint8* keystate) {
 	
 }
 
-SDL_Renderer* Button::draw(SDL_Renderer *renderer) { //A rectangle and the texture is drawn to the screen
+SDL_Renderer* Button::draw(SDL_Renderer *renderer, SDL_Rect cam) { //A rectangle and the texture is drawn to the screen
 	Uint8 color = 0;
 	if(is_pressed == 1) color = 80;
 	else color = 160;

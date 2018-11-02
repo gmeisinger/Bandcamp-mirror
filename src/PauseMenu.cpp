@@ -4,10 +4,6 @@
  * 
 */
 
-#include <SDL.h>
-#include <algorithm>
-#include <string>
-
 #include "include/spritesheet.h"
 #include "include/PauseMenu.h"
 #include "include/game.h"
@@ -87,7 +83,7 @@ void PauseMenu::update(Uint32 ticks){
 				}
 			}
 			else if(keyHeld[5] == 1){ //Back Pressed
-				cursor.x == screen_w/2-208;
+				cursor.x = screen_w/2-208;
 				cursor.y = screen_h/2;
 				menuState = 0; //GOTO the initial window.
 			}

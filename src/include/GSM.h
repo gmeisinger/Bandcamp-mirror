@@ -6,6 +6,7 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <SDL_image.h>
 #include "screen.h"
 #include "menu.h"
 #include "testroom.h"

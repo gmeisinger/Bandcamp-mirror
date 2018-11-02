@@ -3,9 +3,6 @@
  * 
 */
 
-#include <SDL.h>
-#include <SDL_image.h>
-
 #include "include/GSM.h"
 #include "include/credits.h"
 #include "include/testroom.h"

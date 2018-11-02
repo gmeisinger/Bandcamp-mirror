@@ -29,11 +29,11 @@ class Button : public Object
 		void init(SDL_Renderer* renderer);
 		void press();
 		void unpress();
-		void update(std::unordered_map<std::string, Object*> *objectList, const Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
 		std::string getInstanceName();
 		bool isUsed();
 		void input(const Uint8* keystate);
-		SDL_Renderer* draw(SDL_Renderer *renderer);
+		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
 };
 
 #endif // BANDCAMP_BUTTON_H_

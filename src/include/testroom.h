@@ -4,11 +4,15 @@
 #include <SDL.h>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
+#include <string>
 
 #include "screen.h"
 #include "object.h"
 #include "pickup.h"
 #include "gsm.h"
+#include "tilemap.h"
+
 class TestRoom : public Screen 
 { 
 	private:
