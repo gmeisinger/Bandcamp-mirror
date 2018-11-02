@@ -11,13 +11,10 @@
 #include "utils.h"
 #include "HUD.h"
 #include "player.h"
-<<<<<<< HEAD
 #include "collision.h"
 #include "circle.h"
 #include "game.h"
-=======
 #include "pickup.h"
->>>>>>> 8d7246e77bbbcd56866d099d56131757c1cb856a
 
 
 enum oozeState {
@@ -40,13 +37,12 @@ private:
     Circle cPillar;
     //
     SDL_Rect rect;
-<<<<<<< HEAD
+
     int x_vel;
     int y_vel;
     int x_deltav;
     int y_deltav;
-=======
->>>>>>> 8d7246e77bbbcd56866d099d56131757c1cb856a
+
     oozeState state;
     int hostility;
     Player *player;
@@ -111,12 +107,8 @@ public:
     void addAnimation(std::string tag, Animation anim);
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
-<<<<<<< HEAD
-    void updateAnimation(Uint32 ticks);
-=======
 
 
->>>>>>> 8d7246e77bbbcd56866d099d56131757c1cb856a
 };
 
 #endif  //  OOZE_H_
