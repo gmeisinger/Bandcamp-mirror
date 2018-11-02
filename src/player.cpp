@@ -23,11 +23,6 @@ int x_vel;
 int y_vel;
 bool overlapEnemy;
 
-//This should be removed ASAP
-SDL_Rect lWall;
-SDL_Rect rWall;
-SDL_Rect uWall;
-Circle cPillar;
 
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
@@ -257,73 +252,27 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
         hitRect.x = curX;
         playerRect.y = curY;
         hitRect.y = curY+SHORTEN_DIST;
-        //playerRect.y += y_vel;
-        //hitRect.y += y_vel;
+        playerRect.y += y_vel;
+        hitRect.y += y_vel;
     }
     if(collision::checkColX(hitRect, grid, 32)) {
-        playerRect.x += x_vel;
-        hitRect.x += x_vel;
+        //playerRect.x += x_vel;
+        //hitRect.x += x_vel;
+        x_vel = -x_vel;
     }
     if(collision::checkColY(hitRect, grid, 32)) {
         playerRect.x = curX;
         hitRect.x = curX;
         playerRect.y = curY;
         hitRect.y = curY+SHORTEN_DIST;
-        //playerRect.x += x_vel;
-        //hitRect.x += x_vel;
+        playerRect.x += x_vel;
+        hitRect.x += x_vel;
     }
     if(collision::checkColY(hitRect, grid, 32)) {
-        playerRect.y += y_vel;
-        hitRect.y += y_vel;
+        //playerRect.y += y_vel;
+        //hitRect.y += y_vel;
+        y_vel = -y_vel;
     }
-    //Checks the collision of each object and determines where the player should stop
-    //In the future, we might need to alter this function to take in an object that
-    //represents what the player is colliding with. This shouldn't be too difficult
-
-    /*LEFT WALL
-    if(collision::checkCol(playerRect, lWall))
-    {
-        playerRect.x = curX;
-    }
-    if(collision::checkCol(playerRect, lWall))
-    {
-        playerRect.y = curY;
-        //If this is not included the x movement will lock when colliding with y
-		playerRect.x += x_vel * 2;
-    } 
-
-    //RIGHT WALL
-    if(collision::checkCol(playerRect, rWall))
-    {
-        playerRect.x = curX;
-    }
-    if(collision::checkCol(playerRect, rWall))
-    {
-        playerRect.y = curY;
-		playerRect.x += x_vel;
-    }
-
-    //UPPER WALL
-    if(collision::checkCol(playerRect, uWall))
-    {
-        playerRect.x = curX;
-    }
-    if(collision::checkCol(playerRect, uWall))
-    {
-        playerRect.y = curY;
-		playerRect.x += x_vel;
-    }
-
-    //PILLAR - very difficult to implement with this style
-    if(collision::checkCol(playerRect, cPillar))
-    {
-        playerRect.x = curX;
-    }
-    if(collision::checkCol(playerRect, cPillar))
-    {
-        playerRect.y = curY;
-		playerRect.x += x_vel;
-    } */
 }
 
 void Player::checkEnemy(int _xdv, int _ydv){
