@@ -28,13 +28,10 @@ private:
     Circle cPillar;
     //
     SDL_Rect rect;
-/* <<<<<<< HEAD
     int x_vel;
     int y_vel;
     int x_deltav;
     int y_deltav;
-=======
->>>>>>> origin/master */
     oozeState state;
     int hostility;
     Player *player;

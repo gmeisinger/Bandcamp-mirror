@@ -54,9 +54,7 @@ void Pickup::input(const Uint8* keystate){}
 std::string Pickup::getInstanceName(){
   std::ostringstream ss;
   ss << instanceNumber;
-  
-  std::string p = "Pickup-" + std::toString(instanceNumber);
-	return p;
+	return "Pickup-"+ss.str();
 }
 
 void Pickup::init(SDL_Renderer *renderer){

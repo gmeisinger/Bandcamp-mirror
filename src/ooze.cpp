@@ -17,9 +17,9 @@ constexpr int BORDER_SIZE = 32;
 Ooze::Ooze():state{roaming}, hostility{0} {}
 
 //Constructor from rect
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{roaming}, hostility{0} {
+Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hostility{0} {
     rect = _rect;
-    oozePlayer = player;
+    player = p;
 	hud = h;
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;

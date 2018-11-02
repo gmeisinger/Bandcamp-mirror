@@ -140,6 +140,8 @@ void Game::run() {
 		draw();
 		last_time = cur_time;
 	}
+  
+  
 
 	//credits
 	Credits creds = Credits(gRenderer);

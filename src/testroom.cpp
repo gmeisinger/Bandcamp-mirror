@@ -74,7 +74,7 @@ void TestRoom::update(Uint32 ticks){
 	{ //If you set the currentScreen in the Input method it will cause an array out of bounds error.
 		pauseB = false;
 		enterHeld = true;
-		currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
+		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 	
 	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
