@@ -21,7 +21,7 @@ void PauseMenu::init(SDL_Renderer* reference){
 	menuState = 0;
 	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/Test Window.png")); //These images look really different on purpose.
 	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/Test Window - 2.png")); //These images look really different on purpose.
-	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/Cursor.png"));
+	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/cursor.png"));
 	menuImg = {screen_w/2-275, screen_h/2-100, 550, 200};
 	menuImg2 = {screen_w/2-250, screen_h/2-80, 550, 200};
 	cursor = {screen_w/2-208, screen_h/2, 28, 28}; //Reset the cursor position
