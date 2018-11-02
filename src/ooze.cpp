@@ -17,6 +17,16 @@ constexpr int BORDER_SIZE = 32;
 Ooze::Ooze():state{ROAMING}, hostility{0} {}
 
 //Constructor from rect
+/* <<<<<<< HEAD
+Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hostility{0} {
+    rect = _rect;
+    player = p;
+	hud = h;
+	totalOoze++; //Increase # of instances counter
+	oozeNumber = totalOoze;
+	Animation* anim;
+	int overlapTicks = 0;
+======= */
 Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{ROAMING}, hostility{0} {
     rect = _rect;
     this->player = player;
@@ -39,7 +49,9 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{ROAMING}
 Ooze::~Ooze(){};
 
 std::string Ooze::getInstanceName(){
-	return "Ooze-"+ std::to_string(oozeNumber);
+	std::ostringstream ss;
+  ss << oozeNumber;
+	return "Ooze-"+ss.str();
 }
 
 void Ooze::input(const Uint8* keystate){}
@@ -99,12 +111,10 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
-
     updatePosition();
     checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
     checkCollision(curX, curY);
-
 }
 
 void Ooze::increaseHostility() {
@@ -193,7 +203,7 @@ void Ooze::updatePosition() {
 }
 
 void Ooze::checkBounds(int max_width, int max_height) {
-    /*if (rect.x < BORDER_SIZE){
+    if (rect.x < BORDER_SIZE){
         rect.x = BORDER_SIZE;
         x_vel = -x_vel;
     }
@@ -209,8 +219,9 @@ void Ooze::checkBounds(int max_width, int max_height) {
     else if (rect.y + rect.h > max_height - BORDER_SIZE){
         rect.y = max_height - rect.h - BORDER_SIZE;
         y_vel = -y_vel;
-    }*/
+    }
 }
+
 
 bool Ooze::isUsed() { return false; }
 

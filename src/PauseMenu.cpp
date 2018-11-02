@@ -34,7 +34,7 @@ void PauseMenu::update(Uint32 ticks){
 	switch(menuState){
 		case 0: //Initial Window
 			if(keyHeld[6] == 1) //Enter Pressed
-				currentScreen = -2; //Unpause <- Its an arbitrary number.
+				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
 			else if (keyHeld[3] == 1 || keyHeld[2] == 1){ //Right or Left Pressed (This is a hack solution)
 				if(cursor.x == screen_w/2-208)
 					cursor.x = screen_w/2;
@@ -50,7 +50,7 @@ void PauseMenu::update(Uint32 ticks){
 		
 		case 1: //Second Window
 			if(keyHeld[6] == 1) //Enter Pressed
-				currentScreen = -2; //Unpause <- Its an arbitrary number.
+				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
 			else if (keyHeld[3] == 1){ //Right Pressed
 				if(cursor.x == screen_w/2 - 238){
 					cursor.x = screen_w/2 + 70;

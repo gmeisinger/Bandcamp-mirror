@@ -9,6 +9,7 @@
 #include "include/HUD.h"
 #include "include/testroom.h"
 #include "include/game.h"
+#include "include/gsm.h"
 #include "include/ooze.h"
 #include "include/circle.h"
 #include "include/collision.h"
@@ -33,9 +34,15 @@ Ooze o;
 Tilemap map;
 SDL_Rect camera;
 
+//TestRoom::TestRoom(){
+//	start = false;
+//	std::unordered_map<std::string, Object*> objectList;
+//}
+
 
 // ADD COMMENTS 
 void TestRoom::init(SDL_Renderer* reference){
+	std::cout << "Init TestRoom" << std::endl;
 	rendererReference = reference;
 	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
 	p = Player(player_box);
@@ -64,7 +71,7 @@ void TestRoom::update(Uint32 ticks){
 	{ //If you set the currentScreen in the Input method it will cause an array out of bounds error.
 		pauseB = false;
 		enterHeld = true;
-		currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
+		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 	
 	// TODO: better way to check for pickup being consumed?

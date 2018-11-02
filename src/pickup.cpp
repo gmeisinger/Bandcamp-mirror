@@ -2,6 +2,8 @@
  * Class function: 
  * 
 */
+#include "include/pickup.h"
+/* =======
 #include "include/physics.h"
 #include "include/pickup.h"
 #include "include/player.h"
@@ -9,6 +11,7 @@
 #include "include/utils.h"
 #include "include/testroom.h"
 #include "include/ooze.h"
+>>>>>>> 188008194d1ee41687ffa1b8c7571a5a951c9216 */
 
 constexpr int HOVER_SPEED = 150;
 
@@ -57,7 +60,9 @@ Pickup::Pickup(){
 void Pickup::input(const Uint8* keystate){}
 
 std::string Pickup::getInstanceName(){
-	return "Pickup-"+std::to_string(instanceNumber);
+  std::ostringstream ss;
+  ss << instanceNumber;
+	return "Pickup-"+ss.str();
 }
 
 void Pickup::init(SDL_Renderer *renderer){

@@ -16,6 +16,7 @@
 #include "game.h"
 #include "pickup.h"
 
+class Pickup;
 
 enum oozeState {
     ROAMING,
@@ -107,8 +108,7 @@ public:
     void addAnimation(std::string tag, Animation anim);
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
-
-
+    //void updateAnimation(Uint32 ticks);
 };
 
 #endif  //  OOZE_H_
