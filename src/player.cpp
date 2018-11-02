@@ -9,8 +9,10 @@
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
+constexpr int SHORTEN_DIST = 6;
 
 SDL_Rect playerRect;
+SDL_Rect hitRect;
 SDL_Rect* frame;
 SpriteSheet sheet;
 std::unordered_map<std::string, Animation*> anims;
@@ -30,6 +32,7 @@ Circle cPillar;
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
     playerRect = _rect;
+    hitRect = {playerRect.x, playerRect.y +SHORTEN_DIST, playerRect.w, playerRect.h - SHORTEN_DIST};
     x_deltav = 0;
     y_deltav = 0;
     x_vel = 0;
@@ -61,11 +64,6 @@ void Player::init(SDL_Renderer* gRenderer){
 	addAnimation("right", Animation(getSheet().getRow(3)));
 	setAnimation("down");
 
-    //This should be removed ASAP
-    lWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
-	rWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
-	uWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
-	cPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
@@ -151,6 +149,8 @@ void Player::updateVelocity(int _xdv, int _ydv) {
 void Player::updatePosition() {
     playerRect.x += x_vel;
     playerRect.y += y_vel;
+    hitRect.x += x_vel;
+    hitRect.y += y_vel;
 }
 
 void Player::checkBounds(int max_width, int max_height) {
@@ -189,7 +189,7 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+void Player::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -219,10 +219,10 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, Uint32
 	updatePosition();
 
 	// Check you haven't moved off the screen
-	checkBounds(screen_w, screen_h);
+	//checkBounds(screen_w, screen_h);
 
     //Check you haven't collided with object
-    checkCollision(curX, curY);
+    checkCollision(curX, curY, grid);
 }
 
 void Player::input(const Uint8* keystate)
@@ -233,10 +233,12 @@ void Player::input(const Uint8* keystate)
 	right = keystate[SDL_SCANCODE_D];
 }
 
-SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
-	//SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-	//SDL_RenderFillRect(renderer, &playerRect);
-    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
+SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
+    SDL_Rect* dest = new SDL_Rect;
+    *dest = playerRect;
+    dest->x -= cam.x;
+    dest->y -= cam.y;
+    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
    return renderer;
 }
 
@@ -248,13 +250,37 @@ void Player::setEnemy(bool _overlap) {
     overlapEnemy = _overlap;
 }
 
-void Player::checkCollision(int curX, int curY)
+void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
+    if(collision::checkColX(hitRect, grid, 32)) {
+        playerRect.x = curX;
+        hitRect.x = curX;
+        playerRect.y = curY;
+        hitRect.y = curY+SHORTEN_DIST;
+        //playerRect.y += y_vel;
+        //hitRect.y += y_vel;
+    }
+    if(collision::checkColX(hitRect, grid, 32)) {
+        playerRect.x += x_vel;
+        hitRect.x += x_vel;
+    }
+    if(collision::checkColY(hitRect, grid, 32)) {
+        playerRect.x = curX;
+        hitRect.x = curX;
+        playerRect.y = curY;
+        hitRect.y = curY+SHORTEN_DIST;
+        //playerRect.x += x_vel;
+        //hitRect.x += x_vel;
+    }
+    if(collision::checkColY(hitRect, grid, 32)) {
+        playerRect.y += y_vel;
+        hitRect.y += y_vel;
+    }
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that
     //represents what the player is colliding with. This shouldn't be too difficult
 
-    //LEFT WALL
+    /*LEFT WALL
     if(collision::checkCol(playerRect, lWall))
     {
         playerRect.x = curX;
@@ -297,7 +323,7 @@ void Player::checkCollision(int curX, int curY)
     {
         playerRect.y = curY;
 		playerRect.x += x_vel;
-    } 
+    } */
 }
 
 void Player::checkEnemy(int _xdv, int _ydv){

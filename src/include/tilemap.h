@@ -26,4 +26,4 @@ public:
 	SDL_Renderer* draw(SDL_Renderer* render, SDL_Rect cam);
 };
 
-#endif //  BANDCAMP_TILEMAP_H_
+#endif  //  BANDCAMP_TILEMAP_H_

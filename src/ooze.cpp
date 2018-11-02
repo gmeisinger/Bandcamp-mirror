@@ -60,7 +60,7 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 
 //*********TO DO:
 //update motion here
-void Ooze::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
 	
 	int x_deltav = 0;
 	int y_deltav = 0;
@@ -116,8 +116,12 @@ void Ooze::decreaseHostility() {
 		hostility--;
 }
 
-SDL_Renderer* Ooze::draw(SDL_Renderer* renderer) {
-    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
+SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
+    SDL_Rect* dest = new SDL_Rect;
+    *dest = rect;
+    dest->x -= cam.x;
+    dest->y -= cam.y;
+    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
    return renderer;
 }
 
@@ -189,7 +193,7 @@ void Ooze::updatePosition() {
 }
 
 void Ooze::checkBounds(int max_width, int max_height) {
-    if (rect.x < BORDER_SIZE){
+    /*if (rect.x < BORDER_SIZE){
         rect.x = BORDER_SIZE;
         x_vel = -x_vel;
     }
@@ -205,7 +209,7 @@ void Ooze::checkBounds(int max_width, int max_height) {
     else if (rect.y + rect.h > max_height - BORDER_SIZE){
         rect.y = max_height - rect.h - BORDER_SIZE;
         y_vel = -y_vel;
-    }
+    }*/
 }
 
 bool Ooze::isUsed() { return false; }
@@ -273,5 +277,4 @@ void Ooze::checkCollision(int curX, int curY)
     //In the future, we might need to alter this function to take in an object that
     //represents what the player is colliding with. This shouldn't be too difficult
 
-    
 }
