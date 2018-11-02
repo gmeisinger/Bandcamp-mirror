@@ -4,12 +4,24 @@
 #include <vector>
 #include <unordered_map>
 #include <SDL.h>
-#include <string>
-#include <algorithm>
-
 #include "player.h"
 #include "HUD.h"
 #include "object.h"
+
+#include "ooze.h"
+
+#include <string>
+#include <algorithm>
+
+#include "physics.h"
+
+#include "utils.h"
+#include "testroom.h"
+
+#include <sstream>
+#include <iostream>
+
+class Player;
 
 class Pickup : public Object
 {
@@ -25,14 +37,14 @@ class Pickup : public Object
 	public:
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
-		void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
 		std::string getInstanceName();
-		SDL_Renderer* draw(SDL_Renderer *renderer);
+		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
 		Pickup(SDL_Rect _rect, char type, int value, Player* player, HUD* h);
         ~Pickup();
 		Pickup();
 		void checkPickupOverlap(std::unordered_map<std::string, Object*> *objectList);
-		SDL_Rect* getPickupRect();
+		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
 };

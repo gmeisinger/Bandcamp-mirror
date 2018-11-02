@@ -21,7 +21,7 @@ void PauseMenu::init(SDL_Renderer* reference){
 	menuState = 0;
 	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/Test Window.png")); //These images look really different on purpose.
 	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/Test Window - 2.png")); //These images look really different on purpose.
-	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/Cursor.png"));
+	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/cursor.png"));
 	menuImg = {screen_w/2-275, screen_h/2-100, 550, 200};
 	menuImg2 = {screen_w/2-250, screen_h/2-80, 550, 200};
 	cursor = {screen_w/2-208, screen_h/2, 28, 28}; //Reset the cursor position
@@ -34,7 +34,7 @@ void PauseMenu::update(Uint32 ticks){
 	switch(menuState){
 		case 0: //Initial Window
 			if(keyHeld[6] == 1) //Enter Pressed
-				currentScreen = -2; //Unpause <- Its an arbitrary number.
+				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
 			else if (keyHeld[3] == 1 || keyHeld[2] == 1){ //Right or Left Pressed (This is a hack solution)
 				if(cursor.x == screen_w/2-208)
 					cursor.x = screen_w/2;
@@ -50,7 +50,7 @@ void PauseMenu::update(Uint32 ticks){
 		
 		case 1: //Second Window
 			if(keyHeld[6] == 1) //Enter Pressed
-				currentScreen = -2; //Unpause <- Its an arbitrary number.
+				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
 			else if (keyHeld[3] == 1){ //Right Pressed
 				if(cursor.x == screen_w/2 - 238){
 					cursor.x = screen_w/2 + 70;
@@ -83,7 +83,7 @@ void PauseMenu::update(Uint32 ticks){
 				}
 			}
 			else if(keyHeld[5] == 1){ //Back Pressed
-				cursor.x == screen_w/2-208;
+				cursor.x = screen_w/2-208;
 				cursor.y = screen_h/2;
 				menuState = 0; //GOTO the initial window.
 			}

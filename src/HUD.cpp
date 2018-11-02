@@ -55,7 +55,7 @@ void HUD::init(SDL_Renderer* _renderer)
 	init_h = true;
 }
 
-void HUD::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks){
+void HUD::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
 		
 }
 
@@ -217,7 +217,7 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 	return renderer_h;
 }
 
-SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer){
+SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer, SDL_Rect cam){
 	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp, currentHealth); // , currentPower can add for power level
 	SDL_SetRenderDrawColor(renderer_h, 0, 0, 0, 255);
 	SDL_RenderCopy(gRenderer, hud[0], NULL, NULL);

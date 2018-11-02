@@ -19,8 +19,8 @@ int tile_s;
 Game::Game() {
 	gWindow = nullptr;
 	gRenderer = nullptr;
-	running = false;			// Flag variable: runs the game while true
-	GSM gsm;					// 
+	running = false;
+	GSM * gsm;
 	screen_w = SCREEN_WIDTH;
 	screen_h = SCREEN_HEIGHT;
 	tile_s = TILE_SIZE;
@@ -64,15 +64,25 @@ bool Game::init() {
 	}
 	//Initialize PNG loading
 	int imgFlags = IMG_INIT_PNG;
-	if( !( IMG_Init( imgFlags ) & imgFlags ) ){
-		printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
+	if( !( IMG_Init( imgFlags ) & imgFlags ) )
+	{
+		std::cout << "SDL_image could not initialize! SDL_image Error: " << IMG_GetError() << std::endl;
 		return false;
 	}
+	if( TTF_Init() == -1 )
+    {
+        std::cout << "SDL_ttf could not initialize! SDL_ttf Error: " << TTF_GetError() << std::endl;
+        return false;
+    }
 	// Set renderer draw/clear color
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	
+	
 	//Start the GSM
-	gsm.init(gRenderer);
+  
+  gsm = new GSM();
+  
+	gsm->init(gRenderer);
 	
 	// Initialization Successful
 	running = true;
@@ -80,7 +90,7 @@ bool Game::init() {
 }
 
 void Game::update(Uint32 ticks) {
-	gsm.update(ticks);
+	gsm->update(ticks);
 }
 
 void Game::draw() {
@@ -89,7 +99,7 @@ void Game::draw() {
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen
-	gRenderer = gsm.draw(gRenderer);
+	gRenderer = gsm->draw(gRenderer);
 	SDL_RenderPresent(gRenderer);
 }
 
@@ -97,14 +107,14 @@ void Game::draw() {
  * Processes the updare 
 */
 void Game::input(const Uint8* keystate){
-	gsm.input(keystate);
+	gsm->input(keystate);
 }
 
 //main game loop
 void Game::run() {
 	//event handler
 	SDL_Event e;
-
+	std::cout << "Running" << std::endl;
 	//timer
 	Uint32 last_time = SDL_GetTicks();
 	Uint32 cur_time = 0;
@@ -130,6 +140,8 @@ void Game::run() {
 		draw();
 		last_time = cur_time;
 	}
+  
+  
 
 	//credits
 	Credits creds = Credits(gRenderer);
