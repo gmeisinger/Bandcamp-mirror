@@ -3,10 +3,6 @@
  * 
 */
 
-#include <SDL.h>
-#include <algorithm>
-#include <string>
-
 #include "include/object.h"
 #include "include/player.h"
 #include "include/spritesheet.h"
@@ -23,19 +19,22 @@ constexpr int CAM_HEIGHT = 600;
 int updateCount = 1;
 int oldTemp = 100;
 int oldO2 = 100;
+int oldAte = 0;
 
+// Heads up display 
 HUD h;
 Player p;
+
+bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
+
+TestRoom::TestRoom() : Screen(){} //from merge
+
 Ooze o;
 Tilemap map;
 SDL_Rect camera;
 
-TestRoom::TestRoom(int* roomNumber){
-	start = false;
-	std::unordered_map<std::string, Object*> objectList;
-	roomReference = roomNumber;
-}
 
+// ADD COMMENTS 
 void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
 	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
@@ -54,15 +53,26 @@ void TestRoom::init(SDL_Renderer* reference){
 	//Player and HUD in the Room
 	objectList["player"] = &p;
 	objectList["hud"] = &h;
+	// Change to add ooze to list as initialized
 	objectList["ooze"] = &o;
 
 }
 
+// ADD COMMENTS 
 void TestRoom::update(Uint32 ticks){
-	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2) movePickup(rendererReference);
+	if(pauseB)
+	{ //If you set the currentScreen in the Input method it will cause an array out of bounds error.
+		pauseB = false;
+		enterHeld = true;
+		currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
+	}
+	
+	// TODO: better way to check for pickup being consumed?
+	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2 || o.getAte() > oldAte) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
-	//update all objects
+	oldAte = o.getAte();
+  //update all objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
 		it->second->update(&objectList, map.getGrid(), ticks);
@@ -88,6 +98,7 @@ void TestRoom::update(Uint32 ticks){
 	updateCount = (updateCount+1)%UPDATE_MAX;
 }
 
+// ADD COMMENTS 
 void TestRoom::movePickup(SDL_Renderer* reference) {
 	int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
 	int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
@@ -119,14 +130,28 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 	}
 }
 
+// ADD COMMENTS 
 void TestRoom::input(const Uint8* keystate){
-	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
-	while(it != objectList.end()){
-		it->second->input(keystate);
-		it++;
+	//If you push the pause button
+	
+	//When you come back into the room after a pause, you will most likely still be holding down
+	//the enter key. This prevents you from going straight back into the pause menu.
+	if(enterHeld && keystate[SDL_SCANCODE_RETURN])
+		pauseB = false;
+	else
+	{
+		enterHeld = false;
+		pauseB = keystate[SDL_SCANCODE_RETURN];
+		
+		std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+		while(it != objectList.end()){
+			it->second->input(keystate);
+			it++;
+		}
 	}
 }
 
+// ADD COMMENTS 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
 	//draw map before objects
 	map.draw(renderer, camera);

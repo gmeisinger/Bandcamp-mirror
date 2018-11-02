@@ -2,17 +2,13 @@
  * Class function: 
  * 
 */
-
-#include <algorithm>
-#include <vector>
-#include <string>
-
 #include "include/physics.h"
 #include "include/pickup.h"
 #include "include/player.h"
 #include "include/HUD.h"
 #include "include/utils.h"
 #include "include/testroom.h"
+#include "include/ooze.h"
 
 constexpr int HOVER_SPEED = 150;
 
@@ -26,7 +22,6 @@ SDL_Rect currentClip, shadowClip;
 SDL_Rect drawBox, shadowBox;	//Where the Image is drawn on screen
 Uint32 fTicks;
 int incrementY;		//How much the Image is displaced from the original spot.
-bool up;			//Is the image floating up or down.
 static int totalInstance = 0;//How many instances of the object exist?
 int instanceNumber = 0;
 bool used;
@@ -167,6 +162,18 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *object
 		used = true;
 		//objectList->erase(getInstanceName());
 		//delete this;
+	} else {
+		// Check for collisions with any ooze. Calling foundFood also updates the ooze
+		std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+    	while(it != objectList->end()){
+	        if (!it->first.substr(0,4).compare("ooze")) {
+	        	Ooze* temp = (Ooze*)it->second;
+	            if (temp->foundFood(this)) {
+	            	used = true;
+	            }
+	        }
+        	it++;
+    	}
 	}
 }
 
@@ -174,6 +181,6 @@ bool Pickup::isUsed() {
 	return used;
 }
 
-SDL_Rect* Pickup::getPickupRect() {
+SDL_Rect* Pickup::getRect() {
     return &pickupRect;
 }

@@ -143,7 +143,7 @@ void Player::updateVelocity(int _xdv, int _ydv) {
         y_vel = MAX_SPEED;
 
     // Also update position
-//   this->updatePosition();
+   this->updatePosition();
 }
 
 void Player::updatePosition() {
@@ -210,7 +210,7 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 	updateVelocity(x_deltav, y_deltav);
 
     //Checks if you are overlapping an enemy, slows down velocity if you are
-    checkEnemy(x_deltav, y_deltav);
+    //checkEnemy(x_deltav, y_deltav);
 
     //update animation
     updateAnimation(ticks);
@@ -288,9 +288,9 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
     if(collision::checkCol(playerRect, lWall))
     {
         playerRect.y = curY;
-		//If this is not included the x movement will lock when colliding with y
-		playerRect.x += x_vel;
-    }
+        //If this is not included the x movement will lock when colliding with y
+		playerRect.x += x_vel * 2;
+    } 
 
     //RIGHT WALL
     if(collision::checkCol(playerRect, rWall))

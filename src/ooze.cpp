@@ -14,10 +14,10 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{roaming}, hostility{0} {}
+Ooze::Ooze():state{ROAMING}, hostility{0} {}
 
 //Constructor from rect
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{roaming}, hostility{0} {
+Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{ROAMING}, hostility{0} {
     rect = _rect;
     this->player = player;
 	  hud = h;
@@ -69,12 +69,22 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     //Needed for collision detection
     int curX = rect.x;
     int curY = rect.y;
+
+    int pickupX;
+    int pickupY;
 	
+    //might move order of update calls
+    bool stateChange = updateState(objectList, ticks);
+
 	bool overlap = checkOozeOverlap(objectList, ticks);
     
+    //target = getPickup(objectList)->getRect();
 	if(!overlap){
 
-		//check which direction the player is
+        //uncomment the line below to change the ooze to chasing the pickups
+        //target = pickTarget(objectList);
+
+		//check which direction the player is 
 		if (player->getY() > rect.y + rect.h)
 			y_deltav += 1;
 		if (player->getX() > rect.x + rect.w)
@@ -86,6 +96,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
         
         updateVelocity(x_deltav,y_deltav);
 	}
+    //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
 
@@ -93,6 +104,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
     checkCollision(curX, curY);
+
 }
 
 void Ooze::increaseHostility() {
@@ -111,6 +123,31 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
    return renderer;
+}
+
+// TODO: combine this with the overlap method below, which
+//       checks for overlap betw. ooze and player
+bool Ooze::foundFood(Pickup* food) {
+    if (food) {
+        SDL_Rect* fRect = food->getRect();
+        bool overlap = collision::checkCol(rect, *fRect);
+        if (overlap) {
+            //food->use();
+            ate = ate + 1;
+            std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
+            std::cout << s << std::endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+int Ooze::getAte() {
+    return ate;
+}
+
+bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+    return false;
 }
 
 //Checks if the player overlapped with the ooze and acts accordingly
@@ -233,6 +270,7 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
         y_vel = MAX_SPEED;
 }
 
+//currently checks collisions with room features (walls etc.)
 void Ooze::checkCollision(int curX, int curY)
 {
     //Checks the collision of each object and determines where the player should stop
