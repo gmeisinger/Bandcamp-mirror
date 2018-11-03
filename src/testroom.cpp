@@ -28,7 +28,9 @@ Player p;
 
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
-TestRoom::TestRoom() : Screen(){} //from merge
+TestRoom::TestRoom() : Screen(){
+	std::unordered_map<std::string, Object*> objectList;
+} //from merge
 
 Ooze o;
 Tilemap map;
@@ -42,7 +44,6 @@ SDL_Rect camera;
 
 // ADD COMMENTS 
 void TestRoom::init(SDL_Renderer* reference){
-	std::cout << "Init TestRoom" << std::endl;
 	rendererReference = reference;
 	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
 	p = Player(player_box);

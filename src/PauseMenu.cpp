@@ -42,8 +42,8 @@ void PauseMenu::update(Uint32 ticks){
 					cursor.x = screen_w/2-208;
 			}
 			else if(keyHeld[4] == 1){ //Confirm Pressed
-				cursor.x = screen_w/2 - 238;
-				cursor.y = screen_h/2 - 5;
+				cursor.x = screen_w/2 - 218;
+				cursor.y = screen_h/2 + 2;
 				menuState = 1; //GOTO the second window.
 			}
 		break;
@@ -52,34 +52,34 @@ void PauseMenu::update(Uint32 ticks){
 			if(keyHeld[6] == 1) //Enter Pressed
 				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
 			else if (keyHeld[3] == 1){ //Right Pressed
-				if(cursor.x == screen_w/2 - 238){
-					cursor.x = screen_w/2 + 70;
-					cursor.y = screen_h/2;
+				if(cursor.x == screen_w/2 - 218){
+					cursor.x = screen_w/2 + 90;
+					cursor.y = screen_h/2+ 20;
 				}
-				else if(cursor.x == screen_w/2 + 70){
-					cursor.x = screen_w/2 - 117;
-					cursor.y = screen_h/2 + 29;
+				else if(cursor.x == screen_w/2 + 90){
+					cursor.x = screen_w/2 - 97;
+					cursor.y = screen_h/2 + 49;
 				}
 				else{
-					cursor.x = screen_w/2 - 238;
-					cursor.y = screen_h/2 - 5;
+					cursor.x = screen_w/2 - 218;
+					cursor.y = screen_h/2 + 2;
 				}
 					
 			}
 			else if(keyHeld[2] == 1){  //Left Pressed
-				if(cursor.x == screen_w/2 - 238){
-					cursor.x = screen_w/2 - 117;
-					cursor.y = screen_h/2 + 29;
+				if(cursor.x == screen_w/2 - 218){
+					cursor.x = screen_w/2 - 97;
+					cursor.y = screen_h/2 + 49;
 					
 					
 				}
-				else if(cursor.x == screen_w/2 + 70){
-					cursor.x = screen_w/2 - 238;
-					cursor.y = screen_h/2 - 5;
+				else if(cursor.x == screen_w/2 + 90){
+					cursor.x = screen_w/2 - 218;
+					cursor.y = screen_h/2 + 2;
 				}
 				else{
-					cursor.x = screen_w/2 + 70;
-					cursor.y = screen_h/2;
+					cursor.x = screen_w/2 + 90;
+					cursor.y = screen_h/2 + 20;
 				}
 			}
 			else if(keyHeld[5] == 1){ //Back Pressed
