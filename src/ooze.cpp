@@ -83,7 +83,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 			y_deltav -= 1;
 		if (player->getX() + player->getWidth() < rect.x)
 			x_deltav -= 1; 
-        
+        std::cout << drawLine(grid) << std::endl;
         updateVelocity(x_deltav,y_deltav);
 	}
     //update animation
@@ -94,8 +94,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid, true);
-
-    std::cout << drawLine(grid) << std::endl;
 }
 
 void Ooze::increaseHostility() {
@@ -113,7 +111,7 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->x -= cam.x;
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
-   return renderer;
+    return renderer;
 }
 
 //Checks if the player overlapped with the ooze and acts accordingly
@@ -159,7 +157,7 @@ void Ooze::updatePosition() {
 }
 
 void Ooze::checkBounds(int max_width, int max_height) {
-    /*if (rect.x < BORDER_SIZE){
+    if (rect.x < BORDER_SIZE){
         rect.x = BORDER_SIZE;
         x_vel = -x_vel;
     }
@@ -175,7 +173,7 @@ void Ooze::checkBounds(int max_width, int max_height) {
     else if (rect.y + rect.h > max_height - BORDER_SIZE){
         rect.y = max_height - rect.h - BORDER_SIZE;
         y_vel = -y_vel;
-    }*/
+    }
 }
 
 bool Ooze::isUsed() { return false; }
@@ -203,7 +201,7 @@ int Ooze::getY() { return rect.y; }
 SDL_Rect* Ooze::getRect() { return &rect; }
 
 void Ooze::updateVelocity(int _xdv, int _ydv) {
-    /*
+    
     // If we dont want out dot to be in a frictionless vacuum...
     if (_xdv == 0) {
         // No user-supplied "push", return to rest
@@ -218,7 +216,7 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
         else if (y_vel < 0)
             _ydv = 1;
     }
-     */
+     
     
     // Speed up/slow down
     x_vel += _xdv;
@@ -267,19 +265,19 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
     int endX = player->getX();
     int endY = player->getY();
     colRect = {startX, startY, rect.w, rect.h};
-    int slope;
+    int slope = 0;
     int xDir;
     int yDir;
     bool sight = false;
 
-    if (player->getY() > rect.y)
-		yDir = 1;
-	if (player->getX() > rect.x)
-		xDir = 1;
-	if (player->getY() < rect.y)
-		yDir = -1;
-	if (player->getX() < rect.x)
-		xDir = -1;
+    if (player->getY() > rect.y) 
+        yDir = 1;
+	if (player->getX() > rect.x) 
+        xDir = 1;
+	if (player->getY() < rect.y) 
+        yDir = -1;
+	if (player->getX() < rect.x) 
+        xDir = -1;
 
     deltaX = abs(deltaX * 2);
     deltaY = abs(deltaY * 2);
@@ -297,24 +295,28 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
             colRect.x += xDir;
             slope += deltaY;
             sight = checkCollision(colRect.x, colRect.y, grid, false);
-            return sight;
+            if(!sight)
+                break;
         }
     }
     else {
         slope = deltaX * 2 - deltaY;
         while(startY != endY) {
             if(slope >= 0) {
-                startX += xDir;
-                slope -= deltaY;
+                startY += yDir;
+                colRect.y += yDir;
+                slope -= deltaX;
             }
 
-            startY += yDir;
-            slope += deltaX;
-            colRect.x = startX;
-            colRect.y = startY;
+            startX += xDir;
+            colRect.x += xDir;
+            slope += deltaY;
             sight = checkCollision(colRect.x, colRect.y, grid, false);
-            return sight;
+            if(!sight)
+                break;
         }
     }
+
+    return sight;
 
 }
