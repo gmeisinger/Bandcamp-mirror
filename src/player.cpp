@@ -137,8 +137,6 @@ void Player::updateVelocity(int _xdv, int _ydv) {
     else if (y_vel > MAX_SPEED)
         y_vel = MAX_SPEED;
 
-    // Also update position
-   this->updatePosition();
 }
 
 void Player::updatePosition() {
@@ -250,11 +248,6 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
     if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
         playerRect.x = curX;
         hitRect.x = curX;
-        
-        playerRect.y -= y_vel;
-        hitRect.y -= y_vel;
-
-        x_vel = 0;
     }
     
     if(collision::checkColTop(hitRect, grid, 32) || collision::checkColBottom(hitRect, grid, 32)) {
@@ -265,6 +258,11 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
         hitRect.x += x_vel;
 
         y_vel = 0;
+        if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
+            x_vel = 0; 
+            playerRect.x = curX;
+            hitRect.x = curX;   
+        }
     }
     
 }

@@ -289,17 +289,17 @@ void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid
     //represents what the player is colliding with. This shouldn't be too difficult
     if(collision::checkColLeft(rect, grid, 32) || collision::checkColRight(rect, grid, 32)) {
         rect.x = curX;
-        
-        rect.y -= y_vel;
-
-        x_vel = 0;
     }
     
     if(collision::checkColTop(rect, grid, 32) || collision::checkColBottom(rect, grid, 32)) {
         rect.y = curY;
 
         rect.x += x_vel;
-        
+
         y_vel = 0;
+        if(collision::checkColLeft(rect, grid, 32) || collision::checkColRight(rect, grid, 32)) {
+            x_vel = 0; 
+            rect.x = curX;
+        }
     }
 }
