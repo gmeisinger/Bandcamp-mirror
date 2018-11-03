@@ -11,8 +11,10 @@ private:
 	int curFrame;
 	Uint32 frameTicks;
 	bool playing;
+	bool loop;
 public:
 	Animation(std::vector<SDL_Rect> _frames);
+	Animation(std::vector<SDL_Rect> _frames, bool _loop);
 	Animation();
 	~Animation();
 	void update(Uint32 ticks);
