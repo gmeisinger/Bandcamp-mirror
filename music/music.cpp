@@ -39,7 +39,7 @@ bool load_files()
 {
 
 	//Load the music
-	music = Mix_LoadMUS("beat.wav");
+	music = Mix_LoadMUS("CS1666 Game Music 1 128bpm Cm.wav");
     
 	//If there was a problem loading the music
 	if( music == NULL )
