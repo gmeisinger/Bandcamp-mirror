@@ -247,32 +247,26 @@ void Player::setEnemy(bool _overlap) {
 
 void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
-    if(collision::checkColX(hitRect, grid, 32)) {
+    if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
         playerRect.x = curX;
         hitRect.x = curX;
+        
+        playerRect.y -= y_vel;
+        hitRect.y -= y_vel;
+
+        x_vel = 0;
+    }
+    
+    if(collision::checkColTop(hitRect, grid, 32) || collision::checkColBottom(hitRect, grid, 32)) {
         playerRect.y = curY;
         hitRect.y = curY+SHORTEN_DIST;
-        playerRect.y += y_vel;
-        hitRect.y += y_vel;
-    }
-    if(collision::checkColX(hitRect, grid, 32)) {
-        //playerRect.x += x_vel;
-        //hitRect.x += x_vel;
-        x_vel = -x_vel;
-    }
-    if(collision::checkColY(hitRect, grid, 32)) {
-        playerRect.x = curX;
-        hitRect.x = curX;
-        playerRect.y = curY;
-        hitRect.y = curY+SHORTEN_DIST;
+
         playerRect.x += x_vel;
         hitRect.x += x_vel;
+
+        y_vel = 0;
     }
-    if(collision::checkColY(hitRect, grid, 32)) {
-        //playerRect.y += y_vel;
-        //hitRect.y += y_vel;
-        y_vel = -y_vel;
-    }
+    
 }
 
 void Player::checkEnemy(int _xdv, int _ydv){

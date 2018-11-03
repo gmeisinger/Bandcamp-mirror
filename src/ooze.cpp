@@ -114,7 +114,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     updatePosition();
     checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
-    checkCollision(curX, curY);
+    checkCollision(curX, curY, grid);
 }
 
 void Ooze::increaseHostility() {
@@ -282,10 +282,24 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
 }
 
 //currently checks collisions with room features (walls etc.)
-void Ooze::checkCollision(int curX, int curY)
+void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that
     //represents what the player is colliding with. This shouldn't be too difficult
+    if(collision::checkColLeft(rect, grid, 32) || collision::checkColRight(rect, grid, 32)) {
+        rect.x = curX;
+        
+        rect.y -= y_vel;
 
+        x_vel = 0;
+    }
+    
+    if(collision::checkColTop(rect, grid, 32) || collision::checkColBottom(rect, grid, 32)) {
+        rect.y = curY;
+
+        rect.x += x_vel;
+        
+        y_vel = 0;
+    }
 }
