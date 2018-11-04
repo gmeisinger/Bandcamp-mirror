@@ -9,8 +9,10 @@
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
+constexpr int SHORTEN_DIST = 6;
 
 SDL_Rect playerRect;
+SDL_Rect hitRect;
 SDL_Rect* frame;
 SpriteSheet sheet;
 std::unordered_map<std::string, Animation*> anims;
@@ -21,15 +23,11 @@ int x_vel;
 int y_vel;
 bool overlapEnemy;
 
-//This should be removed ASAP
-SDL_Rect lWall;
-SDL_Rect rWall;
-SDL_Rect uWall;
-Circle cPillar;
 
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
     playerRect = _rect;
+    hitRect = {playerRect.x, playerRect.y +SHORTEN_DIST, playerRect.w, playerRect.h - SHORTEN_DIST};
     x_deltav = 0;
     y_deltav = 0;
     x_vel = 0;
@@ -139,13 +137,13 @@ void Player::updateVelocity(int _xdv, int _ydv) {
     else if (y_vel > MAX_SPEED)
         y_vel = MAX_SPEED;
 
-    // Also update position
-//   this->updatePosition();
 }
 
 void Player::updatePosition() {
     playerRect.x += x_vel;
     playerRect.y += y_vel;
+    hitRect.x += x_vel;
+    hitRect.y += y_vel;
 }
 
 void Player::checkBounds(int max_width, int max_height) {
@@ -205,7 +203,7 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 	updateVelocity(x_deltav, y_deltav);
 
     //Checks if you are overlapping an enemy, slows down velocity if you are
-    checkEnemy(x_deltav, y_deltav);
+    //checkEnemy(x_deltav, y_deltav);
 
     //update animation
     updateAnimation(ticks);
@@ -247,62 +245,25 @@ void Player::setEnemy(bool _overlap) {
 
 void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
-    if(collision::checkCol(playerRect, grid, 32)) {
+    if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
         playerRect.x = curX;
+        hitRect.x = curX;
     }
-    if(collision::checkCol(playerRect, grid, 32)) {
+    if(collision::checkColTop(hitRect, grid, 32) || collision::checkColBottom(hitRect, grid, 32)) {
         playerRect.y = curY;
+        hitRect.y = curY+SHORTEN_DIST;
+
         playerRect.x += x_vel;
-    }
+        hitRect.x += x_vel;
 
-    //Checks the collision of each object and determines where the player should stop
-    //In the future, we might need to alter this function to take in an object that
-    //represents what the player is colliding with. This shouldn't be too difficult
-
-    /*LEFT WALL
-    if(collision::checkCol(playerRect, lWall))
-    {
-        playerRect.x = curX;
+        y_vel = 0;
+        if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
+            x_vel = 0; 
+            playerRect.x = curX;
+            hitRect.x = curX;   
+        }
     }
-    if(collision::checkCol(playerRect, lWall))
-    {
-        playerRect.y = curY;
-		//If this is not included the x movement will lock when colliding with y
-		playerRect.x += x_vel;
-    }
-
-    //RIGHT WALL
-    if(collision::checkCol(playerRect, rWall))
-    {
-        playerRect.x = curX;
-    }
-    if(collision::checkCol(playerRect, rWall))
-    {
-        playerRect.y = curY;
-		playerRect.x += x_vel;
-    }
-
-    //UPPER WALL
-    if(collision::checkCol(playerRect, uWall))
-    {
-        playerRect.x = curX;
-    }
-    if(collision::checkCol(playerRect, uWall))
-    {
-        playerRect.y = curY;
-		playerRect.x += x_vel;
-    }
-
-    //PILLAR - very difficult to implement with this style
-    if(collision::checkCol(playerRect, cPillar))
-    {
-        playerRect.x = curX;
-    }
-    if(collision::checkCol(playerRect, cPillar))
-    {
-        playerRect.y = curY;
-		playerRect.x += x_vel;
-    } */
+    
 }
 
 void Player::checkEnemy(int _xdv, int _ydv){

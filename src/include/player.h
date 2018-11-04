@@ -6,30 +6,31 @@
 #include <cmath>
 #include <string>
 #include <vector>
+
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
-#include "game.h"
 
 class Player : public Object
 {
     private:
         SDL_Rect playerRect;
+        SDL_Rect hitRect;
         int x_deltav;
         int y_deltav;
         int x_vel;
         int y_vel;
-		    bool up;
-		    bool down;
-		    bool left;
-		    bool right;
-		    SpriteSheet sheet;
+		bool up;
+		bool down;
+		bool left;
+		bool right;
+		SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;
         Animation* anim;
 		
     public:
         Player(SDL_Rect _rect);
-		    Player();
+		Player();
         ~Player();
 		    std::string getInstanceName();
 		    void init(SDL_Renderer* gRenderer);

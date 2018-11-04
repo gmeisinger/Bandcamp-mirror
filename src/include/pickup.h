@@ -4,11 +4,24 @@
 #include <vector>
 #include <unordered_map>
 #include <SDL.h>
-#include <string>
-
 #include "player.h"
 #include "HUD.h"
 #include "object.h"
+
+#include "ooze.h"
+
+#include <string>
+#include <algorithm>
+
+#include "physics.h"
+
+#include "utils.h"
+#include "testroom.h"
+
+#include <sstream>
+#include <iostream>
+
+class Player;
 
 class Pickup : public Object
 {
@@ -19,6 +32,7 @@ class Pickup : public Object
 		int pickupValue;
 		Player *pickupPlayer;
 		HUD *hud;
+		bool up;			//Is the image floating up or down.
 
 	public:
 		void input(const Uint8* keystate);
@@ -30,7 +44,7 @@ class Pickup : public Object
         ~Pickup();
 		Pickup();
 		void checkPickupOverlap(std::unordered_map<std::string, Object*> *objectList);
-		SDL_Rect* getPickupRect();
+		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
 };

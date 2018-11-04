@@ -14,9 +14,19 @@
 #include "collision.h"
 #include "circle.h"
 #include "game.h"
+#include "pickup.h"
 
+class Pickup;
 
-enum oozeState { roaming, eating, attacking, approaching, retreating, dying, inCrack};
+enum oozeState {
+    ROAMING,
+    EATING,
+    CLONING,
+    FIGHTING,
+    FLEEING,
+    HIDING,
+    DYING
+};
 
 class Ooze : public Object
 {
@@ -24,10 +34,12 @@ private:
     SDL_Rect rect;
     //Used to check line of sight
     SDL_Rect colRect;
+
     int x_vel;
     int y_vel;
     int x_deltav;
     int y_deltav;
+
     oozeState state;
     int hostility;
     Player *player;
@@ -36,18 +48,33 @@ private:
     Animation* anim;
     int overlapTicks;
     std::unordered_map<std::string, Animation> anims;
+    int ate;
+    SDL_Rect *target;
     
 public:
+
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
-    int damage = 1;
+    int damage = 5;
     // Constructors & destructor
     Ooze();
     Ooze(SDL_Rect _rect, Player *player, HUD *h);
 //    Ooze(oozeState st, int hostil);
     ~Ooze();
     
+    // NEW
+    Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);
+    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList);
+    bool foundFood(Pickup* pickUp);
+    int getAte();
+
+    // Updates
+    void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+    bool updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+    void updateVelocity(int _xdv, int _ydv); 
+    void updatePosition();
+    void updateAnimation(Uint32 ticks);
     // SDL
     std::string getInstanceName();
     void input(const Uint8* keystate);
@@ -59,12 +86,11 @@ public:
     bool isUsed();
 
     //Movement
-    void updateVelocity(int _xdv, int _ydv); 
-    void updatePosition();
     void checkBounds(int max_width, int max_height);
     bool checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move);
     bool drawLine(std::vector<std::vector<int>> grid);
     void moveLine(std::vector<std::vector<int>> grid);;
+
     
     // Math
     void increaseHostility();
@@ -77,11 +103,11 @@ public:
     int getY();
     SDL_Rect* getRect();
     SpriteSheet getSheet();
-    // Animation
+    //Animation
     void addAnimation(std::string tag, Animation anim);
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
-    void updateAnimation(Uint32 ticks);
+    //void updateAnimation(Uint32 ticks);
 };
 
 #endif  //  OOZE_H_

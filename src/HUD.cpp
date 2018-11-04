@@ -3,10 +3,6 @@
  * 
 */
 
-#include <algorithm>
-#include <vector>
-#include <SDL.h>
-
 #include "include/HUD.h"
 #include "include/utils.h"
 

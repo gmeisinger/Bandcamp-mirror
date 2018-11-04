@@ -14,10 +14,20 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{roaming}, hostility{0} {}
+Ooze::Ooze():state{ROAMING}, hostility{0} {}
 
 //Constructor from rect
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{roaming}, hostility{0} {
+/* <<<<<<< HEAD
+Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hostility{0} {
+    rect = _rect;
+    player = p;
+	hud = h;
+	totalOoze++; //Increase # of instances counter
+	oozeNumber = totalOoze;
+	Animation* anim;
+	int overlapTicks = 0;
+======= */
+Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{ROAMING}, hostility{0} {
     rect = _rect;
     this->player = player;
 	  hud = h;
@@ -39,7 +49,9 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{roaming}
 Ooze::~Ooze(){};
 
 std::string Ooze::getInstanceName(){
-	return "Ooze-"+ std::to_string(oozeNumber);
+	std::ostringstream ss;
+  ss << oozeNumber;
+	return "Ooze-"+ss.str();
 }
 
 void Ooze::input(const Uint8* keystate){}
@@ -69,7 +81,13 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     //Needed for collision detection
     int curX = rect.x;
     int curY = rect.y;
+
+    int pickupX;
+    int pickupY;
 	
+    //might move order of update calls
+    bool stateChange = updateState(objectList, ticks);
+
 	bool overlap = checkOozeOverlap(objectList, ticks);
     bool los = drawLine(grid);
 	if(!overlap){
@@ -78,13 +96,40 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
             moveLine(grid);
             updatePosition();
         }
-	}
+  }
+    /*
+    
+    //target = getPickup(objectList)->getRect();
+	if(!overlap){
+
+        //uncomment the line below to change the ooze to chasing the pickups
+        //target = pickTarget(objectList);
+
+		//check which direction the player is 
+		if (player->getY() > rect.y + rect.h)
+			y_deltav += 1;
+		if (player->getX() > rect.x + rect.w)
+			x_deltav += 1;
+		if (player->getY() + player->getHeight() < rect.y)
+			y_deltav -= 1;
+		if (player->getX() + player->getWidth() < rect.x)
+			x_deltav -= 1;
+        
+        updateVelocity(x_deltav,y_deltav);*/
+    //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
 
     checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid, true);
+  /*
+    updatePosition();
+    checkBounds(screen_w, screen_h);
+    //Check you haven't collided with object
+    checkCollision(curX, curY, grid);
+    */
+
 }
 
 void Ooze::increaseHostility() {
@@ -103,6 +148,31 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
     return renderer;
+}
+
+// TODO: combine this with the overlap method below, which
+//       checks for overlap betw. ooze and player
+bool Ooze::foundFood(Pickup* food) {
+    if (food) {
+        SDL_Rect* fRect = food->getRect();
+        bool overlap = collision::checkCol(rect, *fRect);
+        if (overlap) {
+            //food->use();
+            ate = ate + 1;
+            std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
+            std::cout << s << std::endl;
+            return true;
+        }
+    }
+    return false;
+}
+
+int Ooze::getAte() {
+    return ate;
+}
+
+bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+    return false;
 }
 
 //Checks if the player overlapped with the ooze and acts accordingly
@@ -167,6 +237,7 @@ void Ooze::checkBounds(int max_width, int max_height) {
     }
 }
 
+
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
@@ -212,6 +283,7 @@ bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid
         return true;
     }
 }
+
 
 //Uses Bresenham's alg to check to see if we have a line of sight with the player
 //This draws the line fully but does NOT move the player at all
@@ -333,3 +405,26 @@ void Ooze::moveLine(std::vector<std::vector<int>> grid) {
         y_vel = yDir;
     }
 }
+
+/*currently checks collisions with room features (walls etc.)
+void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
+{
+    //Checks the collision of each object and determines where the player should stop
+    //In the future, we might need to alter this function to take in an object that
+    //represents what the player is colliding with. This shouldn't be too difficult
+    if(collision::checkColLeft(rect, grid, 32) || collision::checkColRight(rect, grid, 32)) {
+        rect.x = curX;
+    }
+    
+    if(collision::checkColTop(rect, grid, 32) || collision::checkColBottom(rect, grid, 32)) {
+        rect.y = curY;
+
+        rect.x += x_vel;
+
+        y_vel = 0;
+        if(collision::checkColLeft(rect, grid, 32) || collision::checkColRight(rect, grid, 32)) {
+            x_vel = 0; 
+            rect.x = curX;
+        }
+    }
+}*/
