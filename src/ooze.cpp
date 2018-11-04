@@ -89,15 +89,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     bool stateChange = updateState(objectList, ticks);
 
 	bool overlap = checkOozeOverlap(objectList, ticks);
-    bool los = drawLine(grid);
-	if(!overlap){
-        //Only move if we can see the player
-        if(los){
-            moveLine(grid);
-            updatePosition();
-        }
-  }
-    /*
     
     //target = getPickup(objectList)->getRect();
 	if(!overlap){
@@ -115,21 +106,15 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 		if (player->getX() + player->getWidth() < rect.x)
 			x_deltav -= 1;
         
-        updateVelocity(x_deltav,y_deltav);*/
+        updateVelocity(x_deltav,y_deltav);
+	}
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
-
-    checkBounds(screen_w, screen_h);
-    //Check you haven't collided with object
-    checkCollision(curX, curY, grid, true);
-  /*
     updatePosition();
     checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid);
-    */
-
 }
 
 void Ooze::increaseHostility() {
@@ -147,7 +132,7 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->x -= cam.x;
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
-    return renderer;
+   return renderer;
 }
 
 // TODO: combine this with the overlap method below, which
@@ -262,151 +247,41 @@ int Ooze::getY() { return rect.y; }
 
 SDL_Rect* Ooze::getRect() { return &rect; }
 
-bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move) {
-    //Checks the collision of each object and determines where the ooze should stop
-    //Also checks to see if ooze has line of sight
+void Ooze::updateVelocity(int _xdv, int _ydv) {
+    /*
+    // If we dont want out dot to be in a frictionless vacuum...
+    if (_xdv == 0) {
+        // No user-supplied "push", return to rest
+        if (x_vel > 0)
+            _xdv = -1;
+        else if (x_vel < 0)
+            _xdv = 1;
+    }
+    if (_ydv == 0) {
+        if (y_vel > 0)
+            _ydv = -1;
+        else if (y_vel < 0)
+            _ydv = 1;
+    }
+     */
     
-    if(move) {
-        if(collision::checkCol(rect, grid, 32)) {
-            rect.x = curX;
-        }
-        if(collision::checkCol(rect, grid, 32)) {
-            rect.y = curY;
-            rect.x += x_vel;
-        }
-    }
-    else {
-        if(collision::checkCol(colRect, grid, 32)) {
-            return false;
-        } 
+    // Speed up/slow down
+    x_vel += _xdv;
+    y_vel += _ydv;
 
-        return true;
-    }
+    // Check speed limits
+    if (x_vel < -1 * MAX_SPEED)
+        x_vel = -1 * MAX_SPEED;
+    else if (x_vel > MAX_SPEED)
+        x_vel = MAX_SPEED;
+
+    if (y_vel < -1 * MAX_SPEED)
+        y_vel = -1 * MAX_SPEED;
+    else if (y_vel > MAX_SPEED)
+        y_vel = MAX_SPEED;
 }
 
-
-//Uses Bresenham's alg to check to see if we have a line of sight with the player
-//This draws the line fully but does NOT move the player at all
-bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
-    int deltaX = player->getX() - rect.x;
-    int deltaY = player->getY() - rect.y;
-    int startX = rect.x;
-    int startY = rect.y;
-    int endX = player->getX();
-    int endY = player->getY();
-    colRect = {startX, startY, rect.w, rect.h};
-    int slope = 0;
-    int xDir;
-    int yDir;
-    bool sight = false;
-
-    deltaX = abs(deltaX * 2);
-    deltaY = abs(deltaY * 2);
-
-    if (player->getY() > rect.y) 
-        yDir = 1;
-	if (player->getX() > rect.x) 
-        xDir = 1;
-	if (player->getY() < rect.y) 
-        yDir = -1;
-	if (player->getX() < rect.x) 
-        xDir = -1;
-
-    if(deltaX > deltaY) {
-        slope = deltaY * 2 - deltaX;
-        while(startX != endX) {
-            if(slope >= 0) {
-                startY += yDir;
-                colRect.y += yDir;
-                slope -= deltaX;
-            }
-
-            startX += xDir;
-            colRect.x += xDir;
-            slope += deltaY;
-            sight = checkCollision(colRect.x, colRect.y, grid, false);
-            if(!sight)
-                break;
-        }
-    }
-    else {
-        slope = deltaX * 2 - deltaY;
-        while(startY != endY) {
-            if(slope >= 0) {
-                startY += yDir;
-                colRect.y += yDir;
-                slope -= deltaX;
-            }
-
-            startX += xDir;
-            colRect.x += xDir;
-            slope += deltaY;
-            sight = checkCollision(colRect.x, colRect.y, grid, false);
-            if(!sight)
-                break;
-        }
-    }
-
-    return sight;
-
-}
-
-//This version of Bresenham's moves the player in as stright a line as possible to 
-//the player
-void Ooze::moveLine(std::vector<std::vector<int>> grid) {
-    int deltaX = player->getX() - rect.x;
-    int deltaY = player->getY() - rect.y;
-    int startX = rect.x;
-    int startY = rect.y;
-    int endX = player->getX();
-    int endY = player->getY();
-    int moveSlope = 0;
-    int xDir;
-    int yDir;
-
-    deltaX = abs(deltaX * 2);
-    deltaY = abs(deltaY * 2);
-
-    if (player->getY() > rect.y) 
-        yDir = 1;
-	if (player->getX() > rect.x) 
-        xDir = 1;
-	if (player->getY() < rect.y) 
-        yDir = -1;
-	if (player->getX() < rect.x) 
-        xDir = -1;
-
-    if(deltaX > deltaY) {
-        moveSlope = deltaY * 2 - deltaX;
-        if(moveSlope >= 0) {
-            startY += yDir;
-            moveSlope -= deltaX;
-            y_vel = yDir;
-        }
-        else
-            y_vel = 0;
-
-        startX += xDir;
-        moveSlope += deltaY;
-        x_vel = xDir;
-    }
-    else {
-        moveSlope = deltaX * 2 - deltaY;
-        if(moveSlope >= 0) {
-            startY += yDir;
-            moveSlope -= deltaX;
-            x_vel = xDir;
-        }
-        else
-            x_vel = 0;
-
-        startX += xDir;
-        moveSlope += deltaY;
-        y_vel = yDir;
-    }
-}
-
-/*currently checks collisions with room features (walls etc.)
+//currently checks collisions with room features (walls etc.)
 void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
     //Checks the collision of each object and determines where the player should stop
@@ -427,4 +302,4 @@ void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid
             rect.x = curX;
         }
     }
-}*/
+}
