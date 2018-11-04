@@ -64,6 +64,7 @@ public:
     void checkBounds(int max_width, int max_height);
     bool checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move);
     bool drawLine(std::vector<std::vector<int>> grid);
+    void moveLine(std::vector<std::vector<int>> grid);;
     
     // Math
     void increaseHostility();

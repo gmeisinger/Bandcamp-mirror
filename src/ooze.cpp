@@ -75,7 +75,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     std::cout << los << std::endl;
 	if(!overlap){
         if(drawLine(grid)){
-            moveSlope = 0;
             moveLine(grid);
             updatePosition();
         }
@@ -286,6 +285,7 @@ void Ooze::moveLine(std::vector<std::vector<int>> grid) {
     int startY = rect.y;
     int endX = player->getX();
     int endY = player->getY();
+    int moveSlope = 0;
     int xDir;
     int yDir;
 
