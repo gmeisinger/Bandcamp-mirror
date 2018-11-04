@@ -72,9 +72,9 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 	
 	bool overlap = checkOozeOverlap(objectList, ticks);
     bool los = drawLine(grid);
-    std::cout << los << std::endl;
 	if(!overlap){
-        if(drawLine(grid)){
+        //Only move if we can see the player
+        if(los){
             moveLine(grid);
             updatePosition();
         }
@@ -214,6 +214,7 @@ bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid
 }
 
 //Uses Bresenham's alg to check to see if we have a line of sight with the player
+//This draws the line fully but does NOT move the player at all
 bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
     int deltaX = player->getX() - rect.x;
     int deltaY = player->getY() - rect.y;
@@ -278,6 +279,8 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
 
 }
 
+//This version of Bresenham's moves the player in as stright a line as possible to 
+//the player
 void Ooze::moveLine(std::vector<std::vector<int>> grid) {
     int deltaX = player->getX() - rect.x;
     int deltaY = player->getY() - rect.y;
