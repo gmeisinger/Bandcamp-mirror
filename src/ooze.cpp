@@ -71,25 +71,17 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     int curY = rect.y;
 	
 	bool overlap = checkOozeOverlap(objectList, ticks);
-    
+    bool los = drawLine(grid);
+    std::cout << los << std::endl;
 	if(!overlap){
-
-		//check which direction the player is
-		if (player->getY() > rect.y + rect.h)
-			y_deltav += 1;
-		if (player->getX() > rect.x + rect.w)
-			x_deltav += 1;
-		if (player->getY() + player->getHeight() < rect.y)
-			y_deltav -= 1;
-		if (player->getX() + player->getWidth() < rect.x)
-			x_deltav -= 1; 
-        std::cout << drawLine(grid) << std::endl;
-        updateVelocity(x_deltav,y_deltav);
+        if(drawLine(grid)){
+            moveSlope = 0;
+            moveLine(grid);
+            updatePosition();
+        }
 	}
     //update animation
     updateAnimation(ticks);
-
-    updatePosition();
 
     checkBounds(screen_w, screen_h);
     //Check you haven't collided with object
@@ -200,40 +192,6 @@ int Ooze::getY() { return rect.y; }
 
 SDL_Rect* Ooze::getRect() { return &rect; }
 
-void Ooze::updateVelocity(int _xdv, int _ydv) {
-    
-    // If we dont want out dot to be in a frictionless vacuum...
-    if (_xdv == 0) {
-        // No user-supplied "push", return to rest
-        if (x_vel > 0)
-            _xdv = -1;
-        else if (x_vel < 0)
-            _xdv = 1;
-    }
-    if (_ydv == 0) {
-        if (y_vel > 0)
-            _ydv = -1;
-        else if (y_vel < 0)
-            _ydv = 1;
-    }
-     
-    
-    // Speed up/slow down
-    x_vel += _xdv;
-    y_vel += _ydv;
-
-    // Check speed limits
-    if (x_vel < -1 * MAX_SPEED)
-        x_vel = -1 * MAX_SPEED;
-    else if (x_vel > MAX_SPEED)
-        x_vel = MAX_SPEED;
-
-    if (y_vel < -1 * MAX_SPEED)
-        y_vel = -1 * MAX_SPEED;
-    else if (y_vel > MAX_SPEED)
-        y_vel = MAX_SPEED;
-}
-
 bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move) {
     //Checks the collision of each object and determines where the ooze should stop
     //Also checks to see if ooze has line of sight
@@ -270,6 +228,9 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
     int yDir;
     bool sight = false;
 
+    deltaX = abs(deltaX * 2);
+    deltaY = abs(deltaY * 2);
+
     if (player->getY() > rect.y) 
         yDir = 1;
 	if (player->getX() > rect.x) 
@@ -278,9 +239,6 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
         yDir = -1;
 	if (player->getX() < rect.x) 
         xDir = -1;
-
-    deltaX = abs(deltaX * 2);
-    deltaY = abs(deltaY * 2);
 
     if(deltaX > deltaY) {
         slope = deltaY * 2 - deltaX;
@@ -319,4 +277,56 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
 
     return sight;
 
+}
+
+void Ooze::moveLine(std::vector<std::vector<int>> grid) {
+    int deltaX = player->getX() - rect.x;
+    int deltaY = player->getY() - rect.y;
+    int startX = rect.x;
+    int startY = rect.y;
+    int endX = player->getX();
+    int endY = player->getY();
+    int xDir;
+    int yDir;
+
+    deltaX = abs(deltaX * 2);
+    deltaY = abs(deltaY * 2);
+
+    if (player->getY() > rect.y) 
+        yDir = 1;
+	if (player->getX() > rect.x) 
+        xDir = 1;
+	if (player->getY() < rect.y) 
+        yDir = -1;
+	if (player->getX() < rect.x) 
+        xDir = -1;
+
+    if(deltaX > deltaY) {
+        moveSlope = deltaY * 2 - deltaX;
+        if(moveSlope >= 0) {
+            startY += yDir;
+            moveSlope -= deltaX;
+            y_vel = yDir;
+        }
+        else
+            y_vel = 0;
+
+        startX += xDir;
+        moveSlope += deltaY;
+        x_vel = xDir;
+    }
+    else {
+        moveSlope = deltaX * 2 - deltaY;
+        if(moveSlope >= 0) {
+            startY += yDir;
+            moveSlope -= deltaX;
+            x_vel = xDir;
+        }
+        else
+            x_vel = 0;
+
+        startX += xDir;
+        moveSlope += deltaY;
+        y_vel = yDir;
+    }
 }
