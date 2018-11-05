@@ -30,16 +30,19 @@ Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hos
 Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{ROAMING}, hostility{0} {
     rect = _rect;
     this->player = player;
-	  hud = h;
-	  totalOoze++; //Increase # of instances counter
-	  oozeNumber = totalOoze;
-	  Animation* anim;
-	  int overlapTicks = 0;
+    target = player->getRect();
+	hud = h;
+	totalOoze++; //Increase # of instances counter
+	oozeNumber = totalOoze;
+	Animation* anim;
+	int overlapTicks = 0;
     //Speed
     x_deltav = 0;
     y_deltav = 0;
     x_vel = 1;
     y_vel = 1;
+
+    ate = 0;
 }
 
 //Other constructor?
@@ -60,9 +63,6 @@ void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
-	
-    
-
 }
 
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
@@ -70,8 +70,6 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet.setClips(_cols, _rows, rect.w, rect.h);
 }
 
-//*********TO DO:
-//update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
 	
 	int x_deltav = 0;
@@ -96,15 +94,17 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
         //uncomment the line below to change the ooze to chasing the pickups
         //target = pickTarget(objectList);
 
-		//check which direction the player is 
-		if (player->getY() > rect.y + rect.h)
-			y_deltav += 1;
-		if (player->getX() > rect.x + rect.w)
-			x_deltav += 1;
-		if (player->getY() + player->getHeight() < rect.y)
-			y_deltav -= 1;
-		if (player->getX() + player->getWidth() < rect.x)
-			x_deltav -= 1;
+        //check which direction the target is 
+        if (target->y > rect.y)
+            y_deltav += 1;
+        if (target->x > rect.x)
+            x_deltav += 1;
+        if (target->y < rect.y)
+            y_deltav -= 1;
+        if (target->x < rect.x)
+            x_deltav -= 1;
+
+		
         
         updateVelocity(x_deltav,y_deltav);
 	}
@@ -133,6 +133,19 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
    return renderer;
+}
+
+SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList) {
+    std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+    while(it != objectList->end()){
+        if (!it->first.substr(0,6).compare("Pickup")) {
+            //std::cout << "there is a pickup :) " << std::endl;
+            Pickup* temp = (Pickup*)it->second;
+            return temp->getRect();
+        }
+        it++;
+    }
+    return player->getRect();
 }
 
 // TODO: combine this with the overlap method below, which
