@@ -14,7 +14,7 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{ROAMING}, hostility{0} {}
+Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 //Constructor from rect
 /* <<<<<<< HEAD
@@ -27,7 +27,7 @@ Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hos
 	Animation* anim;
 	int overlapTicks = 0;
 ======= */
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{ROAMING}, hostility{0} {
+Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{HANGRY}, hostility{0} {
     rect = _rect;
     this->player = player;
     target = player->getRect();
@@ -92,7 +92,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 	if(!overlap){
 
         //uncomment the line below to change the ooze to chasing the pickups
-        //target = pickTarget(objectList);
+        target = pickTarget(objectList);
 
         //check which direction the target is 
         if (target->y > rect.y)
@@ -136,16 +136,21 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
 }
 
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList) {
-    std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
-    while(it != objectList->end()){
-        if (!it->first.substr(0,6).compare("Pickup")) {
-            //std::cout << "there is a pickup :) " << std::endl;
-            Pickup* temp = (Pickup*)it->second;
-            return temp->getRect();
+    switch(this->state) {
+        case HANGRY: {
+            std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+            while(it != objectList->end()){
+                if (!it->first.substr(0,6).compare("Pickup")) {
+                    //std::cout << "there is a pickup :) " << std::endl;
+                    Pickup* temp = (Pickup*)it->second;
+                    return temp->getRect();
+                }
+                it++;
+            }
         }
-        it++;
+        default:
+            return player->getRect();
     }
-    return player->getRect();
 }
 
 // TODO: combine this with the overlap method below, which
@@ -170,6 +175,11 @@ int Ooze::getAte() {
 }
 
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+    if (ate > 2) {
+        state = ROAMING;
+        return true;
+    } 
+    
     return false;
 }
 
