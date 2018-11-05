@@ -6,7 +6,11 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <SDL_image.h>
 #include "screen.h"
+#include "menu.h"
+#include "testroom.h"
+
 
 
 class GSM {
@@ -15,10 +19,13 @@ class GSM {
 		int previousScreen; //To check if we changed rooms
 		bool running;
 		SDL_Renderer* rendererReference;
+		Menu * testMenu;
 	public:
 		
 		GSM();
 		//~GSM();
+		static int currentScreen;
+		static void setCurrentScreen(int newScreen);
 		void init(SDL_Renderer *renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);

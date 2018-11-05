@@ -2,11 +2,8 @@
  * Class function: 
  * 
 */
-
-#include <algorithm>
-#include <vector>
-#include <string>
-
+#include "include/pickup.h"
+/* =======
 #include "include/physics.h"
 #include "include/pickup.h"
 #include "include/player.h"
@@ -14,6 +11,7 @@
 #include "include/utils.h"
 #include "include/testroom.h"
 #include "include/ooze.h"
+>>>>>>> 188008194d1ee41687ffa1b8c7571a5a951c9216 */
 
 constexpr int HOVER_SPEED = 150;
 
@@ -62,7 +60,9 @@ Pickup::Pickup(){
 void Pickup::input(const Uint8* keystate){}
 
 std::string Pickup::getInstanceName(){
-	return "Pickup-"+std::to_string(instanceNumber);
+  std::ostringstream ss;
+  ss << instanceNumber;
+	return "Pickup-"+ss.str();
 }
 
 void Pickup::init(SDL_Renderer *renderer){
@@ -97,19 +97,27 @@ void Pickup::init(SDL_Renderer *renderer){
 	}
 }
 		
-void Pickup::update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks){
+void Pickup::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
 	if (used) TestRoom::setSpawnPickup(true);
 }
 
-SDL_Renderer* Pickup::draw(SDL_Renderer *renderer){
+SDL_Renderer* Pickup::draw(SDL_Renderer *renderer, SDL_Rect cam){
 	//SDL_SetRenderDrawColor(renderer, 0x00, 0x30, 0x25, 0xFF);
 	//SDL_RenderFillRect(renderer, &pickupRect);
-
+	//get dest rect from camera
+	SDL_Rect* shadowDest = new SDL_Rect;
+	*shadowDest = shadowBox;
+	SDL_Rect* drawDest = new SDL_Rect;
+	*drawDest = drawBox;
+	shadowDest->x -= cam.x;
+	shadowDest->y -= cam.y;
+	drawDest->x -= cam.x;
+	drawDest->y -= cam.y;
 	//Draw the shadow and sprite
-	SDL_RenderCopy(renderer, dropShadow, &shadowClip, &shadowBox);
-    SDL_RenderCopy(renderer, powerUpImg, &currentClip, &drawBox);	
+	SDL_RenderCopy(renderer, dropShadow, &shadowClip, shadowDest);
+    SDL_RenderCopy(renderer, powerUpImg, &currentClip, drawDest);	
 	return renderer;
 }
 

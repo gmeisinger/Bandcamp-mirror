@@ -11,8 +11,12 @@
 #include "utils.h"
 #include "HUD.h"
 #include "player.h"
+#include "collision.h"
+#include "circle.h"
+#include "game.h"
 #include "pickup.h"
 
+class Pickup;
 
 enum oozeState {
     ROAMING,
@@ -27,10 +31,22 @@ enum oozeState {
 class Ooze : public Object
 {
 private:
+    //This should be removed ASAP
+    SDL_Rect lWall;
+    SDL_Rect rWall;
+    SDL_Rect uWall;
+    Circle cPillar;
+    //
     SDL_Rect rect;
+
+    int x_vel;
+    int y_vel;
+    int x_deltav;
+    int y_deltav;
+
     oozeState state;
     int hostility;
-    Player *oozePlayer;
+    Player *player;
     HUD *hud;
     SpriteSheet sheet;
     Animation* anim;
@@ -68,14 +84,14 @@ public:
     void input(const Uint8* keystate);
     void init(SDL_Renderer* gRenderer);
     void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
-    
-    SDL_Renderer* draw(SDL_Renderer* renderer);
+    void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
+    SDL_Renderer* draw(SDL_Renderer* renderer, SDL_Rect cam);
     bool checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     bool isUsed();
 
     //Movement
     void checkBounds(int max_width, int max_height);
-    void checkCollision(int curX, int curY);
+    void checkCollision(int curX, int curY, std::vector<std::vector<int>> grid);
     
     // Math
     void increaseHostility();
@@ -92,8 +108,7 @@ public:
     void addAnimation(std::string tag, Animation anim);
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
-
-
+    //void updateAnimation(Uint32 ticks);
 };
 
 #endif  //  OOZE_H_

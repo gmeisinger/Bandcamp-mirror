@@ -4,10 +4,14 @@
 #include <SDL.h>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
+#include <string>
 
 #include "screen.h"
 #include "object.h"
 #include "pickup.h"
+#include "GSM.h"
+#include "tilemap.h"
 
 class TestRoom : public Screen 
 { 
@@ -15,7 +19,7 @@ class TestRoom : public Screen
 		bool start;
 		std::unordered_map<std::string, Object*> objectList;
 		SDL_Renderer* rendererReference;
-		bool escape; //Have we pushed the escape key?
+		bool escape; //Have we pushed the escape key ?
 		int updateCount;
 		int oldTemp;
 		int oldO2;

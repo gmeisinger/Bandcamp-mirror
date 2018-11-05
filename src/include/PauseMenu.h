@@ -4,6 +4,8 @@
 #include <SDL.h>
 #include <vector>
 #include <unordered_map>
+#include <algorithm>
+#include <string>
 
 #include "screen.h"
 

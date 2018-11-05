@@ -10,18 +10,16 @@ extern int currentScreen;
 class Screen
 {
     private:
-        bool start;
+    bool start;
 		std::vector<Object*> roomList;
 		SDL_Renderer* rendererReference;
 		
     public:
-		/*Screen(){}
-		Screen(int& roomReference) : roomReference(roomReference){}
-		*/
+    SDL_Rect camera;
 		virtual void init(SDL_Renderer* renderer) = 0;
 		virtual void input(const Uint8* keystate) = 0;
 		virtual void update(Uint32 ticks) = 0;
-		virtual SDL_Renderer* draw(SDL_Renderer *renderer) = 0;
+		virtual SDL_Renderer* draw(SDL_Renderer * renderer) = 0;
 };
 
 #endif  //  BANDCAMP_SCREEN_H_

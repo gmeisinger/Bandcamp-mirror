@@ -3,22 +3,21 @@
  * 
 */
 
-#include <SDL.h>
-#include <algorithm>
-#include <string>
-
 #include "include/object.h"
 #include "include/player.h"
 #include "include/spritesheet.h"
 #include "include/HUD.h"
 #include "include/testroom.h"
 #include "include/game.h"
+#include "include/GSM.h"
 #include "include/ooze.h"
 #include "include/circle.h"
 #include "include/collision.h"
 #include "include/pickup.h"
 
 constexpr int UPDATE_MAX = 100;
+constexpr int CAM_WIDTH = 800;
+constexpr int CAM_HEIGHT = 600;
 int updateCount = 1;
 int oldTemp = 100;
 int oldO2 = 100;
@@ -34,23 +33,31 @@ bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 TestRoom::TestRoom() : Screen(){} //from merge
 
 Ooze o;
-SDL_Rect leftWall;
-SDL_Rect rightWall;
-SDL_Rect upperWall;
-Circle centerPillar;
+Tilemap map;
+SDL_Rect camera;
+
+//TestRoom::TestRoom(){
+//	start = false;
+//	std::unordered_map<std::string, Object*> objectList;
+//}
 
 
 // ADD COMMENTS 
 void TestRoom::init(SDL_Renderer* reference){
+	std::cout << "Init TestRoom" << std::endl;
 	rendererReference = reference;
-	SDL_Rect player_box = {screen_w/2, screen_h/2, tile_s, tile_s};
+	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
 	p = Player(player_box);
 	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
 	o = Ooze(ooze_box, &p, &h);
+	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 21, 20, 32);
+	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
     
 	h.init(reference);
 	p.init(reference);
 	o.init(reference);
+	map.init();
+	map.genTestRoom();
 	
 	//Player and HUD in the Room
 	objectList["player"] = &p;
@@ -58,11 +65,6 @@ void TestRoom::init(SDL_Renderer* reference){
 	// Change to add ooze to list as initialized
 	objectList["ooze"] = &o;
 
-	//Init walls in the room
-	leftWall = {screen_w/4, screen_h/4, screen_w/12, screen_h/2};
-	rightWall = {screen_w/4 * 3 - screen_w/12, screen_h/4, screen_w/12, screen_h/2};
-	upperWall = {screen_w/4, screen_h/4, screen_w/2, screen_h/12};
-	centerPillar = {screen_w/2, screen_h/2 + (tile_s * 5), tile_s};
 }
 
 // ADD COMMENTS 
@@ -71,25 +73,47 @@ void TestRoom::update(Uint32 ticks){
 	{ //If you set the currentScreen in the Input method it will cause an array out of bounds error.
 		pauseB = false;
 		enterHeld = true;
-		currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
+		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
-	
+
+	std::vector<std::vector<int>> grid = map.getGrid();
 
 	if (spawnPickup) movePickup(rendererReference); //new way of deciding when to spawn pickup
 	// TODO: better way to check for pickup being consumed?
 	/*if (h.currentTemp > oldTemp || h.currentOxygen > oldO2 || o.getAte() > oldAte) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
+
+	oldAte = o.getAte();
 	oldAte = o.getAte();*/
+
 
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
-		it->second->update(&objectList, ticks);
+		it->second->update(&objectList, grid, ticks);
 		if(it->second->isUsed()) {
 			it = objectList.erase(it);
 		}
 		it++;
 	}
+	//update camera to player position
+	camera.x = p.getX() - (camera.w/2);
+	camera.y = p.getY() - (camera.h/2);
+	//the following code will lock the camera to the corners
+	//doesnt look right when the map is too small
+	/*if(camera.x < 0) {
+		camera.x = 0;
+	}
+	if(camera.y < 0) {
+		camera.y = 0;
+	}
+	if(camera.x > (grid[0].size() * tile_s)) {
+		camera.x = grid[0].size() * tile_s;
+	}
+	if(camera.y > (grid.size() * tile_s)) {
+		camera.y = grid.size() * tile_s;
+	}*/
+
 	if (updateCount == 0) {
 		h.currentTemp = std::max(0, h.currentTemp-5);
 		h.currentOxygen = std::max(0, h.currentOxygen-5);
@@ -109,13 +133,14 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 	int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
 	SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
 	
-	if(collision::checkCol(pickupBox, leftWall) 
+	/*if(collision::checkCol(pickupBox, leftWall) 
 		|| collision::checkCol(pickupBox, rightWall)
 		|| collision::checkCol(pickupBox, upperWall)
 		|| collision::checkCol(pickupBox, centerPillar))
 	{
 		movePickup(reference);
-	}
+	}*/
+	if(false){}
 	else
 	{
 		int pickupValue = rand()%25+25;
@@ -162,18 +187,14 @@ void TestRoom::input(const Uint8* keystate){
 
 // ADD COMMENTS 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
+	//draw map before objects
+	map.draw(renderer, camera);
+	//draw objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
-		renderer = it->second->draw(renderer);
+		renderer = it->second->draw(renderer, camera);
 		it++;
 	}
-
-	//Draws walls in the room
-	SDL_SetRenderDrawColor(renderer, 0, 0xFF, 0, 0);
-	SDL_RenderFillRect(renderer, &leftWall);
-	SDL_RenderFillRect(renderer, &rightWall);
-	SDL_RenderFillRect(renderer, &upperWall);
-	centerPillar.drawCircle(renderer);
 
 	return renderer;
 }
