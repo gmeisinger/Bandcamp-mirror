@@ -22,9 +22,9 @@ void PauseMenu::init(SDL_Renderer* reference){
 	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/Test Window.png")); //These images look really different on purpose.
 	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/Test Window - 2.png")); //These images look really different on purpose.
 	menuGraphics.push_back(utils::loadTexture(rendererReference, "res/cursor.png"));
-	menuImg = {screen_w/2-275, screen_h/2-100, 550, 200};
-	menuImg2 = {screen_w/2-250, screen_h/2-80, 550, 200};
-	cursor = {screen_w/2-208, screen_h/2, 28, 28}; //Reset the cursor position
+	menuImg = {SCREEN_WIDTH/2-275, SCREEN_HEIGHT/2-100, 550, 200};
+	menuImg2 = {SCREEN_WIDTH/2-250, SCREEN_HEIGHT/2-80, 550, 200};
+	cursor = {SCREEN_WIDTH/2-208, SCREEN_HEIGHT/2, 28, 28}; //Reset the cursor position
 	startHeld = true;
 }
 
@@ -36,14 +36,14 @@ void PauseMenu::update(Uint32 ticks){
 			if(keyHeld[6] == 1) //Enter Pressed
 				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
 			else if (keyHeld[3] == 1 || keyHeld[2] == 1){ //Right or Left Pressed (This is a hack solution)
-				if(cursor.x == screen_w/2-208)
-					cursor.x = screen_w/2;
+				if(cursor.x == SCREEN_WIDTH/2-208)
+					cursor.x = SCREEN_WIDTH/2;
 				else
-					cursor.x = screen_w/2-208;
+					cursor.x = SCREEN_WIDTH/2-208;
 			}
 			else if(keyHeld[4] == 1){ //Confirm Pressed
-				cursor.x = screen_w/2 - 218;
-				cursor.y = screen_h/2 + 2;
+				cursor.x = SCREEN_WIDTH/2 - 218;
+				cursor.y = SCREEN_HEIGHT/2 + 2;
 				menuState = 1; //GOTO the second window.
 			}
 		break;
@@ -52,39 +52,39 @@ void PauseMenu::update(Uint32 ticks){
 			if(keyHeld[6] == 1) //Enter Pressed
 				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
 			else if (keyHeld[3] == 1){ //Right Pressed
-				if(cursor.x == screen_w/2 - 218){
-					cursor.x = screen_w/2 + 90;
-					cursor.y = screen_h/2+ 20;
+				if(cursor.x == SCREEN_WIDTH/2 - 218){
+					cursor.x = SCREEN_WIDTH/2 + 90;
+					cursor.y = SCREEN_HEIGHT/2+ 20;
 				}
-				else if(cursor.x == screen_w/2 + 90){
-					cursor.x = screen_w/2 - 97;
-					cursor.y = screen_h/2 + 49;
+				else if(cursor.x == SCREEN_WIDTH/2 + 90){
+					cursor.x = SCREEN_WIDTH/2 - 97;
+					cursor.y = SCREEN_HEIGHT/2 + 49;
 				}
 				else{
-					cursor.x = screen_w/2 - 218;
-					cursor.y = screen_h/2 + 2;
+					cursor.x = SCREEN_WIDTH/2 - 218;
+					cursor.y = SCREEN_HEIGHT/2 + 2;
 				}
 					
 			}
 			else if(keyHeld[2] == 1){  //Left Pressed
-				if(cursor.x == screen_w/2 - 218){
-					cursor.x = screen_w/2 - 97;
-					cursor.y = screen_h/2 + 49;
+				if(cursor.x == SCREEN_WIDTH/2 - 218){
+					cursor.x = SCREEN_WIDTH/2 - 97;
+					cursor.y = SCREEN_HEIGHT/2 + 49;
 					
 					
 				}
-				else if(cursor.x == screen_w/2 + 90){
-					cursor.x = screen_w/2 - 218;
-					cursor.y = screen_h/2 + 2;
+				else if(cursor.x == SCREEN_WIDTH/2 + 90){
+					cursor.x = SCREEN_WIDTH/2 - 218;
+					cursor.y = SCREEN_HEIGHT/2 + 2;
 				}
 				else{
-					cursor.x = screen_w/2 + 90;
-					cursor.y = screen_h/2 + 20;
+					cursor.x = SCREEN_WIDTH/2 + 90;
+					cursor.y = SCREEN_HEIGHT/2 + 20;
 				}
 			}
 			else if(keyHeld[5] == 1){ //Back Pressed
-				cursor.x = screen_w/2-208;
-				cursor.y = screen_h/2;
+				cursor.x = SCREEN_WIDTH/2-208;
+				cursor.y = SCREEN_HEIGHT/2;
 				menuState = 0; //GOTO the initial window.
 			}
 		break;

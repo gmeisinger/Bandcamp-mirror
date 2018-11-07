@@ -31,7 +31,7 @@ Tilemap::~Tilemap() {
 }
 
 //returns the grid as 2d vector
-std::vector< std::vector < int > > Tilemap::getGrid() {
+std::vector< std::vector < int > > & Tilemap::getGrid() {
 	return grid;
 }
 
@@ -58,6 +58,8 @@ void Tilemap::genTestRoom() {
 	}
 	//lets put a hole in the wall so we can peep while the ooze asexually reproduces ;)
 	grid[height/2][width/2] = 1;
+	
+	grid[4][4] = 3; //HardCoded door
 }
 
 //setup tiles

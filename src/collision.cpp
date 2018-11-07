@@ -81,7 +81,7 @@ bool collision::checkCol(Circle circ1, Circle circ2) {
 }
 
 //Collision detection for a rect and the walls of a tilemap
-bool collision::checkColX(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+bool collision::checkColX(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
     //which tiles are we in?
     int normLeftX = rect.x/tilesize;
     int normY = rect.y/tilesize;
@@ -98,7 +98,7 @@ bool collision::checkColX(SDL_Rect rect, std::vector<std::vector<int>> grid, int
 }
 
 //Collision detection for a rect and the walls of a tilemap
-bool collision::checkColY(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+bool collision::checkColY(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
     //which tiles are we in?
     int normX = rect.x/tilesize;
     int normTopY = rect.y/tilesize;

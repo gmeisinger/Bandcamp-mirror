@@ -7,13 +7,9 @@
 #include "include/credits.h"
 #include "include/GSM.h"
 
-constexpr int SCREEN_WIDTH = 800;
-constexpr int SCREEN_HEIGHT = 600;
-constexpr int TILE_SIZE = 32;
-
-int screen_w;
-int screen_h;
-int tile_s;
+int SCREEN_WIDTH = 800;
+int SCREEN_HEIGHT = 600;
+int TILE_SIZE = 32;
 
 //Starts new game
 Game::Game() {
@@ -21,9 +17,6 @@ Game::Game() {
 	gRenderer = nullptr;
 	running = false;
 	GSM * gsm;
-	screen_w = SCREEN_WIDTH;
-	screen_h = SCREEN_HEIGHT;
-	tile_s = TILE_SIZE;
 }
 
 /* Called from Main 
@@ -144,9 +137,9 @@ void Game::run() {
   
 
 	//credits
-	Credits creds = Credits(gRenderer);
-	creds.load();
-	creds.play();
+	//Credits creds = Credits(gRenderer);
+	//creds.load();
+	//creds.play();
 
 	// Tear down and end.  Returns to main
 	close();

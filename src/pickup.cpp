@@ -97,7 +97,7 @@ void Pickup::init(SDL_Renderer *renderer){
 	}
 }
 		
-void Pickup::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
+void Pickup::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
 }
