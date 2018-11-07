@@ -93,7 +93,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 	if(!overlap){
         //Only move if we can see the player
         los = drawLine(grid);
-        
+        std::cout << los << std::endl;
         if(los){
             moveLine(grid);
             updatePosition();
@@ -304,8 +304,9 @@ bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid
         }
     }
     else {
-        if(collision::checkColLeft(colRect, grid, 32) || collision::checkColRight(colRect, grid, 32)
-            || collision::checkColTop(colRect, grid, 32) || collision::checkColBottom(colRect, grid, 32))
+        if(collision::checkColLeft(colRect, grid, 32) || collision::checkColRight(colRect, grid, 32)) 
+            return false;
+        if(collision::checkColTop(colRect, grid, 32) || collision::checkColBottom(colRect, grid, 32)) 
             return false;
         else 
             return true;
@@ -339,6 +340,7 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
         yDir = -1;
 	if (player->getX() < rect.x) 
         xDir = -1;
+        
 
     if(deltaX > deltaY) {
         slope = deltaY * 2 - deltaX;
@@ -363,14 +365,14 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
         slope = deltaX * 2 - deltaY;
         while(startY != endY) {
             if(slope >= 0) {
-                startY += yDir;
-                colRect.y += yDir;
-                slope -= deltaX;
+                startX += xDir;
+                colRect.x += xDir;
+                slope -= deltaY;
             }
 
-            startX += xDir;
-            colRect.x += xDir;
-            slope += deltaY;
+            startY += yDir;
+            colRect.y += yDir;
+            slope += deltaX;
             checkBounds(screen_w, screen_h, false);
             sight = checkCollision(colRect.x, colRect.y, grid, false);
             if(!sight)
@@ -423,15 +425,15 @@ void Ooze::moveLine(std::vector<std::vector<int>> grid) {
     else {
         moveSlope = deltaX * 2 - deltaY;
         if(moveSlope >= 0) {
-            startY += yDir;
-            moveSlope -= deltaX;
+            startX += xDir;
+            moveSlope -= deltaY;
             x_vel = xDir;
         }
         else
             x_vel = 0;
 
-        startX += xDir;
-        moveSlope += deltaY;
+        startY += yDir;
+        moveSlope += deltaX;
         y_vel = yDir;
     }
 }
