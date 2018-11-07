@@ -74,7 +74,7 @@ void Door::init(SDL_Renderer* gRenderer){
 
 void Door::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
-    sheet.setClips(_cols, _rows, 32, 32);
+    sheet.setClips(_cols, _rows, 32, 32);	
 }
 
 void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks){
@@ -146,9 +146,9 @@ bool Door::checkCanToggle(Player*& playerObj){
 	SDL_Rect * playerRect = playerObj->getRect();
 	
 	
-	if(!directionLR && (playerRect->y <= doorRect.y+TILE_SIZE && playerRect->y >= doorRect.y-TILE_SIZE*2) && (playerRect->x <= doorRect.y+TILE_SIZE && playerRect->x >= doorRect.y))//&& playerRect->x <= doorRect.x+TILE_SIZE)
+	if(!directionLR && (playerRect->y <= doorRect.y+TILE_SIZE && playerRect->y >= doorRect.y-TILE_SIZE*2) && (playerRect->x <= doorRect.y+TILE_SIZE && playerRect->x >= doorRect.y))
 		return true;
-	else if(directionLR && (playerRect->x <= doorRect.x+TILE_SIZE*2 && playerRect->x >= doorRect.x-TILE_SIZE*2) && (playerRect->y >= doorRect.y-TILE_SIZE && playerRect->y <= doorRect.y))//&& playerRect->y >= doorRect.y+TILE_SIZE)
+	else if(directionLR && (playerRect->x <= doorRect.x+TILE_SIZE*2 && playerRect->x >= doorRect.x-TILE_SIZE*2) && (playerRect->y >= doorRect.y-TILE_SIZE && playerRect->y <= doorRect.y))
 		return true;
 
 	return false;

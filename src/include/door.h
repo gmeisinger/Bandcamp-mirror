@@ -29,7 +29,6 @@ class Door : public Object
 			2 - Open
 		*/
 		bool directionLR = false; //F - Up/Down T - L/R
-		bool foundPlayer; //Do we have a reference to the player?
 
 	public:
 		void input(const Uint8* keystate);
