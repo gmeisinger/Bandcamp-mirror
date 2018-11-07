@@ -16,6 +16,7 @@
 #include "include/ooze.h"
 #include "include/circle.h"
 #include "include/collision.h"
+#include "include/projectile.h"
 
 constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
@@ -124,7 +125,7 @@ void TestRoom::input(const Uint8* keystate){
 	while(it != objectList.end()){
 		it->second->input(keystate);
 		it++;
-	}
+	}	
 }
 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){

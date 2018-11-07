@@ -6,6 +6,7 @@
 #include "include/game.h"
 #include "include/collision.h"
 #include "include/spritesheet.h"
+#include "include/projectile.h"
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
@@ -38,7 +39,10 @@ Player::Player(SDL_Rect _rect) {
 	down = false;
 	left = false;
 	right = false;
+	space = false;
+	spaceHeld = false;
     overlapEnemy = false;
+	std::unordered_map<std::string, Object*> objectList;
 }
 
 Player::Player(){}
@@ -53,6 +57,8 @@ std::string Player::getInstanceName(){
 }
 
 void Player::init(SDL_Renderer* gRenderer){
+	rendererReference = gRenderer;
+	
 	//set up player animations
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/spaceman.png"), 4, 4);
 	addAnimation("down", Animation(getSheet().getRow(0)));
@@ -201,6 +207,15 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
+	if (space && !spaceHeld) {
+		std::cout << "Pressed space bar" << std::endl;
+		Projectile *newProj = new Projectile(playerRect, 'r', this);
+		//objectList[newProj->getInstanceName()] = newProj;
+		newProj->init(rendererReference);
+		spaceHeld = true;
+	} else if (!space) {
+		spaceHeld = false;
+	}
 
 	updateVelocity(x_deltav, y_deltav);
 
@@ -218,6 +233,15 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 
     //Check you haven't collided with object
     checkCollision(curX, curY, grid);
+	
+	std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+	while(it != objectList->end()) {
+		if(it->second->isUsed()) {
+			it = objectList->erase(it);
+		}
+		//if (it->second->getInstanceName().substr(0,4).compare("proj")) it->second->update(objectList, grid, ticks); //add compare string
+		it++;
+	}
 }
 
 void Player::input(const Uint8* keystate)
@@ -226,6 +250,7 @@ void Player::input(const Uint8* keystate)
 	left = keystate[SDL_SCANCODE_A];
 	down = keystate[SDL_SCANCODE_S];
 	right = keystate[SDL_SCANCODE_D];
+	space = keystate[SDL_SCANCODE_SPACE];
 }
 
 SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
@@ -234,7 +259,12 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->x -= cam.x;
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
-   return renderer;
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()){
+		//if (it->second->getInstanceName().substr(0,4).compare("proj")) renderer = it->second->draw(renderer, cam);
+		it++;
+	}
+	return renderer;
 }
 
 bool Player::isUsed() {
