@@ -90,11 +90,6 @@ void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 			if (it != objectList->end())
 			  p = static_cast<Player*>(it->second);
 		
-			if(checkCanToggle(p))
-				std::cout << "CAN" << std::endl;
-			else
-				std::cout << "CANNOT" << std::endl;
-		
 			if(toggleButton == 1 && checkCanToggle(p)){
 				setAnimation("opening");
 				anim->play();
