@@ -19,18 +19,23 @@ Animation::Animation(std::vector<SDL_Rect> _frames) {
 	playing = false;
 }
 
+// add description
 Animation::Animation() {}
 
+// add description
 Animation::~Animation() {}
 
+// add description
 void Animation::play() {
 	playing = true;
 }
 
+// add description
 void Animation::stop() {
 	playing = false;
 }
 
+// add description
 void Animation::reset() {
 	curFrame = 0;
 	frameTicks = 0;
@@ -46,10 +51,12 @@ void Animation::update(Uint32 ticks) {
 	}
 }
 
+// add description
 SDL_Rect* Animation::getFrame() {
 	return &frames[curFrame];
 }
 
+// add description
 void Animation::setFrame(int _frame) {
 	curFrame = _frame;
 }
