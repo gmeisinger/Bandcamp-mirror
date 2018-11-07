@@ -42,7 +42,7 @@ Player::Player(SDL_Rect _rect) {
 	space = false;
 	spaceHeld = false;
     overlapEnemy = false;
-	std::unordered_map<std::string, Object*> objectList;
+	std::unordered_map<std::string, Object*> projList;
 }
 
 Player::Player(){}
@@ -210,7 +210,7 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 	if (space && !spaceHeld) {
 		std::cout << "Pressed space bar" << std::endl;
 		Projectile *newProj = new Projectile(playerRect, 'r', this);
-		//objectList[newProj->getInstanceName()] = newProj;
+		projList[newProj->getInstanceName()] = newProj;
 		newProj->init(rendererReference);
 		spaceHeld = true;
 	} else if (!space) {
@@ -234,12 +234,12 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
     //Check you haven't collided with object
     checkCollision(curX, curY, grid);
 	
-	std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
-	while(it != objectList->end()) {
+	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
+	while(it != projList.end()) {
 		if(it->second->isUsed()) {
-			it = objectList->erase(it);
+			it = projList.erase(it);
 		}
-		//if (it->second->getInstanceName().substr(0,4).compare("proj")) it->second->update(objectList, grid, ticks); //add compare string
+		it->second->update(objectList, grid, ticks);	//needs works
 		it++;
 	}
 }
@@ -259,9 +259,9 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->x -= cam.x;
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
-	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
-	while(it != objectList.end()){
-		//if (it->second->getInstanceName().substr(0,4).compare("proj")) renderer = it->second->draw(renderer, cam);
+	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
+	while(it != projList.end()){
+		renderer = it->second->draw(renderer, cam);
 		it++;
 	}
 	return renderer;
