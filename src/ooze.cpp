@@ -94,16 +94,20 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
         //uncomment the line below to change the ooze to chasing the pickups
         target = pickTarget(objectList);
 
-        //check which direction the target is 
-        if (target->y > rect.y)
-            y_deltav += 1;
-        if (target->x > rect.x)
-            x_deltav += 1;
-        if (target->y < rect.y)
-            y_deltav -= 1;
-        if (target->x < rect.x)
-            x_deltav -= 1;
-
+        if (target) {
+            //check which direction the target is 
+            if (target->y > rect.y)
+                y_deltav += 1;
+            if (target->x > rect.x)
+                x_deltav += 1;
+            if (target->y < rect.y)
+                y_deltav -= 1;
+            if (target->x < rect.x)
+                x_deltav -= 1;
+        } else {
+            x_deltav = 0;
+            y_deltav = 0;
+        }
 		
         
         updateVelocity(x_deltav,y_deltav);
@@ -137,6 +141,9 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
 
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList) {
     switch(this->state) {
+        case CLONING: {
+            return nullptr;
+        }
         case HANGRY: {
             std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
             while(it != objectList->end()){
@@ -176,7 +183,7 @@ int Ooze::getAte() {
 
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
     if (ate > 2) {
-        state = ROAMING;
+        state = CLONING;
         return true;
     } 
     
@@ -271,7 +278,7 @@ int Ooze::getY() { return rect.y; }
 SDL_Rect* Ooze::getRect() { return &rect; }
 
 void Ooze::updateVelocity(int _xdv, int _ydv) {
-    /*
+    
     // If we dont want out dot to be in a frictionless vacuum...
     if (_xdv == 0) {
         // No user-supplied "push", return to rest
@@ -286,7 +293,7 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
         else if (y_vel < 0)
             _ydv = 1;
     }
-     */
+     
     
     // Speed up/slow down
     x_vel += _xdv;
