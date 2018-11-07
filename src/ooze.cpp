@@ -181,6 +181,11 @@ int Ooze::getAte() {
     return ate;
 }
 
+Ooze::oozeState Ooze::getState() {
+    return state;
+}
+
+
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
     if (ate > 2) {
         state = CLONING;

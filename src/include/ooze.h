@@ -18,19 +18,21 @@
 
 class Pickup;
 
-enum oozeState {
-    HANGRY, //temp state
-    ROAMING,
-    EATING,
-    CLONING,
-    FIGHTING,
-    FLEEING,
-    HIDING,
-    DYING
-};
+
 
 class Ooze : public Object
 {
+    enum oozeState { // is public
+        HANGRY, //temp state
+        ROAMING,
+        EATING,
+        CLONING,
+        FIGHTING,
+        FLEEING,
+        HIDING,
+        DYING
+    };
+
 private:
     //This should be removed ASAP
     SDL_Rect lWall;
@@ -58,6 +60,8 @@ private:
     
 public:
 
+    
+
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
@@ -73,6 +77,7 @@ public:
     SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList);
     bool foundFood(Pickup* pickUp);
     int getAte();
+    oozeState getState();
 
     // Updates
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
