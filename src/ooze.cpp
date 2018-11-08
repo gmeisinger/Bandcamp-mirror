@@ -124,7 +124,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 		if (overlapTicks > 25) {
 			hud->currentHealth = std::max(0, hud->currentHealth-damage);
 			std::string s = "HIT: "+getInstanceName();
-			std::cout << s << std::endl;
+			//std::cout << s << std::endl;
 			overlapTicks = 0;
 		}
 	} else {

@@ -47,7 +47,7 @@ Pickup::Pickup(SDL_Rect _rect, char type, int value, Player *player, HUD *h) {
 	instanceNumber = totalInstance;
 	
 	std::string s = "SPAWNED: "+getInstanceName();
-	std::cout << s << std::endl;
+	//std::cout << s << std::endl;
 	used = false;
 }
 

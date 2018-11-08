@@ -208,8 +208,8 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 	if (right)
 		x_deltav += 1;
 	if (space && !spaceHeld) {
-		std::cout << "Pressed space bar" << std::endl;
-		Projectile *newProj = new Projectile(playerRect, 'r', this);
+		//std::cout << "\nPressed space bar" << std::endl;
+		Projectile *newProj = new Projectile(playerRect, 'g', playerRect.x, playerRect.y);
 		projList[newProj->getInstanceName()] = newProj;
 		newProj->init(rendererReference);
 		spaceHeld = true;
@@ -237,9 +237,10 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
 	while(it != projList.end()) {
 		if(it->second->isUsed()) {
-			it = projList.erase(it);
+			//it = projList.erase(it);
+		} else {
+			it->second->update(objectList, grid, ticks);
 		}
-		it->second->update(objectList, grid, ticks);	//needs works
 		it++;
 	}
 }

@@ -1,13 +1,16 @@
 #ifndef BANDCAMP_PROJECTILE_H_
 #define BANDCAMP_PROJECTILE_H_
 
-#include <vector>
-#include <unordered_map>
+#include <algorithm>
 #include <SDL.h>
 #include <string>
+#include <unordered_map>
+#include <vector>
 
-#include "player.h"
+#include "collision.h"
 #include "object.h"
+#include "testroom.h"
+#include "utils.h"
 
 class Projectile : public Object
 {
@@ -15,7 +18,6 @@ class Projectile : public Object
 		SDL_Rect projRect;
 		SDL_Rect projDrawBox;
 		char projType;
-		Player *projPlayer;
 
 	public:
 		void input(const Uint8* keystate);
@@ -23,10 +25,10 @@ class Projectile : public Object
 		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
 		std::string getInstanceName();
 		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
-		Projectile(SDL_Rect _rect, char type, Player* player);
+		Projectile(SDL_Rect _rect, char type, int playerX, int playerY);
         ~Projectile();
 		Projectile();
-		void checkProjOverlap(std::unordered_map<std::string, Object*> *objectList);
+		void checkProjOverlap(int curX, int curY, std::vector<std::vector<int>> grid);
 		SDL_Rect* getProjRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
