@@ -19,10 +19,7 @@
 class Pickup;
 
 
-
-class Ooze : public Object
-{
-    enum oozeState { // is public
+enum OozeState { // is public
         HANGRY, //temp state
         ROAMING,
         EATING,
@@ -31,7 +28,10 @@ class Ooze : public Object
         FLEEING,
         HIDING,
         DYING
-    };
+};
+
+class Ooze : public Object {
+    
 
 private:
     //This should be removed ASAP
@@ -47,7 +47,7 @@ private:
     int x_deltav;
     int y_deltav;
 
-    oozeState state;
+    OozeState state;
     int hostility;
     Player *player;
     HUD *hud;
@@ -68,7 +68,7 @@ public:
     int damage = 5;
     // Constructors & destructor
     Ooze();
-    Ooze(SDL_Rect _rect, Player *player, HUD *h);
+    Ooze(int x_pos, int y_pos, Player *player, HUD *h);
 //    Ooze(oozeState st, int hostil);
     ~Ooze();
     
@@ -77,7 +77,7 @@ public:
     SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList);
     bool foundFood(Pickup* pickUp);
     int getAte();
-    oozeState getState();
+    OozeState getState();
 
     // Updates
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
