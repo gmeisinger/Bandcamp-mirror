@@ -34,13 +34,7 @@ class Ooze : public Object {
     
 
 private:
-    //This should be removed ASAP
-    SDL_Rect lWall;
-    SDL_Rect rWall;
-    SDL_Rect uWall;
-    Circle cPillar;
-    //
-    SDL_Rect rect;
+    SDL_Rect rect; // includes x_pos, y_pos, width, height
 
     int x_vel;
     int y_vel;
@@ -67,10 +61,17 @@ public:
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
     int damage = 5;
     // Constructors & destructor
-    Ooze();
+
+    Ooze(); // Default constructor
     Ooze(int x_pos, int y_pos, Player *player, HUD *h);
+
 //    Ooze(oozeState st, int hostil);
-    ~Ooze();
+//    Ooze(const Ooze& other);    // copy constructor
+//    Ooze& operator=(Ooze other); // copy assignment
+//    Ooze& operator=(rule_of_five&& other) noexcept // move assignment
+//    Ooze(rule_of_five&& other) noexcept // move constructor
+    ~Ooze(); // Destructor
+    
     
     // NEW
     Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);

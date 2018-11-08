@@ -48,6 +48,13 @@ Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h):player{player},state{HA
 //Other constructor?
 //Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
+// Copy Constructor
+/*
+Ooze(const Ooze& other): Ooze(other->rect, other->player, other->hud)
+{
+    
+}
+*/
 //Destructor
 Ooze::~Ooze(){};
 
