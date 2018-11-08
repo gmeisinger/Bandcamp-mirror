@@ -218,8 +218,13 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
     if (ate > 2) {
         state = CLONING;
         TestRoom::setSpawnOoze(true);
+        ate = 0;
         return true;
-    } 
+    } else {
+        state = HANGRY;
+        return true;
+    }
+    
     return false;
 }
 
