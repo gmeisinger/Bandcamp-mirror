@@ -1,4 +1,9 @@
 
+#include <SDL.h>
+#include <SDL_image.h>
+#include <SDL_mixer.h>
+#include <string>
+
 bool init()
 {
     //Initialize all SDL subsystems
@@ -12,12 +17,6 @@ bool init()
     
     //If there was an error in setting up the screen
     if( screen == NULL )
-    {
-        return false;    
-    }
-    
-    //Initialize SDL_ttf
-    if( TTF_Init() == -1 )
     {
         return false;    
     }
@@ -38,17 +37,17 @@ bool init()
 bool load_files()
 {
 
-	//Load the music
-	music = Mix_LoadMUS("CS1666 Game Music 1 128bpm Cm.wav");
+    //Load the music
+    music = Mix_LoadMUS("CS1666 Game Music 1 128bpm Cm.wav");
     
-	//If there was a problem loading the music
-	if( music == NULL )
-	{
-		return false;    
-	}
+    //If there was a problem loading the music
+    if( music == NULL )
+    {
+        return false;    
+    }
 
-	//If no problems, continue
-	return true;	
+    //If no problems, continue
+    return true;    
 }//end load_files
 
 void clean_up()
@@ -59,14 +58,8 @@ void clean_up()
     //Free the music
     Mix_FreeMusic( music );
     
-    //Close the font
-    TTF_CloseFont( font );
-    
     //Quit SDL_mixer
     Mix_CloseAudio();
-    
-    //Quit SDL_ttf
-    TTF_Quit();
     
     //Quit SDL
     SDL_Quit();
