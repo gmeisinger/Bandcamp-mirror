@@ -249,7 +249,6 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
         playerRect.x = curX;
         hitRect.x = curX;
     }
-    
     if(collision::checkColTop(hitRect, grid, 32) || collision::checkColBottom(hitRect, grid, 32)) {
         playerRect.y = curY;
         hitRect.y = curY+SHORTEN_DIST;

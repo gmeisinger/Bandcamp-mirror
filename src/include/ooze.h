@@ -19,7 +19,6 @@
 class Pickup;
 
 enum oozeState {
-    HANGRY, //temp state
     ROAMING,
     EATING,
     CLONING,
@@ -32,13 +31,9 @@ enum oozeState {
 class Ooze : public Object
 {
 private:
-    //This should be removed ASAP
-    SDL_Rect lWall;
-    SDL_Rect rWall;
-    SDL_Rect uWall;
-    Circle cPillar;
-    //
     SDL_Rect rect;
+    //Used to check line of sight
+    SDL_Rect colRect;
 
     int x_vel;
     int y_vel;
@@ -91,11 +86,11 @@ public:
     bool isUsed();
 
     //Movement
-
     void checkBounds(int max_width, int max_height, bool move);
     bool checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move);
     bool drawLine(std::vector<std::vector<int>> grid);
-    void moveLine(std::vector<std::vector<int>> grid);
+    void moveLine(std::vector<std::vector<int>> grid);;
+
     
     // Math
     void increaseHostility();
