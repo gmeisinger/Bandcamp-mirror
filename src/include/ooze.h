@@ -18,20 +18,22 @@
 
 class Pickup;
 
-enum oozeState {
-    ROAMING,
-    EATING,
-    CLONING,
-    FIGHTING,
-    FLEEING,
-    HIDING,
-    DYING
+enum OozeState { // is public
+        HANGRY, //temp state
+        ROAMING,
+        EATING,
+        CLONING,
+        FIGHTING,
+        FLEEING,
+        HIDING,
+        DYING
 };
 
-class Ooze : public Object
-{
+class Ooze : public Object {
+    
+
 private:
-    SDL_Rect rect;
+    SDL_Rect rect; // includes x_pos, y_pos, width, height
     //Used to check line of sight
     SDL_Rect colRect;
 
@@ -40,7 +42,7 @@ private:
     int x_deltav;
     int y_deltav;
 
-    oozeState state;
+    OozeState state;
     int hostility;
     Player *player;
     HUD *hud;
@@ -53,21 +55,31 @@ private:
     
 public:
 
+    
+
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
     int damage = 5;
     // Constructors & destructor
-    Ooze();
-    Ooze(SDL_Rect _rect, Player *player, HUD *h);
+
+    Ooze(); // Default constructor
+    Ooze(int x_pos, int y_pos, Player *player, HUD *h);
+
 //    Ooze(oozeState st, int hostil);
-    ~Ooze();
+//    Ooze(const Ooze& other);    // copy constructor
+//    Ooze& operator=(Ooze other); // copy assignment
+//    Ooze& operator=(rule_of_five&& other) noexcept // move assignment
+//    Ooze(rule_of_five&& other) noexcept // move constructor
+    ~Ooze(); // Destructor
+    
     
     // NEW
     Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);
     SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList);
     bool foundFood(Pickup* pickUp);
     int getAte();
+    OozeState getState();
 
     // Updates
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);

@@ -22,6 +22,9 @@ int oldTemp = 100;
 int oldO2 = 100;
 int oldAte = 0;
 
+
+bool spawnPickup = true;
+bool spawnOoze = false;
 // Heads up display 
 HUD h;
 Player p;
@@ -46,8 +49,7 @@ void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
 	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
 	p = Player(player_box);
-	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
-	o = Ooze(ooze_box, &p, &h);
+	o = Ooze(screen_w/2, 3*screen_h/8, &p, &h);
 	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 21, 20, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
     
@@ -74,12 +76,10 @@ void TestRoom::update(Uint32 ticks){
 		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 	std::vector<std::vector<int>> grid = map.getGrid();
-	// TODO: better way to check for pickup being consumed?
-	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2 || o.getAte() > oldAte) movePickup(rendererReference);
-	oldTemp = h.currentTemp;
-	oldO2 = h.currentOxygen;
-	oldAte = o.getAte();
-  //update all objects
+
+	if (spawnPickup) movePickup(rendererReference); //new way of deciding when to spawn pickup
+	if (spawnOoze) cloneOoze(rendererReference);
+
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
 		it->second->update(&objectList, grid, ticks);
@@ -119,6 +119,34 @@ void TestRoom::update(Uint32 ticks){
 	updateCount = (updateCount+1)%UPDATE_MAX;
 }
 
+// based off of movePickup
+// TODO: finish this shit
+void TestRoom::cloneOoze(SDL_Renderer* reference) {
+	int oozeX = std::max(tile_s, rand()%(20*tile_s));
+	int oozeY = std::max(tile_s, rand()%(19*tile_s));
+
+	//int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
+	//int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
+	//SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
+	
+	/*if(collision::checkCol(OozeBox, leftWall) 
+		|| collision::checkCol(OozeBox, rightWall)
+		|| collision::checkCol(OozeBox, upperWall)
+		|| collision::checkCol(OozeBox, centerPillar))
+	{
+		moveOoze(reference);
+	}*/
+
+		
+
+	
+	Ooze *newO  = new Ooze(oozeX, oozeY, &p, &h);
+	objectList[newO->getInstanceName()] = newO;
+	newO->init(reference);
+	spawnOoze = false; //don't need a new pickup; one was just made
+
+}
+
 // ADD COMMENTS 
 void TestRoom::movePickup(SDL_Renderer* reference) {
 	int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
@@ -149,6 +177,17 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 		objectList[newP->getInstanceName()] = newP;
 		newP->init(reference);
 	}
+}
+
+
+// used to allow other objects to tell testroom to spawn a pickup
+void TestRoom::setSpawnOoze(bool set) {
+	spawnOoze = set;
+}
+
+// used to allow other objects to tell testroom to spawn a pickup
+void TestRoom::setSpawnPickup(bool set) {
+	spawnPickup = set;
 }
 
 // ADD COMMENTS 
