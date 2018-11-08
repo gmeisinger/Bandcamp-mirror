@@ -19,13 +19,9 @@ int projNumber = 0;
 bool projUsed;
 bool spaceHeld = false;
 
-Projectile::Projectile(SDL_Rect _rect, char type, int playerX, int playerY) {
-    projRect = _rect;
-	projRect.x = playerX;
-	projRect.y = playerY;
-	projDrawBox = _rect;
-	projDrawBox.x = playerX;
-	projDrawBox.y = playerY;
+Projectile::Projectile(char type, int playerX, int playerY) {
+    projRect = {400, 300, 32, 8};
+	projDrawBox = {400, 300, 32, 8};
 	projTicks = 0;
 	projType = type;
 	totalInstance++; //Increase instance Number
