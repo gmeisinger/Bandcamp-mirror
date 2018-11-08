@@ -176,6 +176,7 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 		Pickup *newP  = new Pickup(pickupBox, type, pickupValue, &p, &h);
 		objectList[newP->getInstanceName()] = newP;
 		newP->init(reference);
+		spawnPickup = false;
 	}
 }
 

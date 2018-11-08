@@ -98,7 +98,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 
 	bool overlap = checkOozeOverlap(objectList, ticks);
     bool los;
-	if(!overlap){
+	/* if(!overlap){
         //Only move if we can see the player
         los = drawLine(grid);
         std::cout << los << std::endl;
@@ -106,7 +106,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
             moveLine(grid);
             updatePosition();
         }
-  }
+    } */
     
     
     //target = getPickup(objectList)->getRect();
@@ -130,8 +130,8 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
             x_deltav = 0;
             y_deltav = 0;
         }
-        
-        updateVelocity(x_deltav,y_deltav);*/
+    }
+        updateVelocity(x_deltav,y_deltav);
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
@@ -407,16 +407,6 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
                 break;
         }
         return sight;
-
-void Ooze::updateVelocity(int _xdv, int _ydv) {
-    
-    // If we dont want out dot to be in a frictionless vacuum...
-    if (_xdv == 0) {
-        // No user-supplied "push", return to rest
-        if (x_vel > 0)
-            _xdv = -1;
-        else if (x_vel < 0)
-            _xdv = 1;
     }
     else {
         slope = deltaX * 2 - deltaY;
@@ -437,7 +427,41 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
         }
         return sight;
     }
+}
 
+void Ooze::updateVelocity(int _xdv, int _ydv) {
+    
+    /*
+    // If we dont want out dot to be in a frictionless vacuum...
+    if (_xdv == 0) {
+        // No user-supplied "push", return to rest
+        if (x_vel > 0)
+            _xdv = -1;
+        else if (x_vel < 0)
+            _xdv = 1;
+    }
+    if (_ydv == 0) {
+        if (y_vel > 0)
+            _ydv = -1;
+        else if (y_vel < 0)
+            _ydv = 1;
+    }
+     */
+    
+    // Speed up/slow down
+    x_vel += _xdv;
+    y_vel += _ydv;
+
+    // Check speed limits
+    if (x_vel < -1 * MAX_SPEED)
+        x_vel = -1 * MAX_SPEED;
+    else if (x_vel > MAX_SPEED)
+        x_vel = MAX_SPEED;
+
+    if (y_vel < -1 * MAX_SPEED)
+        y_vel = -1 * MAX_SPEED;
+    else if (y_vel > MAX_SPEED)
+        y_vel = MAX_SPEED;
 }
 
 //This version of Bresenham's moves the player in as stright a line as possible to 
@@ -492,22 +516,7 @@ void Ooze::moveLine(std::vector<std::vector<int>> grid) {
         startY += yDir;
         moveSlope += deltaX;
         y_vel = yDir;
-    }     
-    
-    // Speed up/slow down
-    x_vel += _xdv;
-    y_vel += _ydv;
-
-    // Check speed limits
-    if (x_vel < -1 * MAX_SPEED)
-        x_vel = -1 * MAX_SPEED;
-    else if (x_vel > MAX_SPEED)
-        x_vel = MAX_SPEED;
-
-    if (y_vel < -1 * MAX_SPEED)
-        y_vel = -1 * MAX_SPEED;
-    else if (y_vel > MAX_SPEED)
-        y_vel = MAX_SPEED;
+    }   
 }
 
 /*currently checks collisions with room features (walls etc.)
