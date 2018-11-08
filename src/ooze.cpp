@@ -27,11 +27,11 @@ Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hos
 	Animation* anim;
 	int overlapTicks = 0;
 ======= */
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{HANGRY}, hostility{0} {
-    rect = _rect;
+Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h):player{player},state{HANGRY}, hostility{0} {
     this->player = player;
     target = player->getRect();
 	hud = h;
+    rect = {x_pos, y_pos, 30, 30};
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	Animation* anim;
@@ -188,7 +188,7 @@ int Ooze::getAte() {
     return ate;
 }
 
-Ooze::oozeState Ooze::getState() {
+OozeState Ooze::getState() {
     return state;
 }
 
@@ -196,6 +196,7 @@ Ooze::oozeState Ooze::getState() {
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
     if (ate > 2) {
         state = CLONING;
+        TestRoom::setSpawnOoze(true);
         return true;
     } 
     
