@@ -122,12 +122,9 @@ void TestRoom::update(Uint32 ticks){
 // based off of movePickup
 // TODO: finish this shit
 void TestRoom::cloneOoze(SDL_Renderer* reference) {
-	int oozeX = std::max(tile_s, rand()%(20*tile_s));
-	int oozeY = std::max(tile_s, rand()%(19*tile_s));
-
-	//int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
-	//int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
-	//SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
+	int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
+	int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
+	SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
 	
 	/*if(collision::checkCol(OozeBox, leftWall) 
 		|| collision::checkCol(OozeBox, rightWall)
@@ -137,7 +134,7 @@ void TestRoom::cloneOoze(SDL_Renderer* reference) {
 		moveOoze(reference);
 	}*/
 
-	Ooze *newO  = new Ooze(oozeX, oozeY, &p, &h);
+	Ooze *newO  = new Ooze(OozeX, OozeY, &p, &h);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made

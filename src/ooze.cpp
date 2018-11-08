@@ -70,9 +70,6 @@ void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
-	
-    
-
 }
 
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
