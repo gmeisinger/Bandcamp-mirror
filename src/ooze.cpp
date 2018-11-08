@@ -362,7 +362,8 @@ bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid
             return false;
         else 
             return true;
-    }        
+    } 
+    return false;       
 }
 
 
