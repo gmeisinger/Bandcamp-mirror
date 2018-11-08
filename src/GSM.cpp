@@ -16,6 +16,7 @@ PauseMenu pauseMenu;
 bool pause;	//Is the game paused
 int tempScreen; //What was the room before you paused?
 
+// Game state manager 
 GSM::GSM(){
 	GSM::currentScreen = 0;	// Should describe this here 
 	
@@ -32,6 +33,7 @@ GSM::GSM(){
 	running = false;		// does this refer to the game running bool? its own from GSM.h
 }
 
+// Initialize GSM 
 void GSM::init(SDL_Renderer* reference){
 	std::cout << "Init GSM" << std::endl;
 	//When Objects need to load their sprites, they will be passed this renderer
@@ -42,6 +44,7 @@ void GSM::init(SDL_Renderer* reference){
 	running = true;
 }
 
+// Update the GSM state 
 void GSM::update(Uint32 ticks){
 	previousScreen = GSM::currentScreen;
 	
@@ -68,6 +71,7 @@ void GSM::update(Uint32 ticks){
 	}
 }
 
+// 
 SDL_Renderer* GSM::draw(SDL_Renderer *renderer){
 	if(pause)
 	{
@@ -80,6 +84,7 @@ SDL_Renderer* GSM::draw(SDL_Renderer *renderer){
 	return renderer;	
 }
 
+// 
 void GSM::input(const Uint8* keystate){
 	if(pause)
 		pauseMenu.input(keystate);

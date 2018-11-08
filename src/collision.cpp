@@ -97,6 +97,7 @@ bool collision::checkColTop(SDL_Rect rect, std::vector<std::vector<int>> grid, i
     }
 }
 
+// add description
 bool collision::checkColBottom(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
     //which tiles are we in?
     int normLeftX = rect.x/tilesize;
@@ -130,6 +131,7 @@ bool collision::checkColLeft(SDL_Rect rect, std::vector<std::vector<int>> grid, 
     }
 }
 
+// add description
 bool collision::checkColRight(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
     //which tiles are we in?
     int normX = (rect.x + rect.w)/tilesize;

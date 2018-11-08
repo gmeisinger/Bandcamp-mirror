@@ -57,14 +57,26 @@ std::string Ooze::getInstanceName(){
 	return "Ooze-"+ss.str();
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::input(const Uint8* keystate){}
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
     sheet.setClips(_cols, _rows, rect.w, rect.h);
@@ -117,15 +129,28 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     checkCollision(curX, curY, grid);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::increaseHostility() {
 	if (hostility < 10)
 		hostility++;
 }
+
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::decreaseHostility() {
 	if (hostility >  0)
 		hostility--;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_Rect* dest = new SDL_Rect;
     *dest = rect;
@@ -170,10 +195,18 @@ bool Ooze::foundFood(Pickup* food) {
     return false;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 int Ooze::getAte() {
     return ate;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
     if (ate > 2) {
         state = ROAMING;
@@ -206,6 +239,10 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 	return overlap;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::updateAnimation(Uint32 ticks) {
 
     if(true) { //ticks/10%2 == 2
@@ -220,11 +257,19 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::updatePosition() {
     rect.x += x_vel;
     rect.y += y_vel;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::checkBounds(int max_width, int max_height) {
     if (rect.x < BORDER_SIZE){
         rect.x = BORDER_SIZE;
@@ -245,7 +290,10 @@ void Ooze::checkBounds(int max_width, int max_height) {
     }
 }
 
-
+/* Summary
+ * Argument  
+ *
+*/
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }

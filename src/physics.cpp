@@ -6,6 +6,7 @@
 
 int previous_pressure;
 
+// Initialize 
 void Room::init_room() //this will always be used for the first room
 {
 	//we'll use "percent" values (0-100) to keep things simple
@@ -15,6 +16,10 @@ void Room::init_room() //this will always be used for the first room
 	previous_pressure = pressure;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Room::adv_init_room(int o, int t, int p) 	//this will be implemented when multiple rooms are created, taking into account the other room's values
 {
 	oxygen = (o+100)/2;						//for now, takes the previous room's values and this one ("100") and averages them
@@ -23,16 +28,22 @@ void Room::adv_init_room(int o, int t, int p) 	//this will be implemented when m
 	previous_pressure = pressure;
 }
 
+// get oxygen value 
 int Room::give_oxygen()
 {
 	return oxygen;
 }
 
+// get temp value 
 int Room::give_temperature()
 {
 	return temperature;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Room::lower_pressure(int num_of_breaches) //depending on how many breaches in the room
 {
 	previous_pressure = pressure;
@@ -62,29 +73,43 @@ void Room::lower_pressure(int num_of_breaches) //depending on how many breaches 
 	}
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Room::lower_oxygen()
 {
 	//lowers oxygen by a set amount, for now 5?
 	oxygen-=5;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Room::adv_lower_oxygen() //something porportional with pressure
 {
 	//to be determined
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Room::raise_oxygen(int resource_value)
 {
 	//raises oxygen by the value of the resource that was picked up (set by procgen team)
 	oxygen+=resource_value;
 }
 
+//
 void Room::lower_temperature()
 {
 	//lowers temperature by a set amount, for now 5?
 	temperature-=5;
 }
 
+// 
 void Room::adv_lower_temperature() //k=T1/P1 T2=k*P2
 {
 	int k = temperature/previous_pressure;
@@ -92,6 +117,7 @@ void Room::adv_lower_temperature() //k=T1/P1 T2=k*P2
 	temperature = temp;
 }
 
+// 
 void Room::raise_temperature(int resource_value)
 {
 	//raises temperature by the value of the resource that was picked up (set by procgen team)
