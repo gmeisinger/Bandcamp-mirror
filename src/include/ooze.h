@@ -66,7 +66,7 @@ public:
     Ooze(int x_pos, int y_pos, Player *player, HUD *h);
 
 //    Ooze(oozeState st, int hostil);
-//    Ooze(const Ooze& other);    // copy constructor
+    Ooze(const Ooze& other);    // copy constructor
 //    Ooze& operator=(Ooze other); // copy assignment
 //    Ooze& operator=(rule_of_five&& other) noexcept // move assignment
 //    Ooze(rule_of_five&& other) noexcept // move constructor

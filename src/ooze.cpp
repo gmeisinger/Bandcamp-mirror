@@ -1,14 +1,7 @@
 #include "include/ooze.h"
 
-//SDL_Rect rect;
-//SpriteSheet sheet;
-
 //initialize static member variables
 int Ooze::totalOoze = 0;
-
-
-//int x_vel;
-//int y_vel;
 
 constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
@@ -16,21 +9,13 @@ constexpr int BORDER_SIZE = 32;
 // Default Constructor
 Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
-//Constructor from rect
-/* <<<<<<< HEAD
-Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hostility{0} {
-    rect = _rect;
-    player = p;
-	hud = h;
-	totalOoze++; //Increase # of instances counter
-	oozeNumber = totalOoze;
-	Animation* anim;
-	int overlapTicks = 0;
-======= */
-Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h):player{player},state{HANGRY}, hostility{0} {
-    this->player = player;
+Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h):
+player{player},
+state{HANGRY},
+hostility{0},
+hud{h}
+{
     target = player->getRect();
-	hud = h;
     rect = {x_pos, y_pos, 30, 30};
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
@@ -49,8 +34,7 @@ Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h):player{player},state{HA
 //Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
 // Copy Constructor
-/*
-Ooze(const Ooze& other): Ooze(other->rect, other->player, other->hud)
+/*Ooze::Ooze(const Ooze& other):Ooze(other->rect.x, other->rect.y, other->player, other->hud)
 {
     
 }
@@ -82,7 +66,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 	int x_deltav = 0;
 	int y_deltav = 0;
     
-    //Get the position of the player before they move
+    //Get the position of the ooze before it moves
     //Needed for collision detection
     int curX = rect.x;
     int curY = rect.y;
