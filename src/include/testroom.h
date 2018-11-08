@@ -31,6 +31,7 @@ class TestRoom : public Screen
 		void update(Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
 		void movePickup(SDL_Renderer* reference);
+		static void setSpawnPickup(bool set);
 };
 
 #endif  //  BANDCAMP_TESTROOM_H_

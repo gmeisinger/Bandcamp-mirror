@@ -11,7 +11,7 @@
 #include "include/utils.h"
 #include "include/testroom.h"
 #include "include/ooze.h"
->>>>>>> 188008194d1ee41687ffa1b8c7571a5a951c9216 */
+*/
 
 constexpr int HOVER_SPEED = 150;
 
@@ -109,6 +109,7 @@ void Pickup::init(SDL_Renderer *renderer){
 void Pickup::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
+	if (used) TestRoom::setSpawnPickup(true);
 }
 
 /* Summary
@@ -205,6 +206,10 @@ bool Pickup::isUsed() {
 }
 
 //
+int Pickup::getTotal() {
+	return totalInstance;
+}
+
 SDL_Rect* Pickup::getRect() {
     return &pickupRect;
 }
