@@ -137,9 +137,6 @@ void TestRoom::cloneOoze(SDL_Renderer* reference) {
 		moveOoze(reference);
 	}*/
 
-		
-
-	
 	Ooze *newO  = new Ooze(oozeX, oozeY, &p, &h);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
@@ -148,8 +145,8 @@ void TestRoom::cloneOoze(SDL_Renderer* reference) {
 
 // ADD COMMENTS 
 void TestRoom::movePickup(SDL_Renderer* reference) {
-	int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
-	int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
+	int pickupX = std::max(tile_s, rand()%(20*tile_s));
+	int pickupY = std::max(tile_s, rand()%(19*tile_s));
 	SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
 	
 	/*if(collision::checkCol(pickupBox, leftWall) 

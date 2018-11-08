@@ -14,7 +14,7 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{ROAMING}, hostility{0} {}
+Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 //Constructor from rect
 /* <<<<<<< HEAD
@@ -41,6 +41,8 @@ Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h):player{player},state{HA
     y_deltav = 0;
     x_vel = 1;
     y_vel = 1;
+
+    ate = 0;
 }
 
 //Other constructor?
@@ -131,7 +133,8 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
             y_deltav = 0;
         }
     }
-        updateVelocity(x_deltav,y_deltav);
+        
+    updateVelocity(x_deltav,y_deltav);
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
@@ -139,12 +142,8 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     checkBounds(screen_w, screen_h, true);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid, true);
-  /*
+ 
     updatePosition();
-    checkBounds(screen_w, screen_h);
-    //Check you haven't collided with object
-    checkCollision(curX, curY, grid);
-    */
 
 }
 
