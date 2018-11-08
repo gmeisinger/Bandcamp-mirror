@@ -146,7 +146,6 @@ void TestRoom::cloneOoze(SDL_Renderer* reference) {
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made
-
 }
 
 // ADD COMMENTS 
