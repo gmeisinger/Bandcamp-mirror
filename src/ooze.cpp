@@ -48,6 +48,13 @@ Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{HANGRY},
 //Other constructor?
 //Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
+// Copy Constructor
+/*
+Ooze(const Ooze& other): Ooze(other->rect, other->player, other->hud)
+{
+    
+}
+*/
 //Destructor
 Ooze::~Ooze(){};
 
