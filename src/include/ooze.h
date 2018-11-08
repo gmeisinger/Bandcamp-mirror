@@ -18,7 +18,6 @@
 
 class Pickup;
 
-
 enum OozeState { // is public
         HANGRY, //temp state
         ROAMING,
@@ -35,6 +34,8 @@ class Ooze : public Object {
 
 private:
     SDL_Rect rect; // includes x_pos, y_pos, width, height
+    //Used to check line of sight
+    SDL_Rect colRect;
 
     int x_vel;
     int y_vel;
@@ -97,8 +98,11 @@ public:
     bool isUsed();
 
     //Movement
-    void checkBounds(int max_width, int max_height);
-    void checkCollision(int curX, int curY, std::vector<std::vector<int>> grid);
+    void checkBounds(int max_width, int max_height, bool move);
+    bool checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move);
+    bool drawLine(std::vector<std::vector<int>> grid);
+    void moveLine(std::vector<std::vector<int>> grid);;
+
     
     // Math
     void increaseHostility();
