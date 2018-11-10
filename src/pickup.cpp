@@ -3,15 +3,6 @@
  * 
 */
 #include "include/pickup.h"
-/* =======
-#include "include/physics.h"
-#include "include/pickup.h"
-#include "include/player.h"
-#include "include/HUD.h"
-#include "include/utils.h"
-#include "include/testroom.h"
-#include "include/ooze.h"
->>>>>>> 188008194d1ee41687ffa1b8c7571a5a951c9216 */
 
 constexpr int HOVER_SPEED = 150;
 
@@ -186,6 +177,10 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *object
 
 bool Pickup::isUsed() {
 	return used;
+}
+
+int Pickup::getTotal() {
+	return totalInstance;
 }
 
 SDL_Rect* Pickup::getRect() {

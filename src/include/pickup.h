@@ -47,6 +47,7 @@ class Pickup : public Object
 		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
+		int getTotal() ;
 };
 
 #endif  //  BANDCAMP_PICKUP_H_
