@@ -9,11 +9,9 @@ constexpr int BORDER_SIZE = 32;
 // Default Constructor
 Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
-Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h):
-player{player},
-state{HANGRY},
-hostility{0},
-hud{h}
+// Constructor
+Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h)
+    : player{player}, state{HANGRY}, hostility{0}, hud{h}
 {
     target = player->getRect();
     rect = {x_pos, y_pos, 30, 30};
