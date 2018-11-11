@@ -33,7 +33,7 @@ bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 TestRoom::TestRoom() : Screen(){} //from merge
 
 Ooze o;
-Tilemap map;
+Tilemap tilemap;
 SDL_Rect camera;
 
 //TestRoom::TestRoom(){
@@ -46,18 +46,18 @@ SDL_Rect camera;
 void TestRoom::init(SDL_Renderer* reference){
 	std::cout << "Init TestRoom" << std::endl;
 	rendererReference = reference;
-	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
+	SDL_Rect player_box = {tile_s + 1, tile_s + 1, tile_s, tile_s};
 	p = Player(player_box);
 	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
 	o = Ooze(ooze_box, &p, &h);
-	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 21, 20, 32);
+	tilemap = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 40, 40, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
     
 	h.init(reference);
 	p.init(reference);
 	o.init(reference);
-	map.init();
-	map.genTestRoom();
+	tilemap.init();
+	tilemap.setMap(tilemap.genRandomMap());
 	
 	//Player and HUD in the Room
 	objectList["player"] = &p;
@@ -76,7 +76,7 @@ void TestRoom::update(Uint32 ticks){
 		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 
-	std::vector<std::vector<int>> grid = map.getGrid();
+	std::vector<std::vector<int>> grid = tilemap.getMap();
 
 	if (spawnPickup) movePickup(rendererReference); //new way of deciding when to spawn pickup
 	// TODO: better way to check for pickup being consumed?
@@ -188,7 +188,7 @@ void TestRoom::input(const Uint8* keystate){
 // ADD COMMENTS 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
 	//draw map before objects
-	map.draw(renderer, camera);
+	tilemap.draw(renderer, camera);
 	//draw objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
