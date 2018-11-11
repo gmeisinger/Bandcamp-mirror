@@ -7,42 +7,32 @@
 #include "include/player.h"
 #include "include/spritesheet.h"
 #include "include/HUD.h"
+#include "include/ooze.h" //Putting these include in testroom.h aparently causes a circular include.
 #include "include/testroom.h"
 #include "include/game.h"
 #include "include/GSM.h"
-#include "include/ooze.h"
 #include "include/circle.h"
 #include "include/collision.h"
-#include "include/door.h"
 
 constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
-int updateCount = 1;
-int oldTemp = 100;
-int oldO2 = 100;
-int oldAte = 0;
 
-// Heads up display 
-HUD h;
-Player p;
-
-bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
+Ooze o;
+Door d;
 
 TestRoom::TestRoom() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
+	updateCount = 1;
+	oldTemp = 100;
+	oldO2 = 100;
+	oldAte = 0;
 } //from merge
-
-Ooze o;
-Tilemap map;
-SDL_Rect camera;
-Door d;
 
 //TestRoom::TestRoom(){
 //	start = false;
 //	std::unordered_map<std::string, Object*> objectList;
 //}
-
 
 // ADD COMMENTS 
 void TestRoom::init(SDL_Renderer* reference){

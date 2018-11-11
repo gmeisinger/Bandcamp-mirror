@@ -18,7 +18,6 @@ SDL_Rect menu_rect = {0, 0, 0, 0};
 std::unordered_map<std::string, Object*> * object_list;
 Menu::Menu() { //Constructs a test button; in the future, this should be more flexible and adding items will happen via another method.
 	roomReference = &GSM::currentScreen;
-	
 }
 
 void Menu::init(SDL_Renderer* renderer) {

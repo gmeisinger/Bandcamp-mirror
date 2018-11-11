@@ -10,8 +10,8 @@
 #include "screen.h"
 #include "menu.h"
 #include "testroom.h"
-
-
+#include "testtransition_1.h"
+#include "testtransition_2.h"
 
 class GSM {
 	private:

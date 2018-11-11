@@ -130,7 +130,7 @@ void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 				setAnimation("closing");
 				anim->play();
 				state = 2; //Sliding Closed
-				grid[y_pos][x_pos] = 2; //Set that to Wall
+				grid[y_pos][x_pos] = 4; //Set that to Door
 			}
 			
 		}
@@ -145,8 +145,7 @@ bool Door::checkCanToggle(Player*& playerObj){
 	//Also check direction of the player later
 	SDL_Rect * playerRect = playerObj->getRect();
 	
-	
-	if(!directionLR && (playerRect->y <= doorRect.y+TILE_SIZE && playerRect->y >= doorRect.y-TILE_SIZE*2) && (playerRect->x <= doorRect.y+TILE_SIZE && playerRect->x >= doorRect.y))
+	if(!directionLR && (playerRect->y <= doorRect.y+TILE_SIZE && playerRect->y >= doorRect.y-TILE_SIZE*2) && (playerRect->x <= doorRect.x+TILE_SIZE && playerRect->x >= doorRect.x))
 		return true;
 	else if(directionLR && (playerRect->x <= doorRect.x+TILE_SIZE*2 && playerRect->x >= doorRect.x-TILE_SIZE*2) && (playerRect->y >= doorRect.y-TILE_SIZE && playerRect->y <= doorRect.y))
 		return true;

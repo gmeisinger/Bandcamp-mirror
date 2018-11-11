@@ -24,6 +24,9 @@ public:
 	void genTestRoom();
 	void init();
 	SDL_Renderer* draw(SDL_Renderer* render, SDL_Rect cam);
+	void genTestTransitionRoom();
+	void genTestTransitionRoom2();
+	void genMaze();
 };
 
 #endif  //  BANDCAMP_TILEMAP_H_

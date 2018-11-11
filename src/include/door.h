@@ -18,7 +18,7 @@ class Door : public Object
 		Animation* anim;
 		SDL_Texture* openImg;
 		SDL_Texture* closedImg;
-		SDL_Rect doorRect, playerBox; //The Collision Box
+		SDL_Rect doorRect; //The Collision Box
 		int toggleButton = 0; //What state is the "Door open button"? 0 - not pressed  1 - pressed 1st frame 2 - held
 		int instanceNumber = 0;
 		int x_pos, y_pos; //X and Y according to the TILEMAP

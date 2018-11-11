@@ -14,7 +14,7 @@ SDL_Rect menuImg, menuImg2, cursor;
 bool startHeld;
 int keyHeld [7]; // 0 - not pressed, 1 - first frame 2 - held
 
-PauseMenu::PauseMenu(): Screen(){start = false;}
+PauseMenu::PauseMenu(): Screen(){}
 
 void PauseMenu::init(SDL_Renderer* reference){
 	rendererReference = reference;
