@@ -27,6 +27,10 @@ Tilemap::Tilemap() {
 	srand(time(NULL));
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 Tilemap::Tilemap(SDL_Texture* tex, int _width, int _height, int _tilesize) {
 	image = tex;
 	width = _width;

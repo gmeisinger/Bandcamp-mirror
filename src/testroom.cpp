@@ -30,6 +30,7 @@ Player p;
 
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
+//
 TestRoom::TestRoom() : Screen(){} //from merge
 
 Ooze o;
@@ -129,8 +130,11 @@ void TestRoom::update(Uint32 ticks){
 
 // ADD COMMENTS 
 void TestRoom::movePickup(SDL_Renderer* reference) {
-	int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
-	int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
+	int pickupX = std::max(tile_s, rand()%(20*tile_s));
+	int pickupY = std::max(tile_s, rand()%(19*tile_s));
+
+	//int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
+	//int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
 	SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
 	
 	/*if(collision::checkCol(pickupBox, leftWall) 

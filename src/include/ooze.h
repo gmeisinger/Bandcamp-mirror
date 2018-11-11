@@ -19,6 +19,7 @@
 class Pickup;
 
 enum oozeState {
+    HANGRY, //temp state
     ROAMING,
     EATING,
     CLONING,

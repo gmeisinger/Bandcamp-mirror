@@ -1,9 +1,15 @@
+/* Team Bandcamp
+ * Class function: 
+ * 
+*/
+
 #include "include/circle.h"
 
 int x;
 int y;
 int r;
 
+// add description
 Circle::Circle()
 {
     x = 0;
@@ -11,6 +17,7 @@ Circle::Circle()
     r = 0;
 }
 
+// add description
 Circle::Circle(int varX, int varY, int varR)
 {
     x = varX;
@@ -18,6 +25,7 @@ Circle::Circle(int varX, int varY, int varR)
     r = varR;
 }
 
+// add description
 void Circle::updateCircle(int varX, int varY, int varR)
 {
     x = varX;
@@ -25,6 +33,7 @@ void Circle::updateCircle(int varX, int varY, int varR)
     r = varR;
 }
 
+// add description
 void Circle::drawCircle(SDL_Renderer* rend)
 {
     for (int i = -r; i < r; i++) 
@@ -40,16 +49,19 @@ void Circle::drawCircle(SDL_Renderer* rend)
 	}
 }
 
+// add description
 int Circle::getX()
 {
     return x;
 }
 
+// add description
 int Circle::getY()
 {
     return y;
 }
 
+// add description
 int Circle::getR()
 {
     return r;

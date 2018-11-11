@@ -14,7 +14,7 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{ROAMING}, hostility{0} {}
+Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 //Constructor from rect
 /* <<<<<<< HEAD
@@ -27,7 +27,7 @@ Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hos
 	Animation* anim;
 	int overlapTicks = 0;
 ======= */
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{ROAMING}, hostility{0} {
+Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{HANGRY}, hostility{0} {
     rect = _rect;
     this->player = player;
     target = player->getRect();
@@ -57,14 +57,26 @@ std::string Ooze::getInstanceName(){
 	return "Ooze-"+ss.str();
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::input(const Uint8* keystate){}
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
     sheet.setClips(_cols, _rows, rect.w, rect.h);
@@ -92,7 +104,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 	if(!overlap){
 
         //uncomment the line below to change the ooze to chasing the pickups
-        //target = pickTarget(objectList);
+        target = pickTarget(objectList);
 
         //check which direction the target is 
         if (target->y > rect.y)
@@ -117,15 +129,28 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     checkCollision(curX, curY, grid);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::increaseHostility() {
 	if (hostility < 10)
 		hostility++;
 }
+
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::decreaseHostility() {
 	if (hostility >  0)
 		hostility--;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_Rect* dest = new SDL_Rect;
     *dest = rect;
@@ -136,16 +161,21 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
 }
 
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList) {
-    std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
-    while(it != objectList->end()){
-        if (!it->first.substr(0,6).compare("Pickup")) {
-            //std::cout << "there is a pickup :) " << std::endl;
-            Pickup* temp = (Pickup*)it->second;
-            return temp->getRect();
+    switch(this->state) {
+        case HANGRY: {
+            std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+            while(it != objectList->end()){
+                if (!it->first.substr(0,6).compare("Pickup")) {
+                    //std::cout << "there is a pickup :) " << std::endl;
+                    Pickup* temp = (Pickup*)it->second;
+                    return temp->getRect();
+                }
+                it++;
+            }
         }
-        it++;
+        default:
+            return player->getRect();
     }
-    return player->getRect();
 }
 
 // TODO: combine this with the overlap method below, which
@@ -165,11 +195,24 @@ bool Ooze::foundFood(Pickup* food) {
     return false;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 int Ooze::getAte() {
     return ate;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+    if (ate > 2) {
+        state = ROAMING;
+        return true;
+    } 
+    
     return false;
 }
 
@@ -196,6 +239,10 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 	return overlap;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::updateAnimation(Uint32 ticks) {
 
     if(true) { //ticks/10%2 == 2
@@ -210,11 +257,19 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::updatePosition() {
     rect.x += x_vel;
     rect.y += y_vel;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::checkBounds(int max_width, int max_height) {
     if (rect.x < BORDER_SIZE){
         rect.x = BORDER_SIZE;
@@ -235,7 +290,10 @@ void Ooze::checkBounds(int max_width, int max_height) {
     }
 }
 
-
+/* Summary
+ * Argument  
+ *
+*/
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
