@@ -48,9 +48,9 @@ void Tilemap::init() {
 	map = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
 	
 	//ground tile
-	tiles[0] = {0,0,tilesize,tilesize};
+	tiles[1] = {0,0,tilesize,tilesize};
 	//wall tile
-	tiles[1] = {0,tilesize,tilesize,tilesize};
+	tiles[2] = {0,tilesize,tilesize,tilesize};
 }
 
 //returns the map as 2d vector
@@ -97,17 +97,20 @@ SDL_Renderer* Tilemap::draw(SDL_Renderer* render, SDL_Rect cam) {
 			SDL_Rect tile;
 			if(map[row][col] == 1) {
 				//floor
-				tile = tiles[0];
+				tile = tiles[1];
+				SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
+				SDL_RenderCopy(render, image, &tile, &dest);
 			}
 			else if(map[row][col] == 2) {
 				//wall
-				tile = tiles[1];
+				tile = tiles[2];
+				SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
+				SDL_RenderCopy(render, image, &tile, &dest);
 			}
 
 			//draw tile
 			//SDL_Rect dest = {col*tilesize, row*tilesize, tilesize, tilesize};
-			SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
-			SDL_RenderCopy(render, image, &tile, &dest);
+			
 		}
 	}
 	return render;

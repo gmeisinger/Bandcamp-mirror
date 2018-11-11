@@ -95,7 +95,7 @@ void Game::update(Uint32 ticks) {
 
 void Game::draw() {
 	//Clear the Screen
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen

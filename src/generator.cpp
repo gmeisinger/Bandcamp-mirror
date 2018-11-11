@@ -147,12 +147,14 @@ void Generator::cutDoor(SDL_Rect intersect) {
 		//horizontal wall
 		r = intersect.y;
 		c = intersect.x + (intersect.w/2);
+		map[r][c] = 1;
 	}
-	else {
+	else if(intersect.w < intersect.h) {
 		r = intersect.y + (intersect.h/2);
 		c = intersect.x;
+		map[r][c] = 1;
 	}
-	map[r][c] = 1;
+	
 }
 
 //return a list of all corner candidates
