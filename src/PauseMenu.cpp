@@ -5,8 +5,8 @@
 */
 
 #include "include/spritesheet.h"
+#include "include/GSM.h"
 #include "include/PauseMenu.h"
-#include "include/game.h"
 
 std::vector<SDL_Texture*> menuGraphics;
 int menuState;

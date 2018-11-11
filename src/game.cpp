@@ -7,14 +7,6 @@
 #include "include/credits.h"
 #include "include/GSM.h"
 
-constexpr int SCREEN_WIDTH = 800;
-constexpr int SCREEN_HEIGHT = 600;
-constexpr int TILE_SIZE = 32;
-
-int screen_w;
-int screen_h;
-int tile_s;
-
 //Starts new game
 Game::Game() {
 	gWindow = nullptr;

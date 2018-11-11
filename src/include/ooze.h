@@ -13,7 +13,7 @@
 #include "player.h"
 #include "collision.h"
 #include "circle.h"
-#include "game.h"
+#include "global.h"
 #include "pickup.h"
 
 class Pickup;
