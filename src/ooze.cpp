@@ -96,13 +96,13 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
         if (target) {
             //check which direction the target is 
             //Only move if we can see the player
-            los = drawLine(grid, target);
-            if(los){
-                moveLine(grid, target);
-                updatePosition();
-            }
-        
+            moveLine(grid, target);
+            updatePosition();
         //updateVelocity(x_deltav,y_deltav);
+        }
+        //If we don't have a line of sight with the player or pickup, check the other room
+        else {
+            moveRoom(grid);
         }
     }    
     //foundFood(getPickup(objectList));
@@ -141,15 +141,17 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList,
         case HANGRY: {
             std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
             while(it != objectList->end()){
-                std::cout << it->first.substr(0,6) << std::endl;
                 if (!it->first.substr(0,6).compare("Pickup")) {
                     //std::cout << "there is a pickup :) " << std::endl;
                     Pickup* temp = (Pickup*)it->second;
-                    bool los = drawLine(grid, temp->getRect());
-                    if(los)
+                    bool losPickup = drawLine(grid, temp->getRect());
+                    bool losPlayer = drawLine(grid, player->getRect());
+                    if(losPickup)
                         return temp->getRect();
-                    else 
+                    else if(losPlayer)
                         return player->getRect();
+                    else
+                        return nullptr;                        
                 }
                 it++;
             }
@@ -494,4 +496,12 @@ void Ooze::moveLine(std::vector<std::vector<int>> grid, SDL_Rect* target) {
         moveSlope += deltaX;
         y_vel = yDir;
     }   
+}
+
+void Ooze::moveRoom(std::vector<std::vector<int>> grid) {
+    //grid[height/2][width/2] = 1;
+}
+
+void Ooze::initRoom(std::vector<std::vector<int>> grid) {
+    
 }

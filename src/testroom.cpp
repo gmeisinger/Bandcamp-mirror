@@ -87,6 +87,7 @@ void TestRoom::update(Uint32 ticks){
 		it->second->update(&objectList, grid, ticks);
 		if(it->second->isUsed()) {
 			it = objectList.erase(it);
+			break;
 		}
 		it++;
 	}

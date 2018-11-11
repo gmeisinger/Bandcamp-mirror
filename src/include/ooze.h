@@ -80,6 +80,7 @@ public:
     bool foundFood(Pickup* pickUp);
     int getAte();
     OozeState getState();
+    void initRoom(std::vector<std::vector<int>> grid);
 
     // Updates
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
@@ -101,8 +102,8 @@ public:
     void checkBounds(int max_width, int max_height, bool move);
     bool checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move);
     bool drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target);
-    void moveLine(std::vector<std::vector<int>> grid, SDL_Rect* target);;
-
+    void moveLine(std::vector<std::vector<int>> grid, SDL_Rect* target);
+    void moveRoom(std::vector<std::vector<int>> grid);
     
     // Math
     void increaseHostility();
