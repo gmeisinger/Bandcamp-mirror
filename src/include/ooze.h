@@ -76,7 +76,7 @@ public:
     
     // NEW
     Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);
-    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList);
+    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid);
     bool foundFood(Pickup* pickUp);
     int getAte();
     OozeState getState();
@@ -100,8 +100,8 @@ public:
     //Movement
     void checkBounds(int max_width, int max_height, bool move);
     bool checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move);
-    bool drawLine(std::vector<std::vector<int>> grid);
-    void moveLine(std::vector<std::vector<int>> grid);;
+    bool drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target);
+    void moveLine(std::vector<std::vector<int>> grid, SDL_Rect* target);;
 
     
     // Math

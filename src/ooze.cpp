@@ -89,46 +89,26 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 
 	bool overlap = checkOozeOverlap(objectList, ticks);
     bool los;
-	/* if(!overlap){
-        //Only move if we can see the player
-        los = drawLine(grid);
-        std::cout << los << std::endl;
-        if(los){
-            moveLine(grid);
-            updatePosition();
-        }
-    } */
-    
-    
-    //target = getPickup(objectList)->getRect();
-	if(!overlap){
-
+	if(!overlap){    
         //uncomment the line below to change the ooze to chasing the pickups
-        target = pickTarget(objectList);
+        target = pickTarget(objectList, grid);
 
         if (target) {
             //check which direction the target is 
-            if (target->y > rect.y)
-                y_deltav += 1;
-            if (target->x > rect.x)
-                x_deltav += 1;
-            if (target->y < rect.y)
-                y_deltav -= 1;
-            if (target->x < rect.x)
-                x_deltav -= 1;
-        } else {
-            x_deltav = 0;
-            y_deltav = 0;
+            //Only move if we can see the player
+            los = drawLine(grid, target);
+            if(los){
+                moveLine(grid, target);
+                updatePosition();
+            }
+        
+        //updateVelocity(x_deltav,y_deltav);
         }
-        
-        updateVelocity(x_deltav,y_deltav);
-    }
-        
+    }    
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
 
-    updatePosition();
 
     checkBounds(screen_w, screen_h, true);
     //Check you haven't collided with object
@@ -153,7 +133,7 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
    return renderer;
 }
 
-SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList) {
+SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid) {
     switch(this->state) {
         case CLONING: {
             return nullptr;
@@ -165,7 +145,11 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList)
                 if (!it->first.substr(0,6).compare("Pickup")) {
                     //std::cout << "there is a pickup :) " << std::endl;
                     Pickup* temp = (Pickup*)it->second;
-                    return temp->getRect();
+                    bool los = drawLine(grid, temp->getRect());
+                    if(los)
+                        return temp->getRect();
+                    else 
+                        return player->getRect();
                 }
                 it++;
             }
@@ -185,7 +169,7 @@ bool Ooze::foundFood(Pickup* food) {
             //food->use();
             ate = ate + 1;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
-            std::cout << s << std::endl;
+            //std::cout << s << std::endl;
             return true;
         }
     }
@@ -389,13 +373,13 @@ bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid
 
 //Uses Bresenham's alg to check to see if we have a line of sight with the player
 //This draws the line fully but does NOT move the player at all
-bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
-    int deltaX = player->getX() - rect.x;
-    int deltaY = player->getY() - rect.y;
+bool Ooze::drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target) {
+    int deltaX = target->x - rect.x;
+    int deltaY = target->y - rect.y;
     int startX = rect.x;
     int startY = rect.y;
-    int endX = player->getX();
-    int endY = player->getY();
+    int endX = target->x;
+    int endY = target->y;
     colRect = {startX, startY, rect.w, rect.h};
     int slope = 0;
     int xDir;
@@ -405,13 +389,13 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
     deltaX = abs(deltaX * 2);
     deltaY = abs(deltaY * 2);
 
-    if (player->getY() > rect.y) 
+    if (target->y > rect.y) 
         yDir = 1;
-	if (player->getX() > rect.x) 
+	if (target->x > rect.x) 
         xDir = 1;
-	if (player->getY() < rect.y) 
+	if (target->y < rect.y) 
         yDir = -1;
-	if (player->getX() < rect.x) 
+	if (target->x < rect.x) 
         xDir = -1;
         
 
@@ -459,13 +443,13 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid) {
 
 //This version of Bresenham's moves the player in as stright a line as possible to 
 //the player
-void Ooze::moveLine(std::vector<std::vector<int>> grid) {
-    int deltaX = player->getX() - rect.x;
-    int deltaY = player->getY() - rect.y;
+void Ooze::moveLine(std::vector<std::vector<int>> grid, SDL_Rect* target) {
+    int deltaX = target->x - rect.x;
+    int deltaY = target->y - rect.y;
     int startX = rect.x;
     int startY = rect.y;
-    int endX = player->getX();
-    int endY = player->getY();
+    int endX = target->x;
+    int endY = target->y;
     int moveSlope = 0;
     int xDir;
     int yDir;
@@ -473,13 +457,13 @@ void Ooze::moveLine(std::vector<std::vector<int>> grid) {
     deltaX = abs(deltaX * 2);
     deltaY = abs(deltaY * 2);
 
-    if (player->getY() > rect.y) 
+    if (target->y > rect.y) 
         yDir = 1;
-	if (player->getX() > rect.x) 
+	if (target->x > rect.x) 
         xDir = 1;
-	if (player->getY() < rect.y) 
+	if (target->y < rect.y) 
         yDir = -1;
-	if (player->getX() < rect.x) 
+	if (target->x < rect.x) 
         xDir = -1;
 
     if(deltaX > deltaY) {
