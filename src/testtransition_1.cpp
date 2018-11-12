@@ -40,7 +40,7 @@ void TestTransition_1::init(SDL_Renderer* reference){
 	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 30, 20, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
 	d_1 = Door(14,5);
-	w = WarpTile(14, 4, true, true, 2); //WarpTile(int x, int y, bool _insideWall, bool _fade, int _destX, int _destY)
+	w = WarpTile(14, 4, true, true, 2); //WarpTile(int x, int y, bool _insideWall, bool _fade, int _destScreen)
 	f = FadeObj(); //Fade the screen in
 	
 	h.init(reference);

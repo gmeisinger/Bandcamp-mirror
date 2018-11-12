@@ -82,10 +82,12 @@ bool Game::init() {
 	return true;
 }
 
+// Game 
 void Game::update(Uint32 ticks) {
 	gsm->update(ticks);
 }
 
+// Updates image displayed to user 
 void Game::draw() {
 	//Clear the Screen
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);

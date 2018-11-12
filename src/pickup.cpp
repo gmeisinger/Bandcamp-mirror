@@ -11,7 +11,7 @@
 #include "include/utils.h"
 #include "include/testroom.h"
 #include "include/ooze.h"
->>>>>>> 188008194d1ee41687ffa1b8c7571a5a951c9216 */
+*/
 
 constexpr int HOVER_SPEED = 150;
 
@@ -53,6 +53,7 @@ Pickup::Pickup(SDL_Rect _rect, char type, int value, Player *player, HUD *h) {
 Pickup::~Pickup() {
 }
 
+//
 Pickup::Pickup(){
 	
 }
@@ -65,6 +66,10 @@ std::string Pickup::getInstanceName(){
 	return "Pickup-"+ss.str();
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Pickup::init(SDL_Renderer *renderer){
 	//Set up the right Image to display
 	
@@ -96,12 +101,21 @@ void Pickup::init(SDL_Renderer *renderer){
 		break;
 	}
 }
-		
+
+/* Summary
+ * Argument  
+ *
+*/
 void Pickup::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
+	if (used) TestRoom::setSpawnPickup(true);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 SDL_Renderer* Pickup::draw(SDL_Renderer *renderer, SDL_Rect cam){
 	//SDL_SetRenderDrawColor(renderer, 0x00, 0x30, 0x25, 0xFF);
 	//SDL_RenderFillRect(renderer, &pickupRect);
@@ -120,6 +134,10 @@ SDL_Renderer* Pickup::draw(SDL_Renderer *renderer, SDL_Rect cam){
 	return renderer;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Pickup::updatePosition(Uint32 ticks){
 	fTicks += ticks;
 	if(fTicks > HOVER_SPEED) {
@@ -182,8 +200,14 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *object
 	}
 }
 
+// 
 bool Pickup::isUsed() {
 	return used;
+}
+
+//
+int Pickup::getTotal() {
+	return totalInstance;
 }
 
 SDL_Rect* Pickup::getRect() {

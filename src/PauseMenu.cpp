@@ -16,6 +16,10 @@ int keyHeld [7]; // 0 - not pressed, 1 - first frame 2 - held
 
 PauseMenu::PauseMenu(): Screen(){}
 
+/* Summary
+ * Argument  
+ *
+*/
 void PauseMenu::init(SDL_Renderer* reference){
 	rendererReference = reference;
 	menuState = 0;
@@ -28,6 +32,10 @@ void PauseMenu::init(SDL_Renderer* reference){
 	startHeld = true;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void PauseMenu::update(Uint32 ticks){
 	//When the actual menu is implemented, cursor placement can be handled a different way.
 	
@@ -91,6 +99,10 @@ void PauseMenu::update(Uint32 ticks){
 	}
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void PauseMenu::input(const Uint8* keystate){
 	/*
 		0 - W      - Up
@@ -183,6 +195,10 @@ void PauseMenu::input(const Uint8* keystate){
 		keyHeld[6] = 0;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 SDL_Renderer* PauseMenu::draw(SDL_Renderer *renderer){
 	switch(menuState){
 		case 0: //Initial Window

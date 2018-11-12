@@ -1,3 +1,8 @@
+/* Team Bandcamp
+ * Class function: 
+ * 
+*/
+
 #include <SDL.h>
 #include <SDL_image.h>
 #include <SDL_ttf.h>
@@ -23,6 +28,7 @@ const int label_offset = 15;
 
 TTF_Font *font = nullptr;
 
+// 
 Button::Button(char* l, SDL_Rect r) { //Constructs the button. For now, it is a simply a text label, a rectangle, and a color.
 	label = l;
 	buttonNumber = 0;
@@ -32,6 +38,7 @@ Button::Button(char* l, SDL_Rect r) { //Constructs the button. For now, it is a 
 	label_rect.y = rectangle.y;	
 }
 
+// 
 void Button::init(SDL_Renderer *renderer) {
 	//This code writes the text to an SDL surface, then renders it to a texture.
 	text_color = {250, 250, 250};
@@ -54,32 +61,36 @@ void Button::init(SDL_Renderer *renderer) {
 	label_rect.y = label_rect.y + (rectangle.h / 2) - (label_rect.h / 2);
 }
 
+// add description
 void Button::press() { //Any visual or sound effects for pressing may be set up here
 	
 	is_pressed = 1;
 }
 
+// add description
 void Button::unpress() { //Any visual or sound effects for releasing may be set up here
 	
 	is_pressed = 0;
 }
 
-void Button::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks) {
-	
-}
+void Button::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks) {}
 
+// add description
 std::string Button::getInstanceName() {
 	return "Button-0";
 }
 
+// add description
 bool Button::isUsed() {
 	return true;
 }
 
+// add description
 void Button::input(const Uint8* keystate) {
 	
 }
 
+// add description
 SDL_Renderer* Button::draw(SDL_Renderer *renderer, SDL_Rect cam) { //A rectangle and the texture is drawn to the screen
 	Uint8 color = 0;
 	if(is_pressed == 1) color = 80;

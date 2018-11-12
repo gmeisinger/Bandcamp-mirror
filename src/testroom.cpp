@@ -13,6 +13,7 @@
 #include "include/GSM.h"
 #include "include/circle.h"
 #include "include/collision.h"
+#include "include/pickup.h"
 
 constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
@@ -20,7 +21,7 @@ constexpr int CAM_HEIGHT = 600;
 
 Ooze o;
 Door d;
-
+static bool spawnPickup = true;
 TestRoom::TestRoom() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
 	updateCount = 1;
@@ -69,16 +70,22 @@ void TestRoom::update(Uint32 ticks){
 		enterHeld = true;
 		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
-	
+
+	std::vector<std::vector<int>> grid = map.getGrid();
+
+	if (spawnPickup) movePickup(rendererReference); //new way of deciding when to spawn pickup
 	// TODO: better way to check for pickup being consumed?
-	if (h.currentTemp > oldTemp || h.currentOxygen > oldO2 || o.getAte() > oldAte) movePickup(rendererReference);
+	/*if (h.currentTemp > oldTemp || h.currentOxygen > oldO2 || o.getAte() > oldAte) movePickup(rendererReference);
 	oldTemp = h.currentTemp;
 	oldO2 = h.currentOxygen;
+
 	oldAte = o.getAte();
-  //update all objects
+	oldAte = o.getAte();*/
+
+
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
-		it->second->update(&objectList, map.getGrid(), ticks);
+		it->second->update(&objectList, grid, ticks);
 		if(it->second->isUsed()) {
 			it = objectList.erase(it);
 		}
@@ -87,6 +94,20 @@ void TestRoom::update(Uint32 ticks){
 	//update camera to player position
 	camera.x = p.getX() - (camera.w/2);
 	camera.y = p.getY() - (camera.h/2);
+	//the following code will lock the camera to the corners
+	//doesnt look right when the map is too small
+	/*if(camera.x < 0) {
+		camera.x = 0;
+	}
+	if(camera.y < 0) {
+		camera.y = 0;
+	}
+	if(camera.x > (grid[0].size() * tile_s)) {
+		camera.x = grid[0].size() * tile_s;
+	}
+	if(camera.y > (grid.size() * tile_s)) {
+		camera.y = grid.size() * tile_s;
+	}*/
 
 	if (updateCount == 0) {
 		h.currentTemp = std::max(0, h.currentTemp-5);
@@ -130,9 +151,14 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 		Pickup *newP  = new Pickup(pickupBox, type, pickupValue, &p, &h);
 		objectList[newP->getInstanceName()] = newP;
 		newP->init(reference);
+		spawnPickup = false; //don't need a new pickup; one was just made
 	}
 }
 
+// used to allow other objects to tell testroom to spawn a pickup
+void TestRoom::setSpawnPickup(bool set) {
+	spawnPickup = set;
+}
 // ADD COMMENTS 
 void TestRoom::input(const Uint8* keystate){
 	//If you push the pause button

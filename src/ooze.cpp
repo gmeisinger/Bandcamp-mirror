@@ -14,7 +14,7 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{ROAMING}, hostility{0} {}
+Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 //Constructor from rect
 /* <<<<<<< HEAD
@@ -27,19 +27,22 @@ Ooze::Ooze(SDL_Rect _rect, Player *p, HUD *h):player{player},state{roaming}, hos
 	Animation* anim;
 	int overlapTicks = 0;
 ======= */
-Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{ROAMING}, hostility{0} {
+Ooze::Ooze(SDL_Rect _rect, Player *player, HUD *h):player{player},state{HANGRY}, hostility{0} {
     rect = _rect;
     this->player = player;
-	  hud = h;
-	  totalOoze++; //Increase # of instances counter
-	  oozeNumber = totalOoze;
-	  Animation* anim;
-	  int overlapTicks = 0;
+    target = player->getRect();
+	hud = h;
+	totalOoze++; //Increase # of instances counter
+	oozeNumber = totalOoze;
+	Animation* anim;
+	int overlapTicks = 0;
     //Speed
     x_deltav = 0;
     y_deltav = 0;
     x_vel = 1;
     y_vel = 1;
+
+    ate = 0;
 }
 
 //Other constructor?
@@ -54,17 +57,26 @@ std::string Ooze::getInstanceName(){
 	return "Ooze-"+ss.str();
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::input(const Uint8* keystate){}
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
-	
-    
-
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
     sheet.setClips(_cols, _rows, rect.w, rect.h);
@@ -73,7 +85,6 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 //*********TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks) {
-	
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -94,17 +105,19 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 	if(!overlap){
 
         //uncomment the line below to change the ooze to chasing the pickups
-        //target = pickTarget(objectList);
+        target = pickTarget(objectList);
 
-		//check which direction the player is 
-		if (player->getY() > rect.y + rect.h)
-			y_deltav += 1;
-		if (player->getX() > rect.x + rect.w)
-			x_deltav += 1;
-		if (player->getY() + player->getHeight() < rect.y)
-			y_deltav -= 1;
-		if (player->getX() + player->getWidth() < rect.x)
-			x_deltav -= 1;
+        //check which direction the target is 
+        if (target->y > rect.y)
+            y_deltav += 1;
+        if (target->x > rect.x)
+            x_deltav += 1;
+        if (target->y < rect.y)
+            y_deltav -= 1;
+        if (target->x < rect.x)
+            x_deltav -= 1;
+
+		
         
         updateVelocity(x_deltav,y_deltav);
 	}
@@ -114,18 +127,31 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     updatePosition();
     checkBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     //Check you haven't collided with object
-    checkCollision(curX, curY);
+    checkCollision(curX, curY, grid);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::increaseHostility() {
 	if (hostility < 10)
 		hostility++;
 }
+
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::decreaseHostility() {
 	if (hostility >  0)
 		hostility--;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_Rect* dest = new SDL_Rect;
     *dest = rect;
@@ -133,6 +159,24 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
    return renderer;
+}
+
+SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList) {
+    switch(this->state) {
+        case HANGRY: {
+            std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+            while(it != objectList->end()){
+                if (!it->first.substr(0,6).compare("Pickup")) {
+                    //std::cout << "there is a pickup :) " << std::endl;
+                    Pickup* temp = (Pickup*)it->second;
+                    return temp->getRect();
+                }
+                it++;
+            }
+        }
+        default:
+            return player->getRect();
+    }
 }
 
 // TODO: combine this with the overlap method below, which
@@ -152,11 +196,24 @@ bool Ooze::foundFood(Pickup* food) {
     return false;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 int Ooze::getAte() {
     return ate;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+    if (ate > 2) {
+        state = ROAMING;
+        return true;
+    } 
+    
     return false;
 }
 
@@ -183,6 +240,10 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 	return overlap;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::updateAnimation(Uint32 ticks) {
 
     if(true) { //ticks/10%2 == 2
@@ -197,11 +258,19 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::updatePosition() {
     rect.x += x_vel;
     rect.y += y_vel;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Ooze::checkBounds(int max_width, int max_height) {
     if (rect.x < BORDER_SIZE){
         rect.x = BORDER_SIZE;
@@ -222,7 +291,10 @@ void Ooze::checkBounds(int max_width, int max_height) {
     }
 }
 
-
+/* Summary
+ * Argument  
+ *
+*/
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
@@ -282,10 +354,24 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
 }
 
 //currently checks collisions with room features (walls etc.)
-void Ooze::checkCollision(int curX, int curY)
+void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that
     //represents what the player is colliding with. This shouldn't be too difficult
+    if(collision::checkColLeft(rect, grid, 32) || collision::checkColRight(rect, grid, 32)) {
+        rect.x = curX;
+    }
+    
+    if(collision::checkColTop(rect, grid, 32) || collision::checkColBottom(rect, grid, 32)) {
+        rect.y = curY;
 
+        rect.x += x_vel;
+
+        y_vel = 0;
+        if(collision::checkColLeft(rect, grid, 32) || collision::checkColRight(rect, grid, 32)) {
+            x_vel = 0; 
+            rect.x = curX;
+        }
+    }
 }

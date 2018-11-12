@@ -33,12 +33,14 @@ class TestRoom : public Screen
 		SDL_Rect camera;
 	
 	public: 
+		//static bool spawnPickup;
 		TestRoom();
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
 		void movePickup(SDL_Renderer* reference);
+		static void setSpawnPickup(bool set);
 };
 
 #endif  //  BANDCAMP_TESTROOM_H_
