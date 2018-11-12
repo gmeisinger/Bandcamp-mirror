@@ -1,5 +1,5 @@
-#ifndef BANDCAMP_TESTROOM_H_
-#define BANDCAMP_TESTROOM_H_
+#ifndef BANDCAMP_RANDOMMAP_H_
+#define BANDCAMP_RANDOMMAP_H_
 
 #include <SDL.h>
 #include <vector>
@@ -13,7 +13,7 @@
 #include "GSM.h"
 #include "tilemap.h" 
 
-class TestRoom : public Screen 
+class RandomMap : public Screen 
 { 
 	private:
 		bool start;
@@ -25,7 +25,7 @@ class TestRoom : public Screen
 		int oldO2;
 	
 	public: 
-		TestRoom();
+		RandomMap();
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
@@ -34,4 +34,4 @@ class TestRoom : public Screen
 		static void setSpawnPickup(bool set);
 };
 
-#endif  //  BANDCAMP_TESTROOM_H_
+#endif  //  BANDCAMP_RANDOMMAP_H_

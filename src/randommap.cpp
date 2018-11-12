@@ -7,7 +7,7 @@
 #include "include/player.h"
 #include "include/spritesheet.h"
 #include "include/HUD.h"
-#include "include/testroom.h"
+#include "include/randommap.h"
 #include "include/game.h"
 #include "include/GSM.h"
 #include "include/ooze.h"
@@ -31,21 +31,21 @@ Player p;
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
 //
-TestRoom::TestRoom() : Screen(){} //from merge
+RandomMap::RandomMap() : Screen(){} //from merge
 
 Ooze o;
 Tilemap tilemap;
 SDL_Rect camera;
 
-//TestRoom::TestRoom(){
+//RandomMap::RandomMap(){
 //	start = false;
 //	std::unordered_map<std::string, Object*> objectList;
 //}
 
 
 // ADD COMMENTS 
-void TestRoom::init(SDL_Renderer* reference){
-	std::cout << "Init TestRoom" << std::endl;
+void RandomMap::init(SDL_Renderer* reference){
+	std::cout << "Init RandomMap" << std::endl;
 	rendererReference = reference;
 	SDL_Rect player_box = {tile_s + 1, tile_s + 1, tile_s, tile_s};
 	p = Player(player_box);
@@ -69,7 +69,7 @@ void TestRoom::init(SDL_Renderer* reference){
 }
 
 // ADD COMMENTS 
-void TestRoom::update(Uint32 ticks){
+void RandomMap::update(Uint32 ticks){
 	if(pauseB)
 	{ //If you set the currentScreen in the Input method it will cause an array out of bounds error.
 		pauseB = false;
@@ -129,7 +129,7 @@ void TestRoom::update(Uint32 ticks){
 }
 
 // ADD COMMENTS 
-void TestRoom::movePickup(SDL_Renderer* reference) {
+void RandomMap::movePickup(SDL_Renderer* reference) {
 	int pickupX = std::max(tile_s, rand()%(20*tile_s));
 	int pickupY = std::max(tile_s, rand()%(19*tile_s));
 
@@ -165,11 +165,11 @@ void TestRoom::movePickup(SDL_Renderer* reference) {
 }
 
 // used to allow other objects to tell testroom to spawn a pickup
-void TestRoom::setSpawnPickup(bool set) {
+void RandomMap::setSpawnPickup(bool set) {
 	spawnPickup = set;
 }
 // ADD COMMENTS 
-void TestRoom::input(const Uint8* keystate){
+void RandomMap::input(const Uint8* keystate){
 	//If you push the pause button
 	
 	//When you come back into the room after a pause, you will most likely still be holding down
@@ -190,7 +190,7 @@ void TestRoom::input(const Uint8* keystate){
 }
 
 // ADD COMMENTS 
-SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
+SDL_Renderer* RandomMap::draw(SDL_Renderer *renderer){
 	//draw map before objects
 	tilemap.draw(renderer, camera);
 	//draw objects
