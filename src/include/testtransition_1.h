@@ -11,7 +11,7 @@
 #include "object.h"
 #include "pickup.h"
 #include "door.h"
-#include "warpTile.h"
+#include "warptile.h"
 #include "fadeobj.h"
 #include "GSM.h"
 #include "tilemap.h"

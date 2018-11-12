@@ -73,7 +73,6 @@ void TestTransition_1::update(Uint32 ticks){
 			if(!static_cast<FadeObj*>(objectList["FadeObj"])->isFadeIn())
 				GSM::currentScreen = static_cast<FadeObj*>(objectList["FadeObj"])->getDest(); //If we are fading out go to the next screen. 
 			
-			delete objectList["FadeObj"]; //If it's malloc'd, delete it.
 			objectList.erase("FadeObj");
 		}
 	}
