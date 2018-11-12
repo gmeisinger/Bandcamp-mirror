@@ -70,7 +70,7 @@ public:
     // Constructors & destructor
 
     Ooze(); // Default constructor
-    Ooze(Room *room, Player *player, HUD *h);
+    Ooze(Room* room, Player *player, HUD *h);
 
 //    Ooze(oozeState st, int hostil);
 //    Ooze(const Ooze& other);    // copy constructor

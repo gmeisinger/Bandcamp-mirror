@@ -17,6 +17,9 @@
 
 #include "utils.h"
 #include "testroom.h"
+#include "generator.h"
+#include "tilemap.h"
+#include "room.h"
 
 #include <sstream>
 #include <iostream>

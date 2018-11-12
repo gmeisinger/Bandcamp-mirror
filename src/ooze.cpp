@@ -24,8 +24,8 @@ hud{h}
 {
     target = player->getRect();
     curRoom = room;
-    //SDL_Rect* temp = curRoom->getRect();
-    rect = {/* (temp->x + temp->w)/2, (temp->y + temp->h)/2 */1, 1, 30, 30};
+    SDL_Rect* temp = curRoom->getRect();
+    rect = {(temp->x + temp->w)/2, (temp->y + temp->h)/2, 30, 30};
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	Animation* anim;
@@ -72,7 +72,6 @@ void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
-    initRoom();
 }
 
 /* Summary
@@ -87,7 +86,6 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 //*********TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
-	initRoom();
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -552,12 +550,5 @@ void Ooze::moveRoom(std::vector<std::vector<int>> grid) {
 
 //Get what room the ooze is in
 void Ooze::initRoom() {
-    /* std::vector<Room*> rooms = tilemap->getRooms();
-    for(auto i : rooms) {
-        if(collision::checkCol(rect, *i->getRect())) {
-             curRoom = i;
-            return;
-        }
-            
-    } */
+    
 }

@@ -133,6 +133,7 @@ std::vector<std::vector<int>> Tilemap::genRandomMap() {
 		//
 	}
 	gen.finalize();
+	rooms = gen.getRooms();
 	return gen.getMap();
 }
 
