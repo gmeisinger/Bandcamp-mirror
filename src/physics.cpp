@@ -6,7 +6,7 @@
 
 int previous_pressure;
 
-void Room::init_room() //this will always be used for the first room
+void Room2::init_room() //this will always be used for the first room
 {
 	//we'll use "percent" values (0-100) to keep things simple
 	oxygen = 100;
@@ -15,7 +15,7 @@ void Room::init_room() //this will always be used for the first room
 	previous_pressure = pressure;
 }
 
-void Room::adv_init_room(int o, int t, int p) 	//this will be implemented when multiple rooms are created, taking into account the other room's values
+void Room2::adv_init_room(int o, int t, int p) 	//this will be implemented when multiple rooms are created, taking into account the other room's values
 {
 	oxygen = (o+100)/2;						//for now, takes the previous room's values and this one ("100") and averages them
 	temperature = (t+100)/2;
@@ -23,17 +23,17 @@ void Room::adv_init_room(int o, int t, int p) 	//this will be implemented when m
 	previous_pressure = pressure;
 }
 
-int Room::give_oxygen()
+int Room2::give_oxygen()
 {
 	return oxygen;
 }
 
-int Room::give_temperature()
+int Room2::give_temperature()
 {
 	return temperature;
 }
 
-void Room::lower_pressure(int num_of_breaches) //depending on how many breaches in the room
+void Room2::lower_pressure(int num_of_breaches) //depending on how many breaches in the room
 {
 	previous_pressure = pressure;
 	switch(num_of_breaches)				//lets try to figure out a better way for this, but for now this is what we have
@@ -62,37 +62,37 @@ void Room::lower_pressure(int num_of_breaches) //depending on how many breaches 
 	}
 }
 
-void Room::lower_oxygen()
+void Room2::lower_oxygen()
 {
 	//lowers oxygen by a set amount, for now 5?
 	oxygen-=5;
 }
 
-void Room::adv_lower_oxygen() //something porportional with pressure
+void Room2::adv_lower_oxygen() //something porportional with pressure
 {
 	//to be determined
 }
 
-void Room::raise_oxygen(int resource_value)
+void Room2::raise_oxygen(int resource_value)
 {
 	//raises oxygen by the value of the resource that was picked up (set by procgen team)
 	oxygen+=resource_value;
 }
 
-void Room::lower_temperature()
+void Room2::lower_temperature()
 {
 	//lowers temperature by a set amount, for now 5?
 	temperature-=5;
 }
 
-void Room::adv_lower_temperature() //k=T1/P1 T2=k*P2
+void Room2::adv_lower_temperature() //k=T1/P1 T2=k*P2
 {
 	int k = temperature/previous_pressure;
 	int temp = k*pressure;
 	temperature = temp;
 }
 
-void Room::raise_temperature(int resource_value)
+void Room2::raise_temperature(int resource_value)
 {
 	//raises temperature by the value of the resource that was picked up (set by procgen team)
 	temperature+=resource_value;

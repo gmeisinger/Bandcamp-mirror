@@ -75,7 +75,7 @@ bool Game::init() {
         return false;
     }
 	// Set renderer draw/clear color
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	
 	
 	//Start the GSM
@@ -95,7 +95,7 @@ void Game::update(Uint32 ticks) {
 
 void Game::draw() {
 	//Clear the Screen
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen
