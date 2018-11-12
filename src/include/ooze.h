@@ -9,8 +9,8 @@
 #include "spritesheet.h"
 #include "animation.h"
 #include "utils.h"
-#include "HUD.h"
-#include "player.h"
+//#include "HUD.h"
+//#include "player.h"
 #include "collision.h"
 #include "circle.h"
 #include "global.h"
@@ -43,8 +43,8 @@ private:
 
     OozeState state;
     int hostility;
-    Player *player;
-    HUD *hud;
+//    Player *player;
+//    HUD *hud;
     SpriteSheet sheet;
     Animation* anim;
     int overlapTicks;
@@ -63,7 +63,7 @@ public:
     // Constructors & destructor
 
     Ooze(); // Default constructor
-    Ooze(int x_pos, int y_pos, Player *player, HUD *h);
+    Ooze(int x_pos, int y_pos); //, Player *player, HUD *h);
 
 //    Ooze(oozeState st, int hostil);
     Ooze(const Ooze& other);    // copy constructor

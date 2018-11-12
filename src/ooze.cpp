@@ -10,14 +10,13 @@ constexpr int BORDER_SIZE = 32;
 Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 // Constructor
-Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h)
-    : player{player}, state{HANGRY}, hostility{0}, hud{h}
+Ooze::Ooze(int x_pos, int y_pos) //, Player *player, HUD *h)
+    : state{HANGRY}, hostility{0} // player{player}, hud{h}
 {
     target = player->getRect();
     rect = {x_pos, y_pos, 30, 30};
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
-	Animation* anim;
 	int overlapTicks = 0;
     //Speed
     x_deltav = 0;
@@ -32,11 +31,12 @@ Ooze::Ooze(int x_pos, int y_pos, Player *player, HUD *h)
 //Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
 // Copy Constructor
-/*Ooze::Ooze(const Ooze& other):Ooze(other->rect.x, other->rect.y, other->player, other->hud)
+Ooze::Ooze(const Ooze& other)
+    :Ooze(other.rect.x + 2, other.rect.y + 2) //, other.player, other.hud)
 {
     
 }
-*/
+
 //Destructor
 Ooze::~Ooze(){};
 
@@ -198,7 +198,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 	if (overlap) {
 		overlapTicks += ticks;
 		if (overlapTicks > 25) {
-			hud->currentHealth = std::max(0, hud->currentHealth-damage);
+			hud_g->currentHealth = std::max(0, hud_g->currentHealth-damage);
 			std::string s = "HIT: "+getInstanceName();
 			std::cout << s << std::endl;
 			overlapTicks = 0;

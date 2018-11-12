@@ -49,7 +49,7 @@ void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
 	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
 	p = Player(player_box);
-	o = Ooze(screen_w/2, 3*screen_h/8, &p, &h);
+    o = Ooze(screen_w/2, 3*screen_h/8); //, &p, &h);
 	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 21, 20, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
     
@@ -142,7 +142,7 @@ void TestRoom::cloneOoze(SDL_Renderer* reference) {
 		
 
 	
-	Ooze *newO  = new Ooze(oozeX, oozeY, &p, &h);
+    Ooze *newO  = new Ooze(oozeX, oozeY);//, &p, &h);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made

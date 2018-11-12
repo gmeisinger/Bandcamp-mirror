@@ -9,4 +9,9 @@ extern int screen_w;
 extern int screen_h;
 extern int tile_s;
 
+class Player;
+extern Player *player;
+class HUD;
+extern HUD *hud_g;
+
 #endif  //  BANDCAMP_GLOBAL_H_

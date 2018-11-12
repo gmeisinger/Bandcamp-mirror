@@ -8,3 +8,6 @@
 int screen_w = SCREEN_WIDTH;
 int screen_h = SCREEN_HEIGHT;
 int tile_s = TILE_SIZE;
+
+Player *player;
+HUD *hud_g;

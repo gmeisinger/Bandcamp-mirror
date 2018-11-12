@@ -32,6 +32,7 @@ HUD::HUD()
 	currentOxygen = 100;
 	currentHealth = 90;
 	// currentPower = 90;	// can add for power
+    hud_g = this;
 }
 
 HUD::~HUD()

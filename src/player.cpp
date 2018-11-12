@@ -37,6 +37,7 @@ Player::Player(SDL_Rect _rect) {
 	left = false;
 	right = false;
     overlapEnemy = false;
+    player = this;
 }
 
 Player::Player(){}
