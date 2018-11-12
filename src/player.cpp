@@ -39,6 +39,7 @@ Player::Player(SDL_Rect _rect) {
     overlapEnemy = false;
 }
 
+//
 Player::Player(){}
 
 //destructor
@@ -46,10 +47,15 @@ Player::~Player() {
 
 }
 
+//
 std::string Player::getInstanceName(){
 	return "Player"; //There should only be one instance in the current room
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::init(SDL_Renderer* gRenderer){
 	//set up player animations
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/spaceman.png"), 4, 4);
@@ -61,23 +67,43 @@ void Player::init(SDL_Renderer* gRenderer){
 
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
     sheet.setClips(_cols, _rows, playerRect.w, playerRect.h);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 SpriteSheet Player::getSheet() {
     return sheet;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::addAnimation(std::string tag, Animation anim) {
     anims[tag] = anim;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 Animation* Player::getAnimation(std::string tag) {
     return &anims[tag];
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::setAnimation(std::string tag) {
     anim = &anims[tag];
 }
@@ -102,10 +128,15 @@ int Player::getY() {
     return playerRect.y;
 }
 
+//
 SDL_Rect* Player::getRect() {
     return &playerRect;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::updateVelocity(int _xdv, int _ydv) {
     // If we dont want out dot to be in a frictionless vacuum...
     if (_xdv == 0) {
@@ -139,6 +170,7 @@ void Player::updateVelocity(int _xdv, int _ydv) {
 
 }
 
+// 
 void Player::updatePosition() {
     playerRect.x += x_vel;
     playerRect.y += y_vel;
@@ -146,6 +178,10 @@ void Player::updatePosition() {
     hitRect.y += y_vel;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::checkBounds(int max_width, int max_height) {
     if (playerRect.x < BORDER_SIZE)
         playerRect.x = BORDER_SIZE;
@@ -158,6 +194,10 @@ void Player::checkBounds(int max_width, int max_height) {
         playerRect.y = max_height - playerRect.h - BORDER_SIZE;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::updateAnimation(Uint32 ticks) {
     if(x_vel == 0 && y_vel == 0) {
         anim->reset();
@@ -182,6 +222,10 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
@@ -218,6 +262,10 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
     checkCollision(curX, curY, grid);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::input(const Uint8* keystate)
 {
 	up = keystate[SDL_SCANCODE_W];
@@ -226,6 +274,10 @@ void Player::input(const Uint8* keystate)
 	right = keystate[SDL_SCANCODE_D];
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_Rect* dest = new SDL_Rect;
     *dest = playerRect;
@@ -235,14 +287,26 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
    return renderer;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 bool Player::isUsed() {
     return false;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::setEnemy(bool _overlap) {
     overlapEnemy = _overlap;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
 {
     if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
@@ -267,6 +331,10 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
     
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::checkEnemy(int _xdv, int _ydv){
     if(overlapEnemy){
         x_vel -= x_vel/2;

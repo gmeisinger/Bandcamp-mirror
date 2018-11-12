@@ -15,6 +15,9 @@
 #include "circle.h"
 #include "game.h"
 #include "pickup.h"
+#include "generator.h"
+#include "tilemap.h"
+#include "room.h"
 
 class Pickup;
 
@@ -52,6 +55,9 @@ private:
     std::unordered_map<std::string, Animation> anims;
     int ate;
     SDL_Rect *target;
+
+    Room* curRoom;
+    Tilemap* tilemap;
     
 public:
 
@@ -64,7 +70,7 @@ public:
     // Constructors & destructor
 
     Ooze(); // Default constructor
-    Ooze(int x_pos, int y_pos, Player *player, HUD *h);
+    Ooze(Room *room, Player *player, HUD *h);
 
 //    Ooze(oozeState st, int hostil);
 //    Ooze(const Ooze& other);    // copy constructor
@@ -80,7 +86,7 @@ public:
     bool foundFood(Pickup* pickUp);
     int getAte();
     OozeState getState();
-    void initRoom(std::vector<std::vector<int>> grid);
+    void initRoom();
 
     // Updates
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
