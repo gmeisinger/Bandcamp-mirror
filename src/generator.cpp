@@ -143,13 +143,13 @@ void Generator::cutRoom(SDL_Rect room, int marker) {
 
 void Generator::cutDoor(SDL_Rect intersect) {
 	int r, c = 0;
-	if(intersect.w > intersect.h) {
+	if(intersect.w > intersect.h && intersect.w > 2) {
 		//horizontal wall
 		r = intersect.y;
 		c = intersect.x + (intersect.w/2);
 		map[r][c] = 1;
 	}
-	else if(intersect.w < intersect.h) {
+	else if(intersect.w < intersect.h && intersect.h > 2) {
 		r = intersect.y + (intersect.h/2);
 		c = intersect.x;
 		map[r][c] = 1;
