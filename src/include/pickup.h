@@ -16,7 +16,7 @@
 #include "physics.h"
 
 #include "utils.h"
-#include "testroom.h"
+#include "randommap.h"
 
 #include <sstream>
 #include <iostream>

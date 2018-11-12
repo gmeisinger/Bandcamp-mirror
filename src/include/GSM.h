@@ -9,7 +9,7 @@
 #include <SDL_image.h>
 #include "screen.h"
 #include "menu.h"
-#include "testroom.h"
+#include "randommap.h"
 
 
 

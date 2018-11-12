@@ -5,13 +5,13 @@
 
 #include "include/GSM.h"
 #include "include/credits.h"
-#include "include/testroom.h"
+#include "include/randommap.h"
 #include "include/menu.h"
 
 #include "include/PauseMenu.h"
 
 int GSM::currentScreen = 0;
-TestRoom testScreen;
+RandomMap randomMap;
 PauseMenu pauseMenu;
 bool pause;	//Is the game paused
 int tempScreen; //What was the room before you paused?
@@ -23,11 +23,11 @@ GSM::GSM(){
 	//Init Screens
 	//They all get passed the pointer to the
 	//Current Screen so they can change it when they see fit.
-	testScreen = TestRoom();
+	randomMap = RandomMap();
 	testMenu = new Menu();
 	roomList.push_back(testMenu);
 	pauseMenu = PauseMenu();
-	roomList.push_back(&testScreen);
+	roomList.push_back(&randomMap);
 	previousScreen = 0;
 	pause = false;
 	running = false;		// does this refer to the game running bool? its own from GSM.h
