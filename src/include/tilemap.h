@@ -27,7 +27,8 @@ public:
 	Tilemap(SDL_Texture* tex, int _width, int _height, int _tilesize);
 	Tilemap();
 	~Tilemap();
-	std::vector< std::vector < int > > getMap();
+	std::vector< std::vector < int > >* getMap();
+	std::vector< std::vector < int > > getMapCopy();
 	void setMap(std::vector< std::vector < int > > _map);
 	void genTestRoom();
 	void init();
@@ -38,6 +39,10 @@ public:
 	//random map helpers
 	std::vector<Room*> getRooms();
 	void printmap();
+	//std::vector< std::vector < int > > &getGrid();
+	void genTestTransitionRoom();
+	void genTestTransitionRoom2();
+	void genMaze();
 };
 
 #endif  //  BANDCAMP_TILEMAP_H_

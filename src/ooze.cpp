@@ -82,8 +82,9 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet.setClips(_cols, _rows, rect.w, rect.h);
 }
 
-void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
-	
+//*********TO DO:
+//update motion here
+void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -124,7 +125,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     //update animation
     updateAnimation(ticks);
     updatePosition();
-    checkBounds(screen_w, screen_h);
+    checkBounds(SCREEN_WIDTH, SCREEN_HEIGHT);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid);
 }
@@ -226,8 +227,6 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 		overlapTicks += ticks;
 		if (overlapTicks > 25) {
 			hud->currentHealth = std::max(0, hud->currentHealth-damage);
-			std::string s = "HIT: "+getInstanceName();
-			//std::cout << s << std::endl;
 			overlapTicks = 0;
 		}
 	} else {

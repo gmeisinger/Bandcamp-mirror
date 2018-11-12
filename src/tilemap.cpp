@@ -1,13 +1,21 @@
+#include <sstream>
+#include <iostream>
 #include "include/tilemap.h"
+#include "include/mazegenerationalgorithm.h"
 
 //constants
 constexpr int MAX_ROOM_SIZE = 15;
 constexpr int MIN_ROOM_SIZE = 7;
-void printthis(SDL_Rect* r, std::string s);
 
 //vars
 SDL_Texture* image;
 std::unordered_map<int, SDL_Rect> tiles;
+/*
+	0 - 
+	1 - 
+	2 - 
+	3 - 
+*/
 int width;
 int height;
 int tilesize;
@@ -47,19 +55,26 @@ Tilemap::~Tilemap() {
 
 }
 
+
+//returns the map as 2d vector
+std::vector< std::vector < int > >* Tilemap::getMap() {
+	return &map;
+}
+
+std::vector< std::vector < int > > Tilemap::getMapCopy() {
+	return map;
+}
+
 //setup tiles
 void Tilemap::init() {
 	map = std::vector<std::vector<int>>(height, std::vector<int>(width, 0));
 	
 	//ground tile
-	tiles[1] = {0,0,tilesize,tilesize};
+	tiles[0] = {0,0,tilesize,tilesize};
+	//ceiling tile
+	tiles[1] = {0,tilesize,tilesize,tilesize};
 	//wall tile
-	tiles[2] = {0,tilesize,tilesize,tilesize};
-}
-
-//returns the map as 2d vector
-std::vector< std::vector < int > > Tilemap::getMap() {
-	return map;
+	tiles[2] = {0,tilesize*2,tilesize,tilesize};
 }
 
 //sets the map
@@ -87,8 +102,70 @@ void Tilemap::genTestRoom() {
 		map[0][col] = 2;
 		map[height-1][col] = 2;
 	}
+	//lets put a hole in the wall so we can peep while the ooze asexually reproduces ;)
 	map[height/2][width/2] = 1;
+	
+	map[4][4] = 4; //HardCoded door
 }
+
+void Tilemap::genTestTransitionRoom(){
+	//init to all floor
+	map = std::vector<std::vector<int>>(height, std::vector<int>(width, 1));
+
+	for(int col = 0; col < width; col++){
+		map[0][col] = 2; //Ceiling
+		map[1][col] = 3; //Wall
+		map[height-2][col] = 2; //Ceiling
+		map[height-1][col] = 3; //Wall
+	}
+	
+	for(int row = 0; row < height-1; row++){
+		map[row][0] = 2;
+		map[row][width-1] = 2;
+	}
+	
+	for(int row = 0; row < height/4; row++){
+		for(int col = width/4; col < (width*3/4); col++){
+			map[row][col] = 2;
+			map[row+1][col] = 3; //Ceiling
+		}
+	}
+	
+	map[4][14] = 1; //Space for the Warp Tile.
+	map[5][14] = 1; //Space for the Door.
+}
+
+void Tilemap::genTestTransitionRoom2(){
+	//init to all floor
+	map = std::vector<std::vector<int>>(height, std::vector<int>(width, 1));
+
+	for(int col = 0; col < width; col++){
+		map[0][col] = 2; //Ceiling
+		map[1][col] = 3; //Wall
+		map[height-2][col] = 2; //Ceiling
+		map[height-1][col] = 3; //Wall
+	}
+	
+	for(int row = 0; row < height-1; row++){
+		map[row][0] = 2;
+		map[row][width-1] = 2;
+	}
+	
+	for(int row = height*3/4; row < height-1; row++){
+		for(int col = width/4; col < (width*3/4); col++){
+			map[row][col] = 2;
+		}
+	}
+	
+	map[height*3/4][14] = 1; //Space for the Warp Tile.
+}
+
+void Tilemap::genMaze(){
+	MGA * mga = new MGA((rand() % 20)+20, (rand() % 20)+20);
+	map = mga->getMaze();
+}
+
+
 
 //draw the tiles
 SDL_Renderer* Tilemap::draw(SDL_Renderer* render, SDL_Rect cam) {
@@ -99,19 +176,16 @@ SDL_Renderer* Tilemap::draw(SDL_Renderer* render, SDL_Rect cam) {
 			//1 = ground
 			//2 = wall
 			SDL_Rect tile;
-			if(map[row][col] == 1) {
-				//floor
-				tile = tiles[1];
+			if(map[row][col] == 1)
+				tile = tiles[0]; //floor
+			else if(map[row][col] == 2) 
+				tile = tiles[1]; //ceiling
+			else if(map[row][col] == 3)
+				tile = tiles[2]; //wall
+			if(map[row][col] != 0) {
 				SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
 				SDL_RenderCopy(render, image, &tile, &dest);
 			}
-			else if(map[row][col] == 2) {
-				//wall
-				tile = tiles[2];
-				SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
-				SDL_RenderCopy(render, image, &tile, &dest);
-			}
-
 			//draw tile
 			//SDL_Rect dest = {col*tilesize, row*tilesize, tilesize, tilesize};
 			
@@ -134,10 +208,6 @@ std::vector<std::vector<int>> Tilemap::genRandomMap() {
 	}
 	gen.finalize();
 	return gen.getMap();
-}
-
-void printthis(SDL_Rect* r, std::string s) {
-	std::cout << s << " = " << r->x << " " << r->y << " " << r->w << " " << r->h << std::endl;
 }
 
 void Tilemap::printmap() {

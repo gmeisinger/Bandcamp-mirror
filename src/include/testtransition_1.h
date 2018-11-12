@@ -1,5 +1,5 @@
-#ifndef BANDCAMP_RANDOMMAP_H_
-#define BANDCAMP_RANDOMMAP_H_
+#ifndef BANDCAMP_TESTTRANSITION_1_H_
+#define BANDCAMP_TESTTRANSITION_1_H_
 
 #include <SDL.h>
 #include <vector>
@@ -9,37 +9,38 @@
 
 #include "screen.h"
 #include "object.h"
-#include "ooze.h"
 #include "pickup.h"
 #include "door.h"
+#include "warptile.h"
+#include "fadeobj.h"
 #include "GSM.h"
-#include "tilemap.h" 
+#include "tilemap.h"
+#include "player.h"
+#include "HUD.h"
 
-class RandomMap : public Screen 
+
+class TestTransition_1 : public Screen 
 { 
 	private:
 		std::unordered_map<std::string, Object*> objectList;
 		SDL_Renderer* rendererReference;
+		SDL_Rect fullScreen;
 		bool escape; //Have we pushed the escape key ?
 		int updateCount;
-		int oldTemp;
-		int oldO2;
-		int oldAte;
-		HUD h; 	// Heads up display 
+		HUD h; // Heads up display 
 		Player p;
-		bool pauseB; //Have we pushed the pauseButton this frame?
-		bool enterHeld; 
+		bool fading; //Is the screen fading?
+		bool pauseB;
+		bool enterHeld; //Have we pushed the pauseButton this frame?
 		Tilemap map;
 		SDL_Rect camera;
 	
 	public: 
-		RandomMap();
+		TestTransition_1();
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
-		void movePickup(SDL_Renderer* reference);
-		static void setSpawnPickup(bool set);
 };
 
-#endif  //  BANDCAMP_RANDOMMAP_H_
+#endif  //  BANDCAMP_TESTTRANSITION_1_H_

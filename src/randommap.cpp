@@ -8,9 +8,9 @@
 #include "include/spritesheet.h"
 #include "include/HUD.h"
 #include "include/randommap.h"
+#include "include/ooze.h" //Putting these include in testroom.h aparently causes a circular include.
 #include "include/game.h"
 #include "include/GSM.h"
-#include "include/ooze.h"
 #include "include/circle.h"
 #include "include/collision.h"
 #include "include/pickup.h"
@@ -18,54 +18,50 @@
 constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
-int updateCount = 1;
-int oldTemp = 100;
-int oldO2 = 100;
-int oldAte = 0;
-
-bool spawnPickup = true;
-// Heads up display 
-HUD h;
-Player p;
-
-bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
-
-//
-RandomMap::RandomMap() : Screen(){} //from merge
 
 Ooze o;
-Tilemap tilemap;
-SDL_Rect camera;
+Door d;
+static bool spawnPickup = true;
+RandomMap::RandomMap() : Screen(){
+	std::unordered_map<std::string, Object*> objectList;
+	updateCount = 1;
+	oldTemp = 100;
+	oldO2 = 100;
+	oldAte = 0;
+} //from merge
 
 //RandomMap::RandomMap(){
 //	start = false;
 //	std::unordered_map<std::string, Object*> objectList;
 //}
 
-
 // ADD COMMENTS 
 void RandomMap::init(SDL_Renderer* reference){
-	std::cout << "Init RandomMap" << std::endl;
 	rendererReference = reference;
 	SDL_Rect player_box = {tile_s + 1, tile_s + 1, tile_s, tile_s};
+
 	p = Player(player_box);
-	SDL_Rect ooze_box = {screen_w/2, 3*screen_h/8, 30, 30};
+	SDL_Rect ooze_box = {SCREEN_WIDTH/2, 3*SCREEN_HEIGHT/8, 30, 30};
 	o = Ooze(ooze_box, &p, &h);
 	tilemap = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 40, 40, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
-    
+	d = Door(4,4);
+	
+	
 	h.init(reference);
 	p.init(reference);
 	o.init(reference);
 	tilemap.init();
 	tilemap.setMap(tilemap.genRandomMap());
+	d.init(reference);
+
 	
 	//Player and HUD in the Room
 	objectList["player"] = &p;
 	objectList["hud"] = &h;
 	// Change to add ooze to list as initialized
-	objectList["ooze"] = &o;
-
+	//objectList["ooze"] = &o;
+	objectList["door"] = &d;
 }
 
 // ADD COMMENTS 
@@ -129,13 +125,11 @@ void RandomMap::update(Uint32 ticks){
 }
 
 // ADD COMMENTS 
-void RandomMap::movePickup(SDL_Renderer* reference) {
-	int pickupX = std::max(tile_s, rand()%(20*tile_s));
-	int pickupY = std::max(tile_s, rand()%(19*tile_s));
 
-	//int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
-	//int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
-	SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
+void RandomMap::movePickup(SDL_Renderer* reference) {
+	int pickupX = std::max(TILE_SIZE, rand()%(SCREEN_WIDTH-TILE_SIZE));
+	int pickupY = std::max(TILE_SIZE, rand()%(SCREEN_HEIGHT-TILE_SIZE));
+	SDL_Rect pickupBox = {pickupX, pickupY, TILE_SIZE, TILE_SIZE};
 	
 	/*if(collision::checkCol(pickupBox, leftWall) 
 		|| collision::checkCol(pickupBox, rightWall)

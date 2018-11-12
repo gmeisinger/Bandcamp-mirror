@@ -12,6 +12,7 @@
 #include "randommap.h"
 
 
+#include "testtransition_1.h"
 
 class GSM {
 	private:

@@ -81,7 +81,7 @@ bool collision::checkCol(Circle circ1, Circle circ2) {
 }
 
 //Collision detection for a rect and the walls of a tilemap
-bool collision::checkColTop(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+bool collision::checkColTop(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
     //which tiles are we in?
     int normLeftX = rect.x/tilesize;
     int normY = rect.y/tilesize;
@@ -98,7 +98,7 @@ bool collision::checkColTop(SDL_Rect rect, std::vector<std::vector<int>> grid, i
 }
 
 // add description
-bool collision::checkColBottom(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+bool collision::checkColBottom(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
     //which tiles are we in?
     int normLeftX = rect.x/tilesize;
     int normY = (rect.y + rect.h)/tilesize;
@@ -115,7 +115,7 @@ bool collision::checkColBottom(SDL_Rect rect, std::vector<std::vector<int>> grid
 }
 
 //Collision detection for a rect and the walls of a tilemap
-bool collision::checkColLeft(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+bool collision::checkColLeft(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
     //which tiles are we in?
     int normX = rect.x/tilesize;
     int normTopY = rect.y/tilesize;
@@ -132,7 +132,7 @@ bool collision::checkColLeft(SDL_Rect rect, std::vector<std::vector<int>> grid, 
 }
 
 // add description
-bool collision::checkColRight(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+bool collision::checkColRight(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
     //which tiles are we in?
     int normX = (rect.x + rect.w)/tilesize;
     int normTopY = rect.y/tilesize;

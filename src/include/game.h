@@ -10,9 +10,9 @@
 
 class GSM;
 
-	extern int screen_w;
-	extern int screen_h;
-	extern int tile_s;
+extern int SCREEN_WIDTH;
+extern int SCREEN_HEIGHT;
+extern int TILE_SIZE;
 
 class Game {
 	private:

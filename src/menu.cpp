@@ -24,7 +24,6 @@ std::unordered_map<std::string, Object*> * object_list;
 */
 Menu::Menu() { //Constructs a test button; in the future, this should be more flexible and adding items will happen via another method.
 	roomReference = &GSM::currentScreen;
-	
 }
 
 /* Summary
@@ -39,8 +38,8 @@ void Menu::init(SDL_Renderer* renderer) {
 	r.h = 100;
 	menu_rect.x = 40;
 	menu_rect.y = 40;
-	menu_rect.w = screen_w - 80;
-	menu_rect.h = screen_h - 80;
+	menu_rect.w = SCREEN_WIDTH - 80;
+	menu_rect.h = SCREEN_HEIGHT - 80;
 	test_button = new Button("Start", r);
 	test_button->init(renderer);
 }
