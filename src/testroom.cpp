@@ -29,12 +29,16 @@ bool spawnOoze = false;
 HUD h;
 Player p;
 
+//Rooms, helps us determine where to spawn ooze and pickups
+std::vector<Room*> rooms;
+
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
+//
 TestRoom::TestRoom() : Screen(){} //from merge
 
 Ooze o;
-Tilemap map;
+Tilemap tilemap;
 SDL_Rect camera;
 
 //TestRoom::TestRoom(){
@@ -47,24 +51,32 @@ SDL_Rect camera;
 void TestRoom::init(SDL_Renderer* reference){
 	std::cout << "Init TestRoom" << std::endl;
 	rendererReference = reference;
-	SDL_Rect player_box = {screen_w/4, 2*tile_s, tile_s, tile_s};
+	SDL_Rect player_box = {tile_s + 1, tile_s + 1, tile_s, tile_s};
 	p = Player(player_box);
+<<<<<<< HEAD
     o = Ooze(screen_w/2, 3*screen_h/8); //, &p, &h);
 	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 21, 20, 32);
+=======
+	tilemap = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 40, 40, 32);
+>>>>>>> master
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
-    
 	h.init(reference);
 	p.init(reference);
-	o.init(reference);
-	map.init();
-	map.genTestRoom();
 	
+	tilemap.init();
+	tilemap.setMap(tilemap.genRandomMap());
+
+	//Set the starting room for the ooze
+	rooms = tilemap.getRooms();
+	std::cout << "numRooms: " << rooms.size() << std::endl;
+	Room oozeRoom = *rooms[rand()%(rooms.size())];
+	o = Ooze(&oozeRoom, &p, &h);
+	o.init(reference);
 	//Player and HUD in the Room
 	objectList["player"] = &p;
 	objectList["hud"] = &h;
 	// Change to add ooze to list as initialized
-	objectList["ooze"] = &o;
-
+	objectList[o.getInstanceName()] = &o;
 }
 
 // ADD COMMENTS 
@@ -76,9 +88,9 @@ void TestRoom::update(Uint32 ticks){
 		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 
-	std::vector<std::vector<int>> grid = map.getGrid();
+	std::vector<std::vector<int>> grid = tilemap.getMap();
 
-	if (spawnPickup) movePickup(rendererReference); //new way of deciding when to spawn pickup
+	if (spawnPickup) movePickup(rendererReference, grid); //new way of deciding when to spawn pickup
 	if (spawnOoze) cloneOoze(rendererReference);
 
 
@@ -87,6 +99,7 @@ void TestRoom::update(Uint32 ticks){
 		it->second->update(&objectList, grid, ticks);
 		if(it->second->isUsed()) {
 			it = objectList.erase(it);
+			break;
 		}
 		it++;
 	}
@@ -124,9 +137,6 @@ void TestRoom::update(Uint32 ticks){
 // based off of movePickup
 // TODO: finish this shit
 void TestRoom::cloneOoze(SDL_Renderer* reference) {
-	int oozeX = std::max(tile_s, rand()%(20*tile_s));
-	int oozeY = std::max(tile_s, rand()%(19*tile_s));
-
 	//int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
 	//int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
 	//SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
@@ -138,32 +148,27 @@ void TestRoom::cloneOoze(SDL_Renderer* reference) {
 	{
 		moveOoze(reference);
 	}*/
-
-		
-
-	
-    Ooze *newO  = new Ooze(oozeX, oozeY);//, &p, &h);
+	Room oozeRoom = *rooms[rand()%(rooms.size())];
+	Ooze *newO = new Ooze(&oozeRoom);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made
 }
 
 // ADD COMMENTS 
-void TestRoom::movePickup(SDL_Renderer* reference) {
-	int pickupX = std::max(tile_s, rand()%(20*tile_s));
-	int pickupY = std::max(tile_s, rand()%(19*tile_s));
-
-	//int pickupX = std::max(tile_s, rand()%(screen_w-tile_s));
-	//int pickupY = std::max(tile_s, rand()%(screen_h-tile_s));
-	SDL_Rect pickupBox = {pickupX, pickupY, tile_s, tile_s};
+void TestRoom::movePickup(SDL_Renderer* reference, std::vector<std::vector<int>> grid) {
+	Room tempRoom = *rooms.at(rand()%(rooms.size()));
+	SDL_Rect *temp = tempRoom.getRect();
+	SDL_Rect pickupBox = {(temp->x + rand()%(temp->w)) * tile_s, (temp->y + rand()%(temp->h)) * tile_s, tile_s, tile_s};
 	
-	/*if(collision::checkCol(pickupBox, leftWall) 
-		|| collision::checkCol(pickupBox, rightWall)
-		|| collision::checkCol(pickupBox, upperWall)
-		|| collision::checkCol(pickupBox, centerPillar))
-	{
-		movePickup(reference);
-	}*/
+	if(collision::checkColLeft(pickupBox, grid, 32) 
+	|| collision::checkColRight(pickupBox, grid, 32)
+	|| collision::checkColTop(pickupBox, grid, 32) 
+	|| collision::checkColBottom(pickupBox, grid, 32)) {
+		movePickup(reference, grid);
+		return;
+	}
+
 	if(false){}
 	else
 	{
@@ -217,7 +222,7 @@ void TestRoom::input(const Uint8* keystate){
 // ADD COMMENTS 
 SDL_Renderer* TestRoom::draw(SDL_Renderer *renderer){
 	//draw map before objects
-	map.draw(renderer, camera);
+	tilemap.draw(renderer, camera);
 	//draw objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){

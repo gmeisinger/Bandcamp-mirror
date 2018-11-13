@@ -1,6 +1,6 @@
 /* Team Bandcamp
- * Class function: 
- * 
+ * Class function: Heads up display 
+ * Displays important information for player 
 */
 
 #include "include/HUD.h"
@@ -24,7 +24,7 @@ int currentHealth;
 // int currentPower;
 
 //Forward declaration
-
+// Set up HUD 
 HUD::HUD()
 {
     init_h = false;
@@ -35,11 +35,13 @@ HUD::HUD()
     hud_g = this;
 }
 
+// Deconstructor for HUD 
 HUD::~HUD()
 {
     utils::destroyTextureVector(hud);
 }
 
+// Initialize HUD 
 void HUD::init(SDL_Renderer* _renderer)
 {
 	renderer_h = _renderer;
@@ -56,10 +58,19 @@ void HUD::init(SDL_Renderer* _renderer)
 	init_h = true;
 }
 
+/* Update hud 
+ * arguments 
+ *
+ *
+*/
 void HUD::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
 		
 }
 
+/* 
+ * Keystate - which keys are pressed 
+ *
+*/
 void HUD::input(const Uint8* keystate){
 	
 }
@@ -218,6 +229,7 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 	return renderer_h;
 }
 
+// Draw 
 SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer, SDL_Rect cam){
 	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp, currentHealth); // , currentPower can add for power level
 	SDL_SetRenderDrawColor(renderer_h, 0, 0, 0, 255);
@@ -226,6 +238,7 @@ SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer, SDL_Rect cam){
 	return gRenderer;
 }
 
+// 
 bool HUD::isUsed() {
 	return false;
 }

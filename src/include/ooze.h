@@ -15,9 +15,11 @@
 #include "circle.h"
 #include "global.h"
 #include "pickup.h"
+#include "generator.h"
+#include "tilemap.h"
+#include "room.h"
 
 class Pickup;
-
 
 enum OozeState { // is public
         HANGRY, //temp state
@@ -44,6 +46,8 @@ class Ooze : public Object {
 
 private:
     SDL_Rect rect; // includes x_pos, y_pos, width, height
+    //Used to check line of sight
+    SDL_Rect colRect;
 
     int x_vel;
     int y_vel;
@@ -62,6 +66,11 @@ private:
     std::unordered_map<std::string, Animation> anims;
     int ate;
     SDL_Rect *target;
+    SDL_Rect *lastRoom;
+    bool initialized;
+
+    Room* curRoom;
+    Tilemap* tilemap;
     
 public:
 
@@ -72,9 +81,8 @@ public:
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
     int damage = 5;
     // Constructors & destructor
-
     Ooze(); // Default constructor
-    Ooze(int x_pos, int y_pos); //, Player *player, HUD *h);
+    Ooze(Room* room);
 
 //    Ooze(oozeState st, int hostil);
     Ooze(const Ooze& other);    // copy constructor
@@ -86,10 +94,11 @@ public:
     
     // NEW
     Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);
-    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList);
+    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid);
     bool foundFood(Pickup* pickUp);
     int getAte();
     OozeState getState();
+    void initRoom(std::vector<std::vector<int>> grid, SDL_Rect* t);
 
     // Updates
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
@@ -108,8 +117,11 @@ public:
     bool isUsed();
 
     //Movement
-    void checkBounds(int max_width, int max_height);
-    void checkCollision(int curX, int curY, std::vector<std::vector<int>> grid);
+    void checkBounds(int max_width, int max_height, bool move);
+    bool checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move);
+    bool drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target);
+    void moveLine(std::vector<std::vector<int>> grid, SDL_Rect* target);
+    void moveRoom(std::vector<std::vector<int>> grid);
     
     // Math
     void increaseHostility();
