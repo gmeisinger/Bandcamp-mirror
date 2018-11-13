@@ -20,13 +20,17 @@ class Player : public Object
         int y_deltav;
         int x_vel;
         int y_vel;
-		bool up;
-		bool down;
-		bool left;
-		bool right;
-		SpriteSheet sheet;
+		    bool up;
+		    bool down;
+		    bool left;
+		    bool right;
+			  bool space;
+			  bool spaceHeld;
+		    SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;
         Animation* anim;
+		SDL_Renderer* rendererReference;
+		std::unordered_map<std::string, Object*> projList;
 		
     public:
         Player(SDL_Rect _rect);
