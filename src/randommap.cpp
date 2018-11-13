@@ -52,7 +52,7 @@ void RandomMap::init(SDL_Renderer* reference){
 	o.init(reference);
 	tilemap.init();
 	tilemap.genRandomMap();
-	tilemap.addObjects(&objectList);
+	//tilemap.addObjects(&objectList);
 
 	
 	//Player and HUD in the Room
@@ -187,10 +187,10 @@ void RandomMap::input(const Uint8* keystate){
 
 void RandomMap::placeDoors(SDL_Renderer* renderer) {
 	int doorCount = 0;
-	std::vector<std::vector<int>> map = tilemap.getMap();
+	std::vector<std::vector<Tile*>> map = tilemap.getMap();
 	for(int r=0;r<map.size();r++) {
 		for(int c=0;c<map[0].size();c++) {
-			if(map[r][c] == 4) { //horizontal door
+			if(map[r][c]->isDoor()) { //horizontal door
 				Door* d = new Door(c, r, true);
 				d->init(renderer);
 				objectList["door"+doorCount] = d;

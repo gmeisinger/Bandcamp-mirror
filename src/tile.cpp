@@ -1,4 +1,4 @@
-#include "tile.h"
+#include "include/tile.h"
 
 Tile::Tile(SDL_Rect _srcRect, SDL_Rect _destRect) {
 	srcRect = _srcRect;
@@ -9,20 +9,18 @@ Tile::Tile(SDL_Rect _srcRect, SDL_Rect _destRect) {
 }
 
 Tile::Tile() {
-	srcRect = NULL;
-	destRect = NULL;
+	srcRect = {0,0,0,0};
+	destRect = {0,0,0,0};
 	blocking = false;
 	door = false;
 	active = false;
 }
 
-Tile::~Tile() {}
-
-SDL_Rect Tile::getSource() {
+SDL_Rect* Tile::getSource() {
 	return &srcRect;
 }
 
-SDL_Rect Tile::getDest() {
+SDL_Rect* Tile::getDest() {
 	return &destRect;
 }
 

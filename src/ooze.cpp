@@ -167,7 +167,6 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList)
             std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
             while(it != objectList->end()){
                 if (!it->first.substr(0,6).compare("Pickup")) {
-                    //std::cout << "there is a pickup :) " << std::endl;
                     Pickup* temp = (Pickup*)it->second;
                     return temp->getRect();
                 }

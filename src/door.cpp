@@ -95,7 +95,7 @@ void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 				setAnimation("opening");
 				anim->play();
 				state = 1; //Sliding open
-				grid[y_pos][x_pos] = 1; //Set that to Ground
+				grid[y_pos][x_pos]->setBlocking(false); //Set that to Ground
 			}
 		
 		}
@@ -131,7 +131,7 @@ void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 				setAnimation("closing");
 				anim->play();
 				state = 2; //Sliding Closed
-				grid[y_pos][x_pos] = 4; //Set that to Door
+				grid[y_pos][x_pos]->setBlocking(false); //Set that to Door
 			}
 			
 		}

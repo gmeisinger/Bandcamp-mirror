@@ -298,7 +298,7 @@ void Player::setEnemy(bool _overlap) {
     overlapEnemy = _overlap;
 }
 
-void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid)
+void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> grid)
 {
     if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
         playerRect.x = curX;

@@ -18,8 +18,8 @@ private:
 public:
 	Tile(SDL_Rect _srcRect, SDL_Rect _destRect);
 	Tile();
-	SDL_Rect getSource();
-	SDL_Rect getDest();
+	SDL_Rect* getSource();
+	SDL_Rect* getDest();
 	bool isBlocking();
 	void setBlocking(bool b);
 	bool isDoor();

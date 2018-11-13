@@ -129,10 +129,10 @@ SDL_Renderer* Tilemap::draw(SDL_Renderer* render, SDL_Rect cam) {
 	for(int row=0;row<height;row++) {
 		for(int col=0;col<width;col++) {
 			if(map[row][col]->isActive()) {
-				Tile t = map[row][col];
-				SDL_Rect src = t->getSource();
+				Tile* t = map[row][col];
+				SDL_Rect* src = t->getSource();
 				SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
-				SDL_RenderCopy(render, image, &src, &dest);
+				SDL_RenderCopy(render, image, src, &dest);
 			}
 		}
 	}
@@ -178,8 +178,12 @@ std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> 
 				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
 				map[r][c]->setDoor(true);
 			}
+			else {
+				map[r][c] = new Tile();
+			}
 		}
 	}
+	return map;
 }
 
 void addObjects(std::unordered_map<std::string, Object*> *objectList) {

@@ -41,7 +41,7 @@ class Player : public Object
         void updateVelocity(int _xdv, int _ydv);
         void updatePosition();
         void checkBounds(int max_width, int max_height);
-        void checkCollision(int curX, int curY, std::vector<std::vector<int>> &grid);
+        void checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> grid);
         int getWidth();
         int getHeight();
         int getX();
