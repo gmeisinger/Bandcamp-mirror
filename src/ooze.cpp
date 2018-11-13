@@ -181,17 +181,19 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList,
                 if (!it->first.substr(0,6).compare("Pickup")) {
                     //std::cout << "there is a pickup :) " << std::endl;
                     Pickup* temp = (Pickup*)it->second;
-                    bool losPickup = drawLine(grid, temp->getRect());
-                    
-                    if(losPickup)
-                        return temp->getRect();
-                    else {
-                        bool losPlayer = drawLine(grid, player->getRect());
-                        if(losPlayer)
-                            return player->getRect();
-                        else
-                            return nullptr;    
-                    }                    
+                    if(!collision::checkCol(*curRoom->getRect(), *player->getRect()) || !collision::checkCol(*curRoom->getRect(), *temp->getRect())) {
+                        bool losPickup = drawLine(grid, temp->getRect());
+                        
+                        if(losPickup)
+                            return temp->getRect();
+                        else {
+                            bool losPlayer = drawLine(grid, player->getRect());
+                            if(losPlayer)
+                                return player->getRect();
+                            else
+                                return nullptr;    
+                        }   
+                    }                 
                 }
                 it++;
             }
