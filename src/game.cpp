@@ -146,9 +146,9 @@ void Game::run() {
   
 
 	//credits
-	Credits creds = Credits(gRenderer);
-	creds.load();
-	creds.play();
+	//Credits creds = Credits(gRenderer);
+	//creds.load();
+	//creds.play();
 
 	// Tear down and end.  Returns to main
 	close();

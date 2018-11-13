@@ -6,6 +6,7 @@
 #include "include/game.h"
 #include "include/collision.h"
 #include "include/spritesheet.h"
+#include "include/projectile.h"
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
@@ -22,6 +23,7 @@ int y_deltav;
 int x_vel;
 int y_vel;
 bool overlapEnemy;
+char projsType = 'r';
 
 
 //Constructor - takes a texture, width and height
@@ -36,7 +38,10 @@ Player::Player(SDL_Rect _rect) {
 	down = false;
 	left = false;
 	right = false;
+	space = false;
+	spaceHeld = false;
     overlapEnemy = false;
+	std::unordered_map<std::string, Object*> projList;
 }
 
 //
@@ -57,6 +62,8 @@ std::string Player::getInstanceName(){
  *
 */
 void Player::init(SDL_Renderer* gRenderer){
+	rendererReference = gRenderer;
+	
 	//set up player animations
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/spaceman.png"), 4, 4);
 	addAnimation("down", Animation(getSheet().getRow(0)));
@@ -243,6 +250,15 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
+	if (space && !spaceHeld) {
+		//std::cout << "\nPressed space bar" << std::endl;
+		Projectile *newProj = new Projectile(projsType);
+		projList[newProj->getInstanceName()] = newProj;
+		newProj->init(rendererReference);
+		spaceHeld = true;
+	} else if (!space) {
+		spaceHeld = false;
+	}
 
 	updateVelocity(x_deltav, y_deltav);
 
@@ -260,6 +276,17 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 
     //Check you haven't collided with object
     checkCollision(curX, curY, grid);
+	
+	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
+	while(it != projList.end()) {
+		if(it->second->isUsed()) {
+			it = projList.erase(it);
+			break;
+		} else {
+			it->second->update(objectList, grid, ticks);
+		}
+		it++;
+	}
 }
 
 /* Summary
@@ -272,6 +299,9 @@ void Player::input(const Uint8* keystate)
 	left = keystate[SDL_SCANCODE_A];
 	down = keystate[SDL_SCANCODE_S];
 	right = keystate[SDL_SCANCODE_D];
+	space = keystate[SDL_SCANCODE_SPACE];
+	if (keystate[SDL_SCANCODE_1]) projsType = 'r';
+	else if (keystate[SDL_SCANCODE_2]) projsType = 'g';
 }
 
 /* Summary
@@ -284,7 +314,12 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->x -= cam.x;
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
-   return renderer;
+	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
+	while(it != projList.end()){
+		renderer = it->second->draw(renderer, cam);
+		it++;
+	}
+	return renderer;
 }
 
 /* Summary
