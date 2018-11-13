@@ -58,7 +58,7 @@ Ooze::~Ooze(){};
 std::string Ooze::getInstanceName(){
 	std::ostringstream ss;
   ss << oozeNumber;
-	return "Ooze-"+ss.str();
+	return "ooze-"+ss.str();
 }
 
 /* Summary
