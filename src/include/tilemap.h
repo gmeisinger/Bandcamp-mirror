@@ -10,12 +10,14 @@
 #include <time.h>
 #include "room.h"
 #include "generator.h"
+#include "tile.h"
+#include "object.h"
 
 class Tilemap
 {
 private:
 	SDL_Texture* image;
-	std::unordered_map<int, SDL_Rect> tiles;
+	std::unordered_map<std::string, SDL_Rect> tiles;
 	int width;
 	int height;
 	int tilesize;
@@ -30,18 +32,17 @@ public:
 	std::vector< std::vector < int > > getMap();
 	std::vector< std::vector < int > >* getMapPtr();
 	void setMap(std::vector< std::vector < int > > _map);
-	void genTestRoom();
 	void init();
 	SDL_Renderer* draw(SDL_Renderer* render, SDL_Rect cam);
-	void finalize();
+	std::vector<std::vector<Tile>> convert(std::vector<std::vector<int>> intmap);
 	void setNeighbors(Room* source);
-	std::vector<std::vector<int>> genRandomMap();
+	void genRandomMap();
+	void addObjects(std::unordered_map<std::string, Object*> *objectList);
 	//random map helpers
 	std::vector<Room*> getRooms();
 	void printmap();
 	//std::vector< std::vector < int > > &getGrid();
 	void genTestTransitionRoom();
-	void genTestTransitionRoom2();
 	void genMaze();
 };
 

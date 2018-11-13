@@ -51,7 +51,8 @@ void RandomMap::init(SDL_Renderer* reference){
 	p.init(reference);
 	o.init(reference);
 	tilemap.init();
-	tilemap.setMap(tilemap.genRandomMap());
+	tilemap.genRandomMap();
+	tilemap.addObjects(&objectList);
 
 	
 	//Player and HUD in the Room
