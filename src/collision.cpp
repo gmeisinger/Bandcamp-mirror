@@ -81,18 +81,66 @@ bool collision::checkCol(Circle circ1, Circle circ2) {
 }
 
 //Collision detection for a rect and the walls of a tilemap
-bool collision::checkCol(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+bool collision::checkColTop(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
     //which tiles are we in?
     int normLeftX = rect.x/tilesize;
-    int normTopY = rect.y/tilesize;
+    int normY = rect.y/tilesize;
     int normRightX = (rect.x + rect.w)/tilesize;
+    
+    int tileL = grid[normY][normLeftX];
+    int tileR = grid[normY][normRightX];
+    if(tileL == 1 && tileR == 1) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+// add description
+bool collision::checkColBottom(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+    //which tiles are we in?
+    int normLeftX = rect.x/tilesize;
+    int normY = (rect.y + rect.h)/tilesize;
+    int normRightX = (rect.x + rect.w)/tilesize;
+    
+    int tileL = grid[normY][normLeftX];
+    int tileR = grid[normY][normRightX];
+    if(tileL == 1 && tileR == 1) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+//Collision detection for a rect and the walls of a tilemap
+bool collision::checkColLeft(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+    //which tiles are we in?
+    int normX = rect.x/tilesize;
+    int normTopY = rect.y/tilesize;
     int normBottomY = (rect.y + rect.h)/tilesize;
-    //printf("x: %d || y: %d\n", normalX, normalY);
-    int tileLT = grid[normTopY][normLeftX];
-    int tileRT = grid[normTopY][normRightX];
-    int tileLB = grid[normBottomY][normLeftX];
-    int tileRB = grid[normBottomY][normRightX];
-    if(tileLT == 1 && tileRT == 1 && tileLB == 1 && tileRB == 1) {
+    
+    int tileT = grid[normTopY][normX];
+    int tileB = grid[normBottomY][normX];
+    if(tileT == 1 && tileB == 1) {
+        return false;
+    }
+    else {
+        return true;
+    }
+}
+
+// add description
+bool collision::checkColRight(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize) {
+    //which tiles are we in?
+    int normX = (rect.x + rect.w)/tilesize;
+    int normTopY = rect.y/tilesize;
+    int normBottomY = (rect.y + rect.h)/tilesize;
+    
+    int tileT = grid[normTopY][normX];
+    int tileB = grid[normBottomY][normX];
+    if(tileT == 1 && tileB == 1) {
         return false;
     }
     else {

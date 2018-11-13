@@ -13,6 +13,9 @@ namespace collision
     bool checkCol(SDL_Rect rect1, SDL_Rect rect2);
     bool checkCol(SDL_Rect rect, Circle circ);
     bool checkCol(Circle circ1, Circle circ2);
-    bool checkCol(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize);
+    bool checkColLeft(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize);
+    bool checkColRight(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize);
+    bool checkColTop(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize);
+    bool checkColBottom(SDL_Rect rect, std::vector<std::vector<int>> grid, int tilesize);
 };
 #endif
