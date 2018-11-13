@@ -25,7 +25,7 @@ hud{h}
     target = player->getRect();
     curRoom = room;
     SDL_Rect *temp = curRoom->getRect();
-    rect = {(temp->x + rand()%(temp->w)) * tile_s, (temp->y + rand()%(temp->h)) * tile_s, 30, 30};
+    rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	Animation* anim;
@@ -92,10 +92,10 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
-    if(!initialized) {
+    /* if(!initialized) {
         initRoom(grid, curRoom->getRect());
         initialized = true;
-    }
+    } */
     
     int x_deltav = 0;
 	int y_deltav = 0;
