@@ -221,7 +221,7 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
+void Player::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -298,7 +298,7 @@ void Player::setEnemy(bool _overlap) {
     overlapEnemy = _overlap;
 }
 
-void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> &grid)
+void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid)
 {
     if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
         playerRect.x = curX;

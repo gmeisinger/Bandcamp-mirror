@@ -76,7 +76,7 @@ void WarpTile::init(SDL_Renderer* gRenderer){
 	reference = gRenderer; //For initing the FadeObj
 }
 
-void WarpTile::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
+void WarpTile::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks){
 	Player * p;
 
 	auto it = objectList->find("player");

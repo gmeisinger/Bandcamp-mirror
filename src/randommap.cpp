@@ -75,7 +75,7 @@ void RandomMap::update(Uint32 ticks){
 		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 
-	std::vector<std::vector<int>> grid = tilemap.getMap();
+	std::vector<std::vector<Tile*>> grid = tilemap.getMap();
 
 	if (spawnPickup) movePickup(rendererReference); //new way of deciding when to spawn pickup
 	// TODO: better way to check for pickup being consumed?

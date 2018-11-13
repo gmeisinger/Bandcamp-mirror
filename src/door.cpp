@@ -78,7 +78,7 @@ void Door::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet.setClips(_cols, _rows, 32, 32);	
 }
 
-void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
+void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks){
 	Player * p;
 
 	anim->update(ticks);

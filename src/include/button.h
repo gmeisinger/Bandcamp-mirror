@@ -29,7 +29,7 @@ class Button : public Object
 		void init(SDL_Renderer* renderer);
 		void press();
 		void unpress();
-		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks);
 		std::string getInstanceName();
 		bool isUsed();
 		void input(const Uint8* keystate);

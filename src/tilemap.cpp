@@ -21,7 +21,7 @@ int height;
 int tilesize;
 int cur_width;
 int cur_height;
-std::vector< std::vector < Tile > > map;
+std::vector< std::vector < Tile* > > map;
 
 //constructor
 Tilemap::Tilemap() {
@@ -57,17 +57,17 @@ Tilemap::~Tilemap() {
 
 
 //returns the map as 2d vector
-std::vector< std::vector < Tile > > Tilemap::getMap() {
+std::vector< std::vector < Tile* > > Tilemap::getMap() {
 	return map;
 }
 
-std::vector< std::vector < Tile > >* Tilemap::getMapPtr() {
+std::vector< std::vector < Tile* > >* Tilemap::getMapPtr() {
 	return &map;
 }
 
 //setup tiles
 void Tilemap::init() {
-	map = std::vector<std::vector<Tile>>(height, std::vector<Tile>(width, NULL));
+	map = std::vector<std::vector<Tile*>>(height, std::vector<Tile*>(width, new Tile()));
 	
 	//floor tile
 	tiles["floor"] = {0,0,tilesize,tilesize};
@@ -128,10 +128,11 @@ void Tilemap::genMaze(){
 SDL_Renderer* Tilemap::draw(SDL_Renderer* render, SDL_Rect cam) {
 	for(int row=0;row<height;row++) {
 		for(int col=0;col<width;col++) {
-			if(map[row][col] != NULL) {
+			if(map[row][col]->isActive()) {
 				Tile t = map[row][col];
+				SDL_Rect src = t->getSource();
 				SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
-				SDL_RenderCopy(render, image, t.getSource(), &dest);
+				SDL_RenderCopy(render, image, &src, &dest);
 			}
 		}
 	}
@@ -151,47 +152,36 @@ void Tilemap::genRandomMap() {
 		//
 	}
 	gen.finalize();
-	map = gen.getMap();
+	map = convert(gen.getMap());
 }
 
-std::vector<std::vector<Tile>> Tilemap::convert( std::vector<std::vector<int>> intmap) {
+std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> intmap) {
 
 	for(int r=0;r<intmap.size();r++) {
 		for(int c=0;c<intmap[0].size();c++) {
 			if(intmap[r][c] == 1) {
 				//floor tile
-				map[r][c] = Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
+				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
 			}
 			else if(intmap[r][c] == 2) {
 				// ceiling tile
-				map[r][c] = Tile(tiles["ceiling"], {c*tilesize, r*tilesize, tilesize, tilesize});
-				map[r][c].setBlocking(true);
+				map[r][c] = new Tile(tiles["ceiling"], {c*tilesize, r*tilesize, tilesize, tilesize});
+				map[r][c]->setBlocking(true);
 			}
 			else if(intmap[r][c] == 3) {
 				// wall tile
-				map[r][c] = Tile(tiles["wall"], {c*tilesize, r*tilesize, tilesize, tilesize});
-				map[r][c].setBlocking(true);
+				map[r][c] = new Tile(tiles["wall"], {c*tilesize, r*tilesize, tilesize, tilesize});
+				map[r][c]->setBlocking(true);
 			}
 			else if(intmap[r][c] == 4) {
 				// ceiling tile
-				map[r][c] = Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
-				map[r][c].setDoor(true);
+				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
+				map[r][c]->setDoor(true);
 			}
 		}
 	}
 }
 
 void addObjects(std::unordered_map<std::string, Object*> *objectList) {
-
-}
-
-void Tilemap::printmap() {
-	for(int r=0;r<map.size();r++) {
-		for(int c=0;c<map[0].size();c++) {
-			std::cout << map[r][c];
-		}
-		std::cout << std::endl;
-	}
-	std::cout << std::endl << cur_width << std::endl << cur_height << std::endl;
 
 }

@@ -84,7 +84,7 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 
 //*********TO DO:
 //update motion here
-void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
+void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -352,7 +352,7 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
 }
 
 //currently checks collisions with room features (walls etc.)
-void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid)
+void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> grid)
 {
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that

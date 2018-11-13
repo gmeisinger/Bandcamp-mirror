@@ -5,35 +5,48 @@ Tile::Tile(SDL_Rect _srcRect, SDL_Rect _destRect) {
 	destRect = _destRect;
 	blocking = false;
 	door = false;
+	active = true;
+}
+
+Tile::Tile() {
+	srcRect = NULL;
+	destRect = NULL;
+	blocking = false;
+	door = false;
+	active = false;
 }
 
 Tile::~Tile() {}
 
-SDL_Rect getSource() {
+SDL_Rect Tile::getSource() {
 	return &srcRect;
 }
 
-SDL_Rect getDest() {
+SDL_Rect Tile::getDest() {
 	return &destRect;
 }
 
-bool isBlocking() {
+bool Tile::isBlocking() {
 	return blocking;
 }
 
-void setBlocking(bool b) {
+void Tile::setBlocking(bool b) {
 	blocking = b;
 }
 
-bool isDoor() {
+bool Tile::isDoor() {
 	return door;
 }
 
-void setDoor(bool b) {
+void Tile::setDoor(bool b) {
 	door = b;
 }
 
-void toggleBlocking() {
+void Tile::toggleBlocking() {
 	if(blocking) blocking = false;
 	else blocking = true;
+}
+
+bool Tile::isActive() {
+	return active;
 }

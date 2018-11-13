@@ -21,7 +21,7 @@ private:
 	int width;
 	int height;
 	int tilesize;
-	std::vector< std::vector < int > > map;
+	std::vector< std::vector < Tile* > > map;
 	std::vector<Room*> rooms;
 	int cur_width;
 	int cur_height;
@@ -29,18 +29,17 @@ public:
 	Tilemap(SDL_Texture* tex, int _width, int _height, int _tilesize);
 	Tilemap();
 	~Tilemap();
-	std::vector< std::vector < int > > getMap();
-	std::vector< std::vector < int > >* getMapPtr();
+	std::vector< std::vector < Tile* > > getMap();
+	std::vector< std::vector < Tile* > >* getMapPtr();
 	void setMap(std::vector< std::vector < int > > _map);
 	void init();
 	SDL_Renderer* draw(SDL_Renderer* render, SDL_Rect cam);
-	std::vector<std::vector<Tile>> convert(std::vector<std::vector<int>> intmap);
+	std::vector<std::vector<Tile*>> convert(std::vector<std::vector<int>> intmap);
 	void setNeighbors(Room* source);
 	void genRandomMap();
 	void addObjects(std::unordered_map<std::string, Object*> *objectList);
 	//random map helpers
 	std::vector<Room*> getRooms();
-	void printmap();
 	//std::vector< std::vector < int > > &getGrid();
 	void genTestTransitionRoom();
 	void genMaze();
