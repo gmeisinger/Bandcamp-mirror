@@ -32,6 +32,15 @@ enum OozeState { // is public
 
 class Ooze : public Object {
     
+    struct Stats {
+        // Genetic statistics
+        int health;
+        int attack;
+        int speed;
+        int health_cost;
+        int num_cost;
+    };
+    
 
 private:
     SDL_Rect rect; // includes x_pos, y_pos, width, height
@@ -40,6 +49,8 @@ private:
     int y_vel;
     int x_deltav;
     int y_deltav;
+        
+    Stats stats;
 
     OozeState state;
     int hostility;

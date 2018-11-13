@@ -25,6 +25,15 @@ Ooze::Ooze(int x_pos, int y_pos) //, Player *player, HUD *h)
     y_vel = 1;
 
     ate = 0;
+    
+    // Genetic statistics
+    stats.health =      3 + utils::normDist_sd1();
+    stats.attack =      3 + utils::normDist_sd1();
+    stats.speed =       3 + utils::normDist_sd1();
+    stats.health_cost = 3 + utils::normDist_sd1();
+    stats.num_cost =    3 + utils::normDist_sd1();
+    std::cout << "health" << stats.health << "\n";
+    std::cout << "attack" << stats.attack << "\n";
 }
 
 //Other constructor?
@@ -34,7 +43,7 @@ Ooze::Ooze(int x_pos, int y_pos) //, Player *player, HUD *h)
 Ooze::Ooze(const Ooze& other)
     :Ooze(other.rect.x + 2, other.rect.y + 2) //, other.player, other.hud)
 {
-    
+//    this.
 }
 
 //Destructor
