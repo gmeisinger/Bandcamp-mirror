@@ -94,14 +94,16 @@ void Projectile::updatePosition(Uint32 ticks){
 }
 
 void Projectile::checkProjOverlap(int curX, int curY, std::vector<std::vector<int>> grid) {
-	if(collision::checkCol(projRect, grid, 32)) {
+	/*
+	if(collision::checkCol(projRect, grid)) {
         projRect.x = curX;
 		projUsed = true;
     }
-    if(collision::checkCol(projRect, grid, 32)) {
+    if(collision::checkCol(projRect, grid)) {
         projRect.y = curY;
         projUsed = true;
     }
+	*/
 }
 
 bool Projectile::isUsed() {
