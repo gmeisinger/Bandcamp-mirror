@@ -26,7 +26,7 @@ hud{h}
     curRoom = room;
     SDL_Rect *temp = curRoom->getRect();
     rect = {(temp->x + rand()%(temp->w)) * tile_s, (temp->y + rand()%(temp->h)) * tile_s, 30, 30};
-	totalOoze++; //Increase # of instances counter
+    totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	Animation* anim;
 	int overlapTicks = 0;
@@ -39,6 +39,7 @@ hud{h}
     ate = 0;
 
     lastRoom = nullptr;
+    initialized = false;
 }
 
 //Other constructor?
@@ -88,7 +89,15 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 //*********TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
-	int x_deltav = 0;
+	//Checks to make sure our ooze isn't stuck in a wall
+    //Must be declared here because we need the grid, but should only run on the
+    //first update. Runs very quickly too
+    if(!initialized) {
+        initRoom(grid, curRoom->getRect());
+        initialized = true;
+    }
+    
+    int x_deltav = 0;
 	int y_deltav = 0;
 
     //Get the position of the player before they move
@@ -117,7 +126,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
         }
         //If we don't have a line of sight with the player or pickup, check the other room
         else {
-            moveRoom(grid);
+            //moveRoom(grid);
         }
     }    
     //foundFood(getPickup(objectList));
@@ -577,7 +586,13 @@ void Ooze::moveRoom(std::vector<std::vector<int>> grid) {
 
 }
 
-//Get what room the ooze is in
-void Ooze::initRoom() {
-    //Currently not in use, might be necessary if we find that the ooze is often spawning in walls
+//Lets make sure our poor ooze isn't stuck in a wall
+void Ooze::initRoom(std::vector<std::vector<int>> grid, SDL_Rect* t) {
+    while(collision::checkColLeft(rect, grid, 32) 
+    || collision::checkColRight(rect, grid, 32) 
+    ||collision::checkColTop(rect, grid, 32) 
+    || collision::checkColBottom(rect, grid, 32)) {
+        rect.x = (t->x + rand()%(t->w)) * tile_s;
+        rect.y = (t->y + rand()%(t->h)) * tile_s;
+    }
 }

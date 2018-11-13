@@ -56,6 +56,7 @@ private:
     int ate;
     SDL_Rect *target;
     SDL_Rect *lastRoom;
+    bool initialized;
 
     Room* curRoom;
     Tilemap* tilemap;
@@ -87,7 +88,7 @@ public:
     bool foundFood(Pickup* pickUp);
     int getAte();
     OozeState getState();
-    void initRoom();
+    void initRoom(std::vector<std::vector<int>> grid, SDL_Rect* t);
 
     // Updates
     void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
