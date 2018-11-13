@@ -19,9 +19,9 @@ int projNumber = 0;
 bool projUsed;
 bool spaceHeld = false;
 
-Projectile::Projectile(char type, int playerX, int playerY) {
-    projRect = {400, 300, 32, 8};
-	projDrawBox = {400, 300, 32, 8};
+Projectile::Projectile(char type) {
+    projRect = {432, 312, 32, 8};
+	projDrawBox = {432, 312, 32, 8};
 	projTicks = 0;
 	projType = type;
 	totalInstance++; //Increase instance Number

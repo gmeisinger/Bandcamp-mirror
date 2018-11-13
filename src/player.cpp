@@ -23,6 +23,7 @@ int y_deltav;
 int x_vel;
 int y_vel;
 bool overlapEnemy;
+char projsType = 'r';
 
 
 //Constructor - takes a texture, width and height
@@ -251,7 +252,7 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 		x_deltav += 1;
 	if (space && !spaceHeld) {
 		//std::cout << "\nPressed space bar" << std::endl;
-		Projectile *newProj = new Projectile('g', playerRect.x, playerRect.y);
+		Projectile *newProj = new Projectile(projsType);
 		projList[newProj->getInstanceName()] = newProj;
 		newProj->init(rendererReference);
 		spaceHeld = true;
@@ -299,6 +300,8 @@ void Player::input(const Uint8* keystate)
 	down = keystate[SDL_SCANCODE_S];
 	right = keystate[SDL_SCANCODE_D];
 	space = keystate[SDL_SCANCODE_SPACE];
+	if (keystate[SDL_SCANCODE_1]) projsType = 'r';
+	else if (keystate[SDL_SCANCODE_2]) projsType = 'g';
 }
 
 /* Summary
