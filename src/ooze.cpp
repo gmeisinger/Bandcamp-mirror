@@ -92,10 +92,10 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
-    /* if(!initialized) {
+    if(!initialized) {
         initRoom(grid, curRoom->getRect());
         initialized = true;
-    } */
+    } 
     
     int x_deltav = 0;
 	int y_deltav = 0;
