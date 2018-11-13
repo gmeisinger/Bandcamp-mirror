@@ -26,12 +26,13 @@ static int totalInstance = 0; //How many instances of the object exist?
 
 //Constructor
 //X and Y are in terms of the TILE MAP
-Door::Door(int x, int y) {
+Door::Door(int x, int y, bool orientation) {
 	x_pos = x;
 	y_pos = y;
 	doorRect = {x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE};
 	totalInstance++; //Increase instance Number
 	instanceNumber = totalInstance;
+	directionLR = orientation;
 }
 
 //Deconstructor
@@ -77,7 +78,7 @@ void Door::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet.setClips(_cols, _rows, 32, 32);	
 }
 
-void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks){
+void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
 	Player * p;
 
 	anim->update(ticks);

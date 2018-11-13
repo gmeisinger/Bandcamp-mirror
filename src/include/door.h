@@ -33,10 +33,10 @@ class Door : public Object
 	public:
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
-		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
 		std::string getInstanceName();
 		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
-		Door(int x, int y, bool isOpen);
+		Door(int x, int y, bool orientation);
 		void addAnimation(std::string tag, Animation anim);	
 		Animation* getAnimation(std::string tag);
 		void setAnimation(std::string tag);

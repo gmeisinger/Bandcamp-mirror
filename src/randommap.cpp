@@ -20,7 +20,6 @@ constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
 
 Ooze o;
-Door d;
 static bool spawnPickup = true;
 RandomMap::RandomMap() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
@@ -38,14 +37,14 @@ RandomMap::RandomMap() : Screen(){
 // ADD COMMENTS 
 void RandomMap::init(SDL_Renderer* reference){
 	rendererReference = reference;
-	SDL_Rect player_box = {tile_s + 1, tile_s + 1, tile_s, tile_s};
+	SDL_Rect player_box = {TILE_SIZE + 1, TILE_SIZE + 1, TILE_SIZE, TILE_SIZE};
 
 	p = Player(player_box);
 	SDL_Rect ooze_box = {SCREEN_WIDTH/2, 3*SCREEN_HEIGHT/8, 30, 30};
 	o = Ooze(ooze_box, &p, &h);
 	tilemap = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 40, 40, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
-	d = Door(4,4);
+	dark = utils::loadTexture(reference, "res/dark.png");
 	
 	
 	h.init(reference);
@@ -53,7 +52,6 @@ void RandomMap::init(SDL_Renderer* reference){
 	o.init(reference);
 	tilemap.init();
 	tilemap.setMap(tilemap.genRandomMap());
-	d.init(reference);
 
 	
 	//Player and HUD in the Room
@@ -61,7 +59,10 @@ void RandomMap::init(SDL_Renderer* reference){
 	objectList["hud"] = &h;
 	// Change to add ooze to list as initialized
 	//objectList["ooze"] = &o;
-	objectList["door"] = &d;
+
+	//add doors dynamically
+	placeDoors(reference);
+	//objectList["door"] = &d;
 }
 
 // ADD COMMENTS 
@@ -183,6 +184,21 @@ void RandomMap::input(const Uint8* keystate){
 	}
 }
 
+void RandomMap::placeDoors(SDL_Renderer* renderer) {
+	int doorCount = 0;
+	std::vector<std::vector<int>> map = tilemap.getMap();
+	for(int r=0;r<map.size();r++) {
+		for(int c=0;c<map[0].size();c++) {
+			if(map[r][c] == 4) { //horizontal door
+				Door* d = new Door(c, r, true);
+				d->init(renderer);
+				objectList["door"+doorCount] = d;
+				doorCount++;
+			}
+		}
+	}
+}
+
 // ADD COMMENTS 
 SDL_Renderer* RandomMap::draw(SDL_Renderer *renderer){
 	//draw map before objects
@@ -193,6 +209,9 @@ SDL_Renderer* RandomMap::draw(SDL_Renderer *renderer){
 		renderer = it->second->draw(renderer, camera);
 		it++;
 	}
+
+	//draw the darkness
+	SDL_RenderCopy(renderer, dark, NULL, NULL);
 
 	return renderer;
 }

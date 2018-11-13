@@ -14,7 +14,6 @@
 int GSM::currentScreen = 0;
 RandomMap randomMap;
 TestTransition_1 testTransitionScreen; 
-TestTransition_2 t2;
 PauseMenu pauseMenu;
 bool pause;	//Is the game paused
 int tempScreen; //What was the room before you paused?
@@ -37,7 +36,7 @@ GSM::GSM(){
 	randomMap = RandomMap();
 	roomList.push_back(&randomMap);
 	pauseMenu = PauseMenu();
-	roomList.push_back(pauseMenu);
+	roomList.push_back(&pauseMenu);
 	previousScreen = 0;
 	pause = false;
 	running = false;		// does this refer to the game running bool? its own from GSM.h

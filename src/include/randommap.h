@@ -29,14 +29,16 @@ class RandomMap : public Screen
 		Player p;
 		bool pauseB; //Have we pushed the pauseButton this frame?
 		bool enterHeld; 
-		Tilemap map;
+		Tilemap tilemap;
 		SDL_Rect camera;
+		SDL_Texture* dark;
 	
 	public: 
 		RandomMap();
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
+		void placeDoors(SDL_Renderer* renderer);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
 		void movePickup(SDL_Renderer* reference);
 		static void setSpawnPickup(bool set);

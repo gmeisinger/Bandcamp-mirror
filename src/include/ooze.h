@@ -75,7 +75,7 @@ public:
     int getAte();
 
     // Updates
-    void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+    void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
     bool updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
     void updateVelocity(int _xdv, int _ydv); 
     void updatePosition();

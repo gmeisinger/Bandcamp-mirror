@@ -27,8 +27,8 @@ public:
 	Tilemap(SDL_Texture* tex, int _width, int _height, int _tilesize);
 	Tilemap();
 	~Tilemap();
-	std::vector< std::vector < int > >* getMap();
-	std::vector< std::vector < int > > getMapCopy();
+	std::vector< std::vector < int > > getMap();
+	std::vector< std::vector < int > >* getMapPtr();
 	void setMap(std::vector< std::vector < int > > _map);
 	void genTestRoom();
 	void init();

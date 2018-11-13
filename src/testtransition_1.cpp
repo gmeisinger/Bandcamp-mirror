@@ -39,7 +39,7 @@ void TestTransition_1::init(SDL_Renderer* reference){
 	p = Player(player_box);
 	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 30, 20, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
-	d_1 = Door(14,5);
+	d_1 = Door(14,5,true);
 	w = WarpTile(14, 4, true, true, 2); //WarpTile(int x, int y, bool _insideWall, bool _fade, int _destScreen)
 	f = FadeObj(); //Fade the screen in
 	
@@ -65,7 +65,7 @@ void TestTransition_1::update(Uint32 ticks){
 	if(objectList.count("FadeObj")>0){ //only update the fade when you are fading
 		fading = true;
 		
-		objectList["FadeObj"]->update(&objectList, map.getGrid(), ticks);
+		objectList["FadeObj"]->update(&objectList, map.getMap(), ticks);
 		
 		if(objectList["FadeObj"]->isUsed()){
 			fading = false;
@@ -89,7 +89,7 @@ void TestTransition_1::update(Uint32 ticks){
 		//update all objects
 		std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 		while(it != objectList.end()){
-			it->second->update(&objectList, map.getGrid(), ticks);
+			it->second->update(&objectList, map.getMap(), ticks);
 			if(it->second->isUsed()) {
 				it = objectList.erase(it);
 			}

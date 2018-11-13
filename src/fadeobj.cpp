@@ -39,7 +39,7 @@ void FadeObj::init(SDL_Renderer *renderer){
 		currentFade = 0;
 }
 		
-void FadeObj::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> &grid, Uint32 ticks){
+void FadeObj::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
 	currentTick += ticks;
 	if(currentTick > FADE_SPEED){
 		if(fadeIn && currentFade > 0)

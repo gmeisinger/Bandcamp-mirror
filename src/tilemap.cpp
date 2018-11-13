@@ -57,12 +57,12 @@ Tilemap::~Tilemap() {
 
 
 //returns the map as 2d vector
-std::vector< std::vector < int > >* Tilemap::getMap() {
-	return &map;
+std::vector< std::vector < int > > Tilemap::getMap() {
+	return map;
 }
 
-std::vector< std::vector < int > > Tilemap::getMapCopy() {
-	return map;
+std::vector< std::vector < int > >* Tilemap::getMapPtr() {
+	return &map;
 }
 
 //setup tiles
@@ -182,6 +182,8 @@ SDL_Renderer* Tilemap::draw(SDL_Renderer* render, SDL_Rect cam) {
 				tile = tiles[1]; //ceiling
 			else if(map[row][col] == 3)
 				tile = tiles[2]; //wall
+			else if(map[row][col] == 4)
+				tile = tiles[0]; //door, uses ground tile
 			if(map[row][col] != 0) {
 				SDL_Rect dest = {(col*tilesize) - cam.x, (row*tilesize) - cam.y, tilesize, tilesize};
 				SDL_RenderCopy(render, image, &tile, &dest);
