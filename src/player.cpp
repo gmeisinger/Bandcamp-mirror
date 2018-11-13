@@ -237,7 +237,8 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
 	while(it != projList.end()) {
 		if(it->second->isUsed()) {
-			//it = projList.erase(it);
+			it = projList.erase(it);
+			break;
 		} else {
 			it->second->update(objectList, grid, ticks);
 		}
