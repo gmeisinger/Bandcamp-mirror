@@ -59,7 +59,7 @@ void TestRoom::init(SDL_Renderer* reference){
 	p.init(reference);
 	
 	tilemap.init();
-	tilemap.setMap(tilemap.genRandomMap());
+	tilemap.setMap(tilemap.genRandomCave());
 
 	//Set the starting room for the ooze
 	rooms = tilemap.getRooms();

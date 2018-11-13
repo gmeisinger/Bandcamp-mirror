@@ -10,6 +10,7 @@
 #include <time.h>
 #include "room.h"
 #include "generator.h"
+#include "cave.h"
 
 class Tilemap
 {
@@ -35,6 +36,7 @@ public:
 	void finalize();
 	void setNeighbors(Room* source);
 	std::vector<std::vector<int>> genRandomMap();
+	std::vector<std::vector<int>> genRandomCave();
 	//random map helpers
 	std::vector<Room*> getRooms();
 	void printmap();

@@ -90,6 +90,7 @@ void Tilemap::genTestRoom() {
 	map[height/2][width/2] = 1;
 }
 
+
 //draw the tiles
 SDL_Renderer* Tilemap::draw(SDL_Renderer* render, SDL_Rect cam) {
 	for(int row=0;row<height;row++) {
@@ -136,6 +137,11 @@ std::vector<std::vector<int>> Tilemap::genRandomMap() {
 	rooms = gen.getRooms();
 	return gen.getMap();
 }
+
+std::vector<std::vector<int>> Tilemap::genRandomCave() {
+	return generate_cave(35, 3, 4, 40, 8, 3);
+}
+
 
 void printthis(SDL_Rect* r, std::string s) {
 	std::cout << s << " = " << r->x << " " << r->y << " " << r->w << " " << r->h << std::endl;
