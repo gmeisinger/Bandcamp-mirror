@@ -71,7 +71,7 @@ void TestRoom::init(SDL_Renderer* reference){
 	objectList["player"] = &p;
 	objectList["hud"] = &h;
 	// Change to add ooze to list as initialized
-	objectList["ooze"] = &o;
+	objectList[o.getInstanceName()] = &o;
 }
 
 // ADD COMMENTS 
