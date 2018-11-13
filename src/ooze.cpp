@@ -24,8 +24,8 @@ hud{h}
 {
     target = player->getRect();
     curRoom = room;
-    SDL_Rect* temp = curRoom->getRect();
-    rect = {(temp->x + temp->w)/2, (temp->y + temp->h)/2, 30, 30};
+    SDL_Rect *temp = curRoom->getRect();
+    rect = {(temp->x + rand()%(temp->w)) * tile_s, (temp->y + rand()%(temp->h)) * tile_s, 30, 30};
 	totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	Animation* anim;
@@ -37,6 +37,8 @@ hud{h}
     y_vel = 1;
 
     ate = 0;
+
+    lastRoom = nullptr;
 }
 
 //Other constructor?
@@ -88,7 +90,7 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
-    
+
     //Get the position of the player before they move
     //Needed for collision detection
     int curX = rect.x;
@@ -123,7 +125,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     updateAnimation(ticks);
 
 
-    checkBounds(screen_w, screen_h, true);
+    //checkBounds(screen_w, screen_h, true);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid, true);
 }
@@ -171,13 +173,16 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList,
                     //std::cout << "there is a pickup :) " << std::endl;
                     Pickup* temp = (Pickup*)it->second;
                     bool losPickup = drawLine(grid, temp->getRect());
-                    bool losPlayer = drawLine(grid, player->getRect());
+                    
                     if(losPickup)
                         return temp->getRect();
-                    else if(losPlayer)
-                        return player->getRect();
-                    else
-                        return nullptr;                        
+                    else {
+                        bool losPlayer = drawLine(grid, player->getRect());
+                        if(losPlayer)
+                            return player->getRect();
+                        else
+                            return nullptr;    
+                    }                    
                 }
                 it++;
             }
@@ -459,7 +464,7 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target) {
             startX += xDir;
             colRect.x += xDir;
             slope += deltaY;
-            checkBounds(screen_w, screen_h, false);
+            //checkBounds(screen_w, screen_h, false);
             sight = checkCollision(colRect.x, colRect.y, grid, false);
             if(!sight)
                 break;
@@ -478,7 +483,7 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target) {
             startY += yDir;
             colRect.y += yDir;
             slope += deltaX;
-            checkBounds(screen_w, screen_h, false);
+            //checkBounds(screen_w, screen_h, false);
             sight = checkCollision(colRect.x, colRect.y, grid, false);
             if(!sight)
                 break;
@@ -544,11 +549,35 @@ void Ooze::moveLine(std::vector<std::vector<int>> grid, SDL_Rect* target) {
     }   
 }
 
+//If we don't see the player or a pickup, move to the next room
 void Ooze::moveRoom(std::vector<std::vector<int>> grid) {
-    //grid[height/2][width/2] = 1;
+    std::vector<SDL_Rect> intersects = curRoom->getIntersects();
+    //If we've moved before
+    if(lastRoom) {
+        for(int i = 0; i < intersects.size(); i++) {
+            SDL_Rect* tar = &intersects.at(i);
+            if(!collision::checkCol(*lastRoom, *tar)) {
+                if(tar->x + tar->w < rect.x)
+                    tar->x = tar->x + tar->w;
+                if(tar->y + tar->h < rect.y)
+                    tar->y = tar->y +tar->h;
+                bool los = drawLine(grid, tar);
+                if(los)
+                    moveLine(grid, tar);
+                lastRoom = tar;
+                break;
+            }
+        }
+    }
+    else {
+        SDL_Rect tar = {intersects.at(0).x * tile_s, intersects.at(0).y * tile_s, intersects.at(0).w, intersects.at(0).h};
+        //moveLine(grid, &tar);
+        lastRoom = &tar;
+    }
+
 }
 
 //Get what room the ooze is in
 void Ooze::initRoom() {
-    
+    //Currently not in use, might be necessary if we find that the ooze is often spawning in walls
 }
