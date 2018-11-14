@@ -53,12 +53,7 @@ void TestRoom::init(SDL_Renderer* reference){
 	rendererReference = reference;
 	SDL_Rect player_box = {tile_s + 1, tile_s + 1, tile_s, tile_s};
 	p = Player(player_box);
-<<<<<<< HEAD
-    o = Ooze(screen_w/2, 3*screen_h/8); //, &p, &h);
-	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 21, 20, 32);
-=======
 	tilemap = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 40, 40, 32);
->>>>>>> master
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
 	h.init(reference);
 	p.init(reference);
@@ -70,11 +65,13 @@ void TestRoom::init(SDL_Renderer* reference){
 	rooms = tilemap.getRooms();
 	std::cout << "numRooms: " << rooms.size() << std::endl;
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
-	o = Ooze(&oozeRoom, &p, &h);
+	o = Ooze(&oozeRoom);
 	o.init(reference);
 	//Player and HUD in the Room
 	objectList["player"] = &p;
+    player = &p;
 	objectList["hud"] = &h;
+    hud_g = &h;
 	// Change to add ooze to list as initialized
 	objectList[o.getInstanceName()] = &o;
 }

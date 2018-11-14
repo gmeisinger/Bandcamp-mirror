@@ -1,4 +1,5 @@
 #include "include/ooze.h"
+#include "include/player.h"
 
 //initialize static member variables
 int Ooze::totalOoze = 0;
@@ -12,7 +13,7 @@ Ooze::Ooze():state{HANGRY}, hostility{0} {}
 // Constructor
 Ooze::Ooze(Room* room):
 state{HANGRY},
-hostility{0},
+hostility{0}
 {
     target = player->getRect();
     curRoom = room;
@@ -47,7 +48,7 @@ hostility{0},
 
 // Copy Constructor
 Ooze::Ooze(const Ooze& other)
-    :Ooze(other.rect.x + 2, other.rect.y + 2) //, other.player, other.hud)
+    :Ooze(other.curRoom)
 {
 //    this.
 }
@@ -253,7 +254,8 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
 bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	SDL_Rect* pRect = player->getRect();
 	bool overlap = collision::checkCol(rect, *pRect);
-
+    std::cout << "ooze rect: " << rect.x << " " << rect.y << "\n";
+        std::cout << "player rect: " << player->getRect()->x << " " << player->getRect()->y << "\n";
 	if (overlap) {
 		overlapTicks += ticks;
 		if (overlapTicks > 25) {
