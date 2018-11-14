@@ -259,9 +259,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
 bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	SDL_Rect* pRect = player->getRect();
 	bool overlap = collision::checkCol(rect, *pRect);
-    std::cout << "ooze rect: " << rect.x << " " << rect.y << "\n";
-        std::cout << "player rect: " << player->getRect()->x << " " << player->getRect()->y << "\n";
-	if (overlap) {
+    if (overlap) {
 		overlapTicks += ticks;
 		if (overlapTicks > 25) {
 			hud_g->currentHealth = std::max(0, hud_g->currentHealth-damage);
