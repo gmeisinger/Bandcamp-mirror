@@ -40,6 +40,8 @@ hud{h}
 
     lastRoom = nullptr;
     initialized = false;
+
+    iter = 0;
 }
 
 //Other constructor?
@@ -115,7 +117,8 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     bool los;
 	if(!overlap){    
         //uncomment the line below to change the ooze to chasing the pickups
-        target = pickTarget(objectList, grid);
+        if(iter % 5 == 0)
+            target = pickTarget(objectList, grid);
 
         if (target) {
             //check which direction the target is 
@@ -137,6 +140,8 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     //checkBounds(screen_w, screen_h, true);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid, true);
+
+    iter++;
 }
 
 /* Summary

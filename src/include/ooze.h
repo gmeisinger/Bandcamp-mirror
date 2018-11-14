@@ -56,10 +56,13 @@ private:
     int ate;
     SDL_Rect *target;
     SDL_Rect *lastRoom;
-    bool initialized;
 
     Room* curRoom;
     Tilemap* tilemap;
+
+    bool initialized;
+
+    int iter;
     
 public:
 
