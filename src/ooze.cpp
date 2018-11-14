@@ -118,7 +118,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     bool los;
 	if(!overlap){    
         //uncomment the line below to change the ooze to chasing the pickups
-        if(iter % 5 == 0)
+        if(iter % 15 == 0)
             target = pickTarget(objectList, grid);
 
         if (target) {
@@ -187,19 +187,18 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList,
                 if (!it->first.substr(0,6).compare("Pickup")) {
                     //std::cout << "there is a pickup :) " << std::endl;
                     Pickup* temp = (Pickup*)it->second;
-                    if(!collision::checkCol(*curRoom->getRect(), *player->getRect()) || !collision::checkCol(*curRoom->getRect(), *temp->getRect())) {
-                        bool losPickup = drawLine(grid, temp->getRect());
+                    
+                    bool losPickup = drawLine(grid, temp->getRect());
                         
-                        if(losPickup)
-                            return temp->getRect();
-                        else {
-                            bool losPlayer = drawLine(grid, player->getRect());
-                            if(losPlayer)
-                                return player->getRect();
-                            else
-                                return nullptr;    
-                        }   
-                    }                 
+                    if(losPickup)
+                        return temp->getRect();
+                    else {
+                        bool losPlayer = drawLine(grid, player->getRect());
+                        if(losPlayer)
+                            return player->getRect();
+                        else
+                        return nullptr;    
+                    }                    
                 }
                 it++;
             }
@@ -595,11 +594,13 @@ void Ooze::moveRoom(std::vector<std::vector<int>> grid) {
 
 //Lets make sure our poor ooze isn't stuck in a wall
 void Ooze::initRoom(std::vector<std::vector<int>> grid, SDL_Rect* t) {
-    while(collision::checkColLeft(rect, grid, 32) 
+    int attempts = 0;
+    while((collision::checkColLeft(rect, grid, 32) 
     || collision::checkColRight(rect, grid, 32) 
     ||collision::checkColTop(rect, grid, 32) 
-    || collision::checkColBottom(rect, grid, 32)) {
-        rect.x = (t->x + rand()%(t->w)) * tile_s;
-        rect.y = (t->y + rand()%(t->h)) * tile_s;
+    || collision::checkColBottom(rect, grid, 32)) && attempts < 30) {
+        std::cout << "Retry" << std::endl;
+        rect.x += tile_s;
+        rect.y += tile_s;
     }
 }
