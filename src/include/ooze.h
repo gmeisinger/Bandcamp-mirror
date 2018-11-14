@@ -9,11 +9,11 @@
 #include "spritesheet.h"
 #include "animation.h"
 #include "utils.h"
-#include "HUD.h"
-#include "player.h"
+//#include "HUD.h"
+//#include "player.h"
 #include "collision.h"
 #include "circle.h"
-#include "game.h"
+#include "global.h"
 #include "pickup.h"
 #include "generator.h"
 #include "tilemap.h"
@@ -34,6 +34,15 @@ enum OozeState { // is public
 
 class Ooze : public Object {
     
+    struct Stats {
+        // Genetic statistics
+        int health;
+        int attack;
+        int speed;
+        int health_cost;
+        int num_cost;
+    };
+    
 
 private:
     SDL_Rect rect; // includes x_pos, y_pos, width, height
@@ -44,11 +53,13 @@ private:
     int y_vel;
     int x_deltav;
     int y_deltav;
+        
+    Stats stats;
 
     OozeState state;
     int hostility;
-    Player *player;
-    HUD *hud;
+//    Player *player;
+//    HUD *hud;
     SpriteSheet sheet;
     Animation* anim;
     int overlapTicks;
@@ -73,12 +84,11 @@ public:
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
     int damage = 5;
     // Constructors & destructor
-
     Ooze(); // Default constructor
-    Ooze(Room* room, Player *player, HUD *h);
+    Ooze(Room* room);
 
 //    Ooze(oozeState st, int hostil);
-//    Ooze(const Ooze& other);    // copy constructor
+    Ooze(const Ooze& other);    // copy constructor
 //    Ooze& operator=(Ooze other); // copy assignment
 //    Ooze& operator=(rule_of_five&& other) noexcept // move assignment
 //    Ooze(rule_of_five&& other) noexcept // move constructor

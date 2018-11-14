@@ -1,14 +1,8 @@
 #include "include/ooze.h"
-
-//SDL_Rect rect;
-//SpriteSheet sheet;
+#include "include/player.h"
 
 //initialize static member variables
 int Ooze::totalOoze = 0;
-
-
-//int x_vel;
-//int y_vel;
 
 constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
@@ -16,11 +10,10 @@ constexpr int BORDER_SIZE = 32;
 // Default Constructor
 Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
-Ooze::Ooze(Room* room, Player *player, HUD *h):
-player{player},
+// Constructor
+Ooze::Ooze(Room* room):
 state{HANGRY},
-hostility{0},
-hud{h}
+hostility{0}
 {
     target = player->getRect();
     curRoom = room;
@@ -28,7 +21,6 @@ hud{h}
     rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
-	Animation* anim;
 	int overlapTicks = 0;
     //Speed
     x_deltav = 0;
@@ -37,6 +29,15 @@ hud{h}
     y_vel = 1;
 
     ate = 0;
+    
+    // Genetic statistics
+    stats.health =      3 + utils::normDist_sd1();
+    stats.attack =      3 + utils::normDist_sd1();
+    stats.speed =       3 + utils::normDist_sd1();
+    stats.health_cost = 3 + utils::normDist_sd1();
+    stats.num_cost =    3 + utils::normDist_sd1();
+    std::cout << "health" << stats.health << "\n";
+    std::cout << "attack" << stats.attack << "\n";
 
     lastRoom = nullptr;
     initialized = false;
@@ -48,12 +49,12 @@ hud{h}
 //Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
 // Copy Constructor
-/*
-Ooze(const Ooze& other): Ooze(other->rect, other->player, other->hud)
+Ooze::Ooze(const Ooze& other)
+    :Ooze(other.curRoom)
 {
-    
+//    this.
 }
-*/
+
 //Destructor
 Ooze::~Ooze(){};
 
@@ -99,10 +100,10 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
         initialized = true;
     } 
     
+    //Get the position of the ooze before it moves
     int x_deltav = 0;
 	int y_deltav = 0;
 
-    //Get the position of the player before they move
     //Needed for collision detection
     int curX = rect.x;
     int curY = rect.y;
@@ -258,11 +259,12 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
 bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 	SDL_Rect* pRect = player->getRect();
 	bool overlap = collision::checkCol(rect, *pRect);
-
+    std::cout << "ooze rect: " << rect.x << " " << rect.y << "\n";
+        std::cout << "player rect: " << player->getRect()->x << " " << player->getRect()->y << "\n";
 	if (overlap) {
 		overlapTicks += ticks;
 		if (overlapTicks > 25) {
-			hud->currentHealth = std::max(0, hud->currentHealth-damage);
+			hud_g->currentHealth = std::max(0, hud_g->currentHealth-damage);
 			std::string s = "HIT: "+getInstanceName();
 			//std::cout << s << std::endl;
 			overlapTicks = 0;

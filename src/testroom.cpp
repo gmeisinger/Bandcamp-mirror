@@ -65,11 +65,13 @@ void TestRoom::init(SDL_Renderer* reference){
 	rooms = tilemap.getRooms();
 	std::cout << "numRooms: " << rooms.size() << std::endl;
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
-	o = Ooze(&oozeRoom, &p, &h);
+	o = Ooze(&oozeRoom);
 	o.init(reference);
 	//Player and HUD in the Room
 	objectList["player"] = &p;
+    player = &p;
 	objectList["hud"] = &h;
+    hud_g = &h;
 	// Change to add ooze to list as initialized
 	objectList[o.getInstanceName()] = &o;
 }
@@ -144,7 +146,7 @@ void TestRoom::cloneOoze(SDL_Renderer* reference) {
 		moveOoze(reference);
 	}*/
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
-	Ooze *newO = new Ooze(&oozeRoom, &p, &h);
+	Ooze *newO = new Ooze(&oozeRoom);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made

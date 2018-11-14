@@ -42,6 +42,7 @@ Player::Player(SDL_Rect _rect) {
 	spaceHeld = false;
     overlapEnemy = false;
 	std::unordered_map<std::string, Object*> projList;
+    player = this;
 }
 
 //

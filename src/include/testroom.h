@@ -12,6 +12,7 @@
 #include "pickup.h"
 #include "GSM.h"
 #include "tilemap.h" 
+#include "global.h"
 
 class TestRoom : public Screen 
 { 
