@@ -194,7 +194,6 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList,
                         return temp->getRect();
                     else {
                         bool losPlayer = drawLine(grid, player->getRect());
-                        std::cout << losPlayer << std::endl;
                         if(losPlayer)
                             return player->getRect();
                         else
