@@ -194,6 +194,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList,
                         return temp->getRect();
                     else {
                         bool losPlayer = drawLine(grid, player->getRect());
+                        std::cout << losPlayer << std::endl;
                         if(losPlayer)
                             return player->getRect();
                         else
@@ -442,8 +443,6 @@ bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<int>> grid
 //Uses Bresenham's alg to check to see if we have a line of sight with the player
 //This draws the line fully but does NOT move the player at all
 bool Ooze::drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target) {
-    int deltaX = target->x - rect.x;
-    int deltaY = target->y - rect.y;
     int startX = rect.x;
     int startY = rect.y;
     int endX = target->x;
@@ -454,18 +453,23 @@ bool Ooze::drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target) {
     int yDir;
     bool sight = false;
 
-    deltaX = abs(deltaX * 2);
-    deltaY = abs(deltaY * 2);
-
     if (target->y > rect.y) 
         yDir = 1;
 	if (target->x > rect.x) 
         xDir = 1;
-	if (target->y < rect.y) 
+	if (target->y < rect.y) {
+        endY = target->y + target->h;
         yDir = -1;
-	if (target->x < rect.x) 
+    }
+	if (target->x < rect.x) {
+        endX = target->x + target->w;
         xDir = -1;
+    }
         
+    int deltaX = endX - startX;
+    int deltaY = endY - startY;
+    deltaX = abs(deltaX * 2);
+    deltaY = abs(deltaY * 2);
 
     if(deltaX > deltaY) {
         slope = deltaY * 2 - deltaX;
