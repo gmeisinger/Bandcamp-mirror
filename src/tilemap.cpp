@@ -61,8 +61,9 @@ std::vector< std::vector < Tile* > > Tilemap::getMap() {
 	return map;
 }
 
-std::vector< std::vector < Tile* > >* Tilemap::getMapPtr() {
-	return &map;
+std::vector< std::vector < Tile* > >& Tilemap::getMapRef() {
+	std::vector< std::vector < Tile* > >& mapref = map;
+	return mapref;
 }
 
 //setup tiles
@@ -113,7 +114,7 @@ void Tilemap::genTestTransitionRoom(){
 	}
 	
 	intmap[4][14] = 1; //Space for the Warp Tile.
-	intmap[5][14] = 1; //Space for the Door.
+	intmap[5][14] = 4; //Space for the Door.
 	map = convert(intmap);
 }
 
@@ -158,7 +159,9 @@ void Tilemap::genRandomMap() {
 std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> intmap) {
 
 	for(int r=0;r<intmap.size();r++) {
+		std::cout << std::endl;
 		for(int c=0;c<intmap[0].size();c++) {
+			std::cout << intmap[r][c];
 			if(intmap[r][c] == 1) {
 				//floor tile
 				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
@@ -174,7 +177,7 @@ std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> 
 				map[r][c]->setBlocking(true);
 			}
 			else if(intmap[r][c] == 4) {
-				// ceiling tile
+				// DOOR tile
 				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
 				map[r][c]->setDoor(true);
 			}

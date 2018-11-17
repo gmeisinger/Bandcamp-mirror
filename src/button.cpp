@@ -73,7 +73,7 @@ void Button::unpress() { //Any visual or sound effects for releasing may be set 
 	is_pressed = 0;
 }
 
-void Button::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks) {}
+void Button::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {}
 
 // add description
 std::string Button::getInstanceName() {

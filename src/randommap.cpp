@@ -75,7 +75,7 @@ void RandomMap::update(Uint32 ticks){
 		GSM::currentScreen = -1;//The Pause Command  <- Its an arbitrary number.
 	}
 
-	std::vector<std::vector<Tile*>> grid = tilemap.getMap();
+	//std::vector<std::vector<Tile*>> &grid = tilemap.getMapRef();
 
 	if (spawnPickup) movePickup(rendererReference); //new way of deciding when to spawn pickup
 	// TODO: better way to check for pickup being consumed?
@@ -86,10 +86,10 @@ void RandomMap::update(Uint32 ticks){
 	oldAte = o.getAte();
 	oldAte = o.getAte();*/
 
-
+	std::unordered_map<std::string, Object*>& objectListRef = objectList;
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
-		it->second->update(&objectList, grid, ticks);
+		it->second->update(objectListRef, tilemap.getMapRef(), ticks);
 		if(it->second->isUsed()) {
 			it = objectList.erase(it);
 		}
@@ -187,11 +187,19 @@ void RandomMap::input(const Uint8* keystate){
 
 void RandomMap::placeDoors(SDL_Renderer* renderer) {
 	int doorCount = 0;
-	std::vector<std::vector<Tile*>> map = tilemap.getMap();
+	std::vector<std::vector<Tile*>> &map = tilemap.getMapRef();
 	for(int r=0;r<map.size();r++) {
 		for(int c=0;c<map[0].size();c++) {
 			if(map[r][c]->isDoor()) { //horizontal door
-				Door* d = new Door(c, r, true);
+				//check for horizontal/vertical
+				bool horz = true;
+				if(r > 0 && r < map.size()-1 && c > 0 && c < map[0].size()-1) {
+					if(map[r+1][c]->isBlocking() || map[r-1][c]->isBlocking()) {
+						horz = false;
+					}
+				}
+				map[r][c]->setBlocking(true);
+				Door* d = new Door(c, r, horz);
 				d->init(renderer);
 				objectList["door"+doorCount] = d;
 				doorCount++;

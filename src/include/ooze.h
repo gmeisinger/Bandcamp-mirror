@@ -70,13 +70,13 @@ public:
     ~Ooze();
     
     // NEW
-    Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);
-    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList);
+    Pickup* getPickup(std::unordered_map<std::string, Object*> &objectList);
+    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> &objectList);
     bool foundFood(Pickup* pickUp);
     int getAte();
 
     // Updates
-    bool updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+    bool updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks);
     void updateVelocity(int _xdv, int _ydv); 
     void updatePosition();
     void updateAnimation(Uint32 ticks);
@@ -85,14 +85,14 @@ public:
     void input(const Uint8* keystate);
     void init(SDL_Renderer* gRenderer);
     void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
-    void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks);
+    void update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks);
     SDL_Renderer* draw(SDL_Renderer* renderer, SDL_Rect cam);
-    bool checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+    bool checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks);
     bool isUsed();
 
     //Movement
     void checkBounds(int max_width, int max_height);
-    void checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> grid);
+    void checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid);
     
     // Math
     void increaseHostility();

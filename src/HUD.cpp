@@ -62,7 +62,7 @@ void HUD::init(SDL_Renderer* _renderer)
  *
  *
 */
-void HUD::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks){}
+void HUD::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){}
 
 /* 
  * Keystate - which keys are pressed 

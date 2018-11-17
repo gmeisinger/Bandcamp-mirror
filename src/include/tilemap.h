@@ -30,7 +30,7 @@ public:
 	Tilemap();
 	~Tilemap();
 	std::vector< std::vector < Tile* > > getMap();
-	std::vector< std::vector < Tile* > >* getMapPtr();
+	std::vector< std::vector < Tile* > >& getMapRef();
 	void setMap(std::vector< std::vector < int > > _map);
 	void init();
 	SDL_Renderer* draw(SDL_Renderer* render, SDL_Rect cam);

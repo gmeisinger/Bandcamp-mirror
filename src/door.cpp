@@ -33,6 +33,7 @@ Door::Door(int x, int y, bool orientation) {
 	totalInstance++; //Increase instance Number
 	instanceNumber = totalInstance;
 	directionLR = orientation;
+	state = 0;
 }
 
 //Deconstructor
@@ -78,7 +79,7 @@ void Door::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet.setClips(_cols, _rows, 32, 32);	
 }
 
-void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks){
+void Door::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	Player * p;
 
 	anim->update(ticks);
@@ -87,15 +88,15 @@ void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 		
 		case 0: //Closed
 		{
-			auto it = objectList->find("player");
-			if (it != objectList->end())
+			auto it = objectList.find("player");
+			if (it != objectList.end())
 			  p = static_cast<Player*>(it->second);
 		
 			if(toggleButton == 1 && checkCanToggle(p)){
 				setAnimation("opening");
 				anim->play();
 				state = 1; //Sliding open
-				grid[y_pos][x_pos]->setBlocking(false); //Set that to Ground
+				 //Set that to Ground
 			}
 		
 		}
@@ -107,6 +108,7 @@ void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 			  setAnimation("open");
 			  anim->play();
 				state = 3; //Open
+				grid[y_pos][x_pos]->setBlocking(false);
 			}
 		}
 		break;
@@ -117,21 +119,22 @@ void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 				setAnimation("closed");
 				anim->play();
 				state = 0; //Closed
+				grid[y_pos][x_pos]->setBlocking(true);
 			}
 		}
 		break;
 		
 		case 3: //Open
 		{
-			auto it = objectList->find("player");
-			if (it != objectList->end())
+			auto it = objectList.find("player");
+			if (it != objectList.end())
 			p = static_cast<Player*>(it->second);
 		  
 			if(toggleButton == 1 && checkCanToggle(p)){
 				setAnimation("closing");
 				anim->play();
 				state = 2; //Sliding Closed
-				grid[y_pos][x_pos]->setBlocking(false); //Set that to Door
+				grid[y_pos][x_pos]->setBlocking(true); //Set that to Door
 			}
 			
 		}
@@ -144,12 +147,18 @@ void Door::update(std::unordered_map<std::string, Object*> *objectList, std::vec
 
 bool Door::checkCanToggle(Player*& playerObj){	
 	//Also check direction of the player later
+	//get the player rect
 	SDL_Rect * playerRect = playerObj->getRect();
-	
-	if(!directionLR && (playerRect->y <= doorRect.y+TILE_SIZE && playerRect->y >= doorRect.y-TILE_SIZE*2) && (playerRect->x <= doorRect.x+TILE_SIZE && playerRect->x >= doorRect.x))
+	//and check if he's close enough to the door
+	//we'll just use a slightly larger rect and check for overlap
+	SDL_Rect proximity = {doorRect.x - doorRect.w/2, doorRect.y - doorRect.h/2, doorRect.w * 2, doorRect.h * 2};
+	if(SDL_HasIntersection(playerRect, &proximity)) {
 		return true;
-	else if(directionLR && (playerRect->x <= doorRect.x+TILE_SIZE*2 && playerRect->x >= doorRect.x-TILE_SIZE*2) && (playerRect->y >= doorRect.y-TILE_SIZE && playerRect->y <= doorRect.y))
-		return true;
+	}
+	//if(!directionLR && (playerRect->y <= doorRect.y+TILE_SIZE && playerRect->y >= doorRect.y-TILE_SIZE*2) && (playerRect->x <= doorRect.x+TILE_SIZE && playerRect->x >= doorRect.x))
+	//	return true;
+	//else if(directionLR && (playerRect->x <= doorRect.x+TILE_SIZE*2 && playerRect->x >= doorRect.x-TILE_SIZE*2) && (playerRect->y >= doorRect.y-TILE_SIZE && playerRect->y <= doorRect.y))
+	//	return true;
 
 	return false;
 }

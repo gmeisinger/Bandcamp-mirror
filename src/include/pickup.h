@@ -38,13 +38,13 @@ class Pickup : public Object
 		//static int totalInstance;
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
-		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks);
 		std::string getInstanceName();
 		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
 		Pickup(SDL_Rect _rect, char type, int value, Player* player, HUD* h);
         ~Pickup();
 		Pickup();
-		void checkPickupOverlap(std::unordered_map<std::string, Object*> *objectList);
+		void checkPickupOverlap(std::unordered_map<std::string, Object*> &objectList);
 		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();

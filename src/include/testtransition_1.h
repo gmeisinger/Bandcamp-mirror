@@ -32,7 +32,7 @@ class TestTransition_1 : public Screen
 		bool fading; //Is the screen fading?
 		bool pauseB;
 		bool enterHeld; //Have we pushed the pauseButton this frame?
-		Tilemap map;
+		Tilemap tilemap;
 		SDL_Rect camera;
 	
 	public: 
@@ -40,6 +40,7 @@ class TestTransition_1 : public Screen
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
+		void placeDoors(SDL_Renderer* renderer);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
 };
 

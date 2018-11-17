@@ -84,7 +84,7 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 
 //*********TO DO:
 //update motion here
-void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<Tile*>> grid, Uint32 ticks) {
+void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -161,11 +161,11 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
    return renderer;
 }
 
-SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList) {
+SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList) {
     switch(this->state) {
         case HANGRY: {
-            std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
-            while(it != objectList->end()){
+            std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+            while(it != objectList.end()){
                 if (!it->first.substr(0,6).compare("Pickup")) {
                     Pickup* temp = (Pickup*)it->second;
                     return temp->getRect();
@@ -207,7 +207,7 @@ int Ooze::getAte() {
  * Argument  
  *
 */
-bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks) {
     if (ate > 2) {
         state = ROAMING;
         return true;
@@ -218,7 +218,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
 
 //Checks if the player overlapped with the ooze and acts accordingly
 //based on pickup's method
-bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
+bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks) {
 	SDL_Rect* pRect = player->getRect();
 	bool overlap = collision::checkCol(rect, *pRect);
 
@@ -351,7 +351,7 @@ void Ooze::updateVelocity(int _xdv, int _ydv) {
 }
 
 //currently checks collisions with room features (walls etc.)
-void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> grid)
+void Ooze::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid)
 {
     //Checks the collision of each object and determines where the player should stop
     //In the future, we might need to alter this function to take in an object that
