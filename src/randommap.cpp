@@ -198,7 +198,7 @@ void RandomMap::placeDoors(SDL_Renderer* renderer) {
 						horz = false;
 					}
 				}
-				map[r][c]->setBlocking(true);
+				//map[r][c]->setBlocking(true);
 				Door* d = new Door(c, r, horz);
 				d->init(renderer);
 				objectList["door"+doorCount] = d;
@@ -220,7 +220,12 @@ SDL_Renderer* RandomMap::draw(SDL_Renderer *renderer){
 	}
 
 	//draw the darkness
-	SDL_RenderCopy(renderer, dark, NULL, NULL);
+	SDL_Rect enlarge = {-CAM_WIDTH/2 - TILE_SIZE, -CAM_HEIGHT/2 - TILE_SIZE, 2*CAM_WIDTH, 2*CAM_HEIGHT};
+	SDL_RenderCopy(renderer, dark, NULL, &enlarge);
+
+	//draw the HUD
+	auto hud = objectList.find("hud");
+	hud->second->draw(renderer, camera);
 
 	return renderer;
 }

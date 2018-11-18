@@ -68,7 +68,7 @@ void Door::init(SDL_Renderer* gRenderer){
 	addAnimation("closing", Animation(sheet.getRow(1)));
 	addAnimation("open", Animation(sheet.get(0,6)));
 	addAnimation("opening", Animation(sheet.getRow(0)));
-	if(state == 0)
+	if(state == 0) 
 		setAnimation("closed");
 	else
 		setAnimation("open");
@@ -87,7 +87,8 @@ void Door::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	switch(state){
 		
 		case 0: //Closed
-		{
+		{	
+			grid[y_pos][x_pos]->setBlocking(true);
 			auto it = objectList.find("player");
 			if (it != objectList.end())
 			  p = static_cast<Player*>(it->second);
@@ -126,6 +127,7 @@ void Door::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 		
 		case 3: //Open
 		{
+			grid[y_pos][x_pos]->setBlocking(false);
 			auto it = objectList.find("player");
 			if (it != objectList.end())
 			p = static_cast<Player*>(it->second);
@@ -181,7 +183,13 @@ SDL_Renderer* Door::draw(SDL_Renderer *renderer, SDL_Rect cam){
     *dest = doorRect;
     dest->x -= cam.x;
     dest->y -= cam.y;
-    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
+    if(directionLR) {
+    	SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);	
+    }
+    else {
+    	SDL_RenderCopyEx(renderer, sheet.getTexture(), anim->getFrame(), dest, 90, NULL, SDL_FLIP_NONE);
+    }
+    
 	return renderer;
 }
 
