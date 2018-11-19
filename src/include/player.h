@@ -20,12 +20,13 @@ class Player : public Object
         int y_deltav;
         int x_vel;
         int y_vel;
+		int cooldownTicks;
 	    bool up;
 	    bool down;
 	    bool left;
 	    bool right;
 		bool space;
-		bool spaceHeld;
+		bool projCooldown;
 		char projsType;
 	    SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;

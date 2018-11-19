@@ -22,8 +22,8 @@ int x_deltav;
 int y_deltav;
 int x_vel;
 int y_vel;
+int cooldownTicks;
 bool overlapEnemy;
-
 
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
@@ -33,12 +33,13 @@ Player::Player(SDL_Rect _rect) {
     y_deltav = 0;
     x_vel = 0;
     y_vel = 0;
+	cooldownTicks = 0;
 	up = false;
 	down = false;
 	left = false;
 	right = false;
 	space = false;
-	spaceHeld = false;
+	projCooldown = false;
     overlapEnemy = false;
 	projsType = 's';
 	std::unordered_map<std::string, Object*> projList;
@@ -250,14 +251,19 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
-	if (space && !spaceHeld) {
+	if (space && !projCooldown) {
 		//std::cout << "\nPressed space bar" << std::endl;
 		Projectile *newProj = new Projectile(projsType, playerRect.x, playerRect.y);
 		projList[newProj->getInstanceName()] = newProj;
 		newProj->init(rendererReference);
-		spaceHeld = true;
-	} else if (!space) {
-		spaceHeld = false;
+		projCooldown = true;
+	} else if (projCooldown) {
+		if (cooldownTicks >= 50) {
+			cooldownTicks = 0;
+			projCooldown = false;
+		} else {
+			cooldownTicks++;
+		}
 	}
 
 	updateVelocity(x_deltav, y_deltav);
