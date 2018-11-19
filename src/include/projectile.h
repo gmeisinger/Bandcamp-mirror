@@ -15,9 +15,13 @@
 class Projectile : public Object
 {
 	private:
+		char projType;
 		SDL_Rect projRect;
 		SDL_Rect projDrawBox;
-		char projType;
+		bool up;
+	    bool down;
+	    bool left;
+	    bool right;
 
 	public:
 		void input(const Uint8* keystate);
@@ -25,7 +29,7 @@ class Projectile : public Object
 		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
 		std::string getInstanceName();
 		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
-		Projectile(char type);
+		Projectile(char type, int playerX, int playerY);
         ~Projectile();
 		Projectile();
 		void checkProjOverlap(int curX, int curY, std::vector<std::vector<int>> grid);
