@@ -216,3 +216,7 @@ void Generator::setRoomNeighbors(Room* r) {
 		}
 	}
 }
+
+std::vector<Room*> Generator::getRooms() {
+	return room_objs;
+}

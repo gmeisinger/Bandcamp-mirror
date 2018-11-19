@@ -9,71 +9,101 @@
 #include "spritesheet.h"
 #include "animation.h"
 #include "utils.h"
-#include "HUD.h"
-#include "player.h"
+//#include "HUD.h"
+//#include "player.h"
 #include "collision.h"
 #include "circle.h"
-#include "game.h"
+#include "global.h"
 #include "pickup.h"
 #include "tile.h"
+#include "generator.h"
+#include "tilemap.h"
+#include "room.h"
 
 class Pickup;
 
-enum oozeState {
-    HANGRY, //temp state
-    ROAMING,
-    EATING,
-    CLONING,
-    FIGHTING,
-    FLEEING,
-    HIDING,
-    DYING
+enum OozeState { // is public
+        HANGRY, //temp state
+        ROAMING,
+        EATING,
+        CLONING,
+        FIGHTING,
+        FLEEING,
+        HIDING,
+        DYING
 };
 
-class Ooze : public Object
-{
+class Ooze : public Object {
+    
+    struct Stats {
+        // Genetic statistics
+        int health;
+        int attack;
+        int speed;
+        int health_cost;
+        int num_cost;
+    };
+    
+
 private:
-    //This should be removed ASAP
-    SDL_Rect lWall;
-    SDL_Rect rWall;
-    SDL_Rect uWall;
-    Circle cPillar;
-    //
-    SDL_Rect rect;
+    SDL_Rect rect; // includes x_pos, y_pos, width, height
+    //Used to check line of sight
+    SDL_Rect colRect;
 
     int x_vel;
     int y_vel;
     int x_deltav;
     int y_deltav;
+        
+    Stats stats;
 
-    oozeState state;
+    OozeState state;
     int hostility;
-    Player *player;
-    HUD *hud;
+//    Player *player;
+//    HUD *hud;
     SpriteSheet sheet;
     Animation* anim;
     int overlapTicks;
     std::unordered_map<std::string, Animation> anims;
     int ate;
     SDL_Rect *target;
+    SDL_Rect *lastRoom;
+
+    Room* curRoom;
+    Tilemap* tilemap;
+
+    bool initialized;
+
+    int iter;
     
 public:
+
+    
 
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
     int damage = 5;
     // Constructors & destructor
-    Ooze();
-    Ooze(SDL_Rect _rect, Player *player, HUD *h);
+    Ooze(); // Default constructor
+    Ooze(Room* room);
+
 //    Ooze(oozeState st, int hostil);
-    ~Ooze();
+    Ooze(const Ooze& other);    // copy constructor
+//    Ooze& operator=(Ooze other); // copy assignment
+//    Ooze& operator=(rule_of_five&& other) noexcept // move assignment
+//    Ooze(rule_of_five&& other) noexcept // move constructor
+    ~Ooze(); // Destructor
+    
     
     // NEW
+
     Pickup* getPickup(std::unordered_map<std::string, Object*> &objectList);
-    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> &objectList);
+    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid);
     bool foundFood(Pickup* pickUp);
     int getAte();
+    OozeState getState();
+    void initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t);
 
     // Updates
     bool updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks);
@@ -91,8 +121,12 @@ public:
     bool isUsed();
 
     //Movement
-    void checkBounds(int max_width, int max_height);
-    void checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid);
+
+    void checkBounds(int max_width, int max_height, bool move);
+    bool checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid, bool move);
+    bool drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target);
+    void moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target);
+    void moveRoom(std::vector<std::vector<Tile*>> &grid);
     
     // Math
     void increaseHostility();

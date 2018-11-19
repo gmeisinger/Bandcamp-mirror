@@ -11,6 +11,7 @@
 
 #include "utils.h"
 #include "object.h"
+#include "global.h"
 
 //initialize the HUD
 class HUD : public Object

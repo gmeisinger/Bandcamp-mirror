@@ -14,6 +14,7 @@
 #include "door.h"
 #include "GSM.h"
 #include "tilemap.h" 
+#include "global.h"
 
 class RandomMap : public Screen 
 { 
@@ -40,8 +41,11 @@ class RandomMap : public Screen
 		void update(Uint32 ticks);
 		void placeDoors(SDL_Renderer* renderer);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
-		void movePickup(SDL_Renderer* reference);
+		void movePickup(SDL_Renderer* reference, std::vector<std::vector<Tile*>> &grid);
+		void cloneOoze(SDL_Renderer* reference);
 		static void setSpawnPickup(bool set);
+		static void setSpawnOoze(bool set);
 };
 
 #endif  //  BANDCAMP_RANDOMMAP_H_
+

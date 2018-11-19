@@ -8,6 +8,8 @@
 #include <string>
 
 #include "screen.h"
+#include "global.h"
+#include "utils.h"
 
 class PauseMenu : public Screen 
 { 

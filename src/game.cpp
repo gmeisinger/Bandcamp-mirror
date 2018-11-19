@@ -7,9 +7,10 @@
 #include "include/credits.h"
 #include "include/GSM.h"
 
-int SCREEN_WIDTH = 800;
-int SCREEN_HEIGHT = 600;
-int TILE_SIZE = 32;
+//int SCREEN_WIDTH = 800;
+//int SCREEN_HEIGHT = 600;
+//int TILE_SIZE = 32;
+
 
 //Starts new game
 Game::Game() {

@@ -154,6 +154,8 @@ void Tilemap::genRandomMap() {
 	}
 	gen.finalize();
 	map = convert(gen.getMap());
+	rooms = gen.getRooms();
+	
 }
 
 std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> intmap) {
