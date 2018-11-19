@@ -10,10 +10,6 @@
 
 class GSM;
 
-	extern int screen_w;
-	extern int screen_h;
-	extern int tile_s;
-
 class Game {
 	private:
 		bool running;

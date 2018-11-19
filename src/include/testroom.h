@@ -11,7 +11,8 @@
 #include "object.h"
 #include "pickup.h"
 #include "GSM.h"
-#include "tilemap.h"
+#include "tilemap.h" 
+#include "global.h"
 
 class TestRoom : public Screen 
 { 
@@ -30,8 +31,10 @@ class TestRoom : public Screen
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
-		void movePickup(SDL_Renderer* reference);
+		void movePickup(SDL_Renderer* reference, std::vector<std::vector<int>> grid);
+		void cloneOoze(SDL_Renderer* reference);
 		static void setSpawnPickup(bool set);
+		static void setSpawnOoze(bool set);
 };
 
 #endif  //  BANDCAMP_TESTROOM_H_

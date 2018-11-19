@@ -7,14 +7,6 @@
 #include "include/credits.h"
 #include "include/GSM.h"
 
-constexpr int SCREEN_WIDTH = 800;
-constexpr int SCREEN_HEIGHT = 600;
-constexpr int TILE_SIZE = 32;
-
-int screen_w;
-int screen_h;
-int tile_s;
-
 //Starts new game
 Game::Game() {
 	gWindow = nullptr;
@@ -75,7 +67,7 @@ bool Game::init() {
         return false;
     }
 	// Set renderer draw/clear color
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	
 	
 	//Start the GSM
@@ -97,7 +89,7 @@ void Game::update(Uint32 ticks) {
 // Updates image displayed to user 
 void Game::draw() {
 	//Clear the Screen
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen

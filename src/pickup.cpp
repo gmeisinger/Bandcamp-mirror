@@ -3,15 +3,6 @@
  * 
 */
 #include "include/pickup.h"
-/* =======
-#include "include/physics.h"
-#include "include/pickup.h"
-#include "include/player.h"
-#include "include/HUD.h"
-#include "include/utils.h"
-#include "include/testroom.h"
-#include "include/ooze.h"
-*/
 
 constexpr int HOVER_SPEED = 150;
 
@@ -109,7 +100,8 @@ void Pickup::init(SDL_Renderer *renderer){
 void Pickup::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
-	if (used) TestRoom::setSpawnPickup(true);
+	if(used)
+		TestRoom::setSpawnPickup(true);
 }
 
 /* Summary

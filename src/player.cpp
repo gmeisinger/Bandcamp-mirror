@@ -28,7 +28,7 @@ bool overlapEnemy;
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
     playerRect = _rect;
-    hitRect = {playerRect.x, playerRect.y +SHORTEN_DIST, playerRect.w, playerRect.h - SHORTEN_DIST};
+    hitRect = {playerRect.x + SHORTEN_DIST/2, playerRect.y +SHORTEN_DIST, playerRect.w - SHORTEN_DIST/2, playerRect.h - SHORTEN_DIST};
     x_deltav = 0;
     y_deltav = 0;
     x_vel = 0;
@@ -43,6 +43,7 @@ Player::Player(SDL_Rect _rect) {
     overlapEnemy = false;
 	projsType = 's';
 	std::unordered_map<std::string, Object*> projList;
+    player = this;
 }
 
 //
@@ -358,7 +359,7 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
 {
     if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
         playerRect.x = curX;
-        hitRect.x = curX;
+        hitRect.x = curX + SHORTEN_DIST/2;
     }
     
     if(collision::checkColTop(hitRect, grid, 32) || collision::checkColBottom(hitRect, grid, 32)) {
@@ -372,7 +373,7 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> gr
         if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
             x_vel = 0; 
             playerRect.x = curX;
-            hitRect.x = curX;
+            hitRect.x = curX + SHORTEN_DIST/2; 
         }
     }
     

@@ -10,6 +10,7 @@
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
+#include "global.h"
 
 class Player : public Object
 {
