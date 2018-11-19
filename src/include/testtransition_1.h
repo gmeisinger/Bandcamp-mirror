@@ -1,5 +1,5 @@
-#ifndef BANDCAMP_TESTROOM_H_
-#define BANDCAMP_TESTROOM_H_
+#ifndef BANDCAMP_TESTTRANSITION_1_H_
+#define BANDCAMP_TESTTRANSITION_1_H_
 
 #include <SDL.h>
 #include <vector>
@@ -10,31 +10,37 @@
 #include "screen.h"
 #include "object.h"
 #include "pickup.h"
+#include "door.h"
+#include "warptile.h"
+#include "fadeobj.h"
 #include "GSM.h"
-#include "tilemap.h" 
-#include "global.h"
+#include "tilemap.h"
+#include "player.h"
+#include "HUD.h"
 
-class TestRoom : public Screen 
+
+class TestTransition_1 : public Screen 
 { 
 	private:
-		bool start;
 		std::unordered_map<std::string, Object*> objectList;
 		SDL_Renderer* rendererReference;
+		SDL_Rect fullScreen;
 		bool escape; //Have we pushed the escape key ?
 		int updateCount;
-		int oldTemp;
-		int oldO2;
+		HUD h; // Heads up display 
+		Player p;
+		bool fading; //Is the screen fading?
+		bool pauseB;
+		bool enterHeld; //Have we pushed the pauseButton this frame?
+		Tilemap map;
+		SDL_Rect camera;
 	
 	public: 
-		TestRoom();
+		TestTransition_1();
 		void init(SDL_Renderer* renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
-		void movePickup(SDL_Renderer* reference, std::vector<std::vector<int>> grid);
-		void cloneOoze(SDL_Renderer* reference);
-		static void setSpawnPickup(bool set);
-		static void setSpawnOoze(bool set);
 };
 
-#endif  //  BANDCAMP_TESTROOM_H_
+#endif  //  BANDCAMP_TESTTRANSITION_1_H_

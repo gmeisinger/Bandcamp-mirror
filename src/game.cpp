@@ -13,9 +13,6 @@ Game::Game() {
 	gRenderer = nullptr;
 	running = false;
 	GSM * gsm;
-	screen_w = SCREEN_WIDTH;
-	screen_h = SCREEN_HEIGHT;
-	tile_s = TILE_SIZE;
 }
 
 /* Called from Main 
