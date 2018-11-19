@@ -248,9 +248,9 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 		x_deltav += 1;
 	if (space && !spaceHeld) {
 		//std::cout << "\nPressed space bar" << std::endl;
-		Projectile *newProj = new Projectile(projsType);
+		/* Projectile *newProj = new Projectile(projsType);
 		projList[newProj->getInstanceName()] = newProj;
-		newProj->init(rendererReference);
+		newProj->init(rendererReference); */
 		spaceHeld = true;
 	} else if (!space) {
 		spaceHeld = false;
