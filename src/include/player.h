@@ -28,6 +28,7 @@ class Player : public Object
 	    bool right;
 		bool space;
 		bool projCooldown;
+		bool projActive;
 		char projsType;
 	    SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;

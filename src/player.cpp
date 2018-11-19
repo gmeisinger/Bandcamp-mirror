@@ -40,6 +40,7 @@ Player::Player(SDL_Rect _rect) {
 	right = false;
 	space = false;
 	projCooldown = false;
+	projActive = false;
     overlapEnemy = false;
 	projsType = 's';
 	std::unordered_map<std::string, Object*> projList;
@@ -252,14 +253,15 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
-	if (space && !projCooldown) {
+	if (space && !projCooldown && !projActive) {
 		//std::cout << "\nPressed space bar" << std::endl;
 		Projectile *newProj = new Projectile(projsType, playerRect.x, playerRect.y);
 		projList[newProj->getInstanceName()] = newProj;
 		newProj->init(rendererReference);
 		projCooldown = true;
+		projActive = true;
 	} else if (projCooldown) {
-		if (cooldownTicks >= 50) {
+		if (cooldownTicks >= 75) {
 			cooldownTicks = 0;
 			projCooldown = false;
 		} else {
@@ -288,6 +290,7 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 	while(it != projList.end()) {
 		if(it->second->isUsed()) {
 			it = projList.erase(it);
+			projActive = false;
 			break;
 		} else {
 			it->second->update(objectList, grid, ticks);
@@ -329,7 +332,7 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
 	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
 	while(it != projList.end()){
-		renderer = it->second->draw(renderer, cam);
+		renderer = it->second->draw(renderer, {x_vel, y_vel, 0, 0});
 		it++;
 	}
 	return renderer;

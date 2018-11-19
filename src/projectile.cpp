@@ -18,6 +18,8 @@ static int totalInstance = 0;//How many instances of the object exist?
 int projNumber = 0;
 bool projUsed;
 bool spaceHeld = false;
+int playerXVel;
+int playerYVel;
 
 Projectile::Projectile(char type, int playerX, int playerY) {
 	switch(type){
@@ -112,6 +114,8 @@ void Projectile::update(std::unordered_map<std::string, Object*> *objectList, st
 SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
 	SDL_Rect* drawDest = new SDL_Rect;
 	*drawDest = projDrawBox;
+	playerXVel = cam.x;
+	playerYVel = cam.y;
 	//Draw the sprite
     SDL_RenderCopy(renderer, projImg, &projImgRect, drawDest);	
 	return renderer;
@@ -138,17 +142,11 @@ void Projectile::updatePosition(Uint32 ticks){
 			projDrawBox.x = projDrawBox.x + FIRED_SPEED;
 			break;
 		}
-		if (up) {
-			projDrawBox.y = projDrawBox.y + 2;
+		if (up || down) {
+			projDrawBox.y = projDrawBox.y - playerYVel;
 		}
-		if (left) {
-			projDrawBox.x = projDrawBox.x + 2;
-		}
-		if (down) {
-			projDrawBox.y = projDrawBox.y - 2;
-		}
-		if (right) {
-			projDrawBox.x = projDrawBox.x - 2;
+		if (left || right) {
+			projDrawBox.x = projDrawBox.x - playerXVel;
 		}
 		projTicks = 0;
 	}

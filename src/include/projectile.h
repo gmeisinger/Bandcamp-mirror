@@ -22,6 +22,8 @@ class Projectile : public Object
 	    bool down;
 	    bool left;
 	    bool right;
+		int playerXVel;
+		int playerYVel;
 
 	public:
 		void input(const Uint8* keystate);
