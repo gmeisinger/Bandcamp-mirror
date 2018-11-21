@@ -44,6 +44,10 @@ class Ooze : public Object {
         int num_cost;
     };
     
+    struct RoomTiles{
+        SDL_Rect* startTile;
+        SDL_Rect* endTile;
+    };
 
 private:
     SDL_Rect rect; // includes x_pos, y_pos, width, height
@@ -56,6 +60,7 @@ private:
     int y_deltav;
         
     Stats stats;
+    RoomTiles roomTiles;
 
     OozeState state;
     int hostility;
@@ -73,7 +78,7 @@ private:
     Tilemap* tilemap;
 
     bool initialized;
-
+    std::vector<SDL_Rect> intersects;
     int iter;
     
 public:
@@ -86,7 +91,7 @@ public:
     int damage = 5;
     // Constructors & destructor
     Ooze(); // Default constructor
-    Ooze(Room* room);
+    Ooze(Room* room, Tilemap* t);
 
 //    Ooze(oozeState st, int hostil);
     Ooze(const Ooze& other);    // copy constructor
