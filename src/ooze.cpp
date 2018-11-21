@@ -32,12 +32,12 @@ hostility{0}
     
     // Genetic statistics
     stats.health =      3 + utils::normDist_sd1();
-    stats.attack =      3 + utils::normDist_sd1();
+    stats.attack =      50 + utils::normDist_sd1(); //time delay between ticks damage
     stats.speed =       3 + utils::normDist_sd1();
     stats.health_cost = 3 + utils::normDist_sd1();
     stats.num_cost =    3 + utils::normDist_sd1();
-    std::cout << "health" << stats.health << "\n";
-    std::cout << "attack" << stats.attack << "\n";
+    std::cout << "ooze health: " << stats.health << "\n";
+    std::cout << "ooze attack: " << stats.attack << "\n";
 
     lastRoom = nullptr;
     initialized = false;
@@ -203,6 +203,10 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList,
                 it++;
             }
         }
+        case ROAMING: {
+            
+            return nullptr;
+        }
         default:
             return player->getRect();
     }
@@ -243,11 +247,19 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
     if (ate > 2) {
         state = CLONING;
         TestRoom::setSpawnOoze(true);
+        Ooze(*this);
         ate = 0;
+        std::cout << "hangry" << std::endl;
         return true;
-    } else {
+    } else if (state){
         state = HANGRY;
+        std::cout << "hangry" << std::endl;
         return true;
+    }
+    else {
+        state = ROAMING;
+        return true;
+        std::cout << "roaming" << std::endl;
     }
     
     return false;
@@ -260,7 +272,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList
 	bool overlap = collision::checkCol(rect, *pRect);
     if (overlap) {
 		overlapTicks += ticks;
-		if (overlapTicks > 25) {
+		if (overlapTicks > stats.attack) {
 			hud_g->currentHealth = std::max(0, hud_g->currentHealth-damage);
 			std::string s = "HIT: "+getInstanceName();
 			//std::cout << s << std::endl;
