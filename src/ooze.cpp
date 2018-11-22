@@ -177,39 +177,31 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
 }
 
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid) {
-    switch(this->state) {
-        case CLONING: {
-            return nullptr;
-        }
-        case HANGRY: {
-            std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
-            while(it != objectList->end()){
-                if (!it->first.substr(0,6).compare("Pickup")) {
-                    //std::cout << "there is a pickup :) " << std::endl;
-                    Pickup* temp = (Pickup*)it->second;
-                    
-                    bool losPickup = drawLine(grid, temp->getRect());
-                        
-                    if(losPickup)
-                        return temp->getRect();
-                    else {
-                        bool losPlayer = drawLine(grid, player->getRect());
-                        if(losPlayer)
-                            return player->getRect();
-                        else
-                        return nullptr;    
-                    }                    
+    if( state == HANGRY ) {
+        std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
+        while(it != objectList->end()){
+            if (!it->first.substr(0,6).compare("Pickup")) {
+                //std::cout << "there is a pickup :) " << std::endl;
+                Pickup* temp = (Pickup*)it->second;
+                
+                bool losPickup = drawLine(grid, temp->getRect());
+                
+                if(losPickup)
+                    return temp->getRect();
+                else {
+                    bool losPlayer = drawLine(grid, player->getRect());
+                    if(losPlayer)
+                        return player->getRect();
+                    else
+                        return nullptr;
                 }
-                it++;
             }
+            it++;
         }
-        case ROAMING: {
-            
-            return nullptr;
-        }
-        default:
-            return player->getRect();
+    }else if ( state == FIGHTING ) {
+        return player->getRect();
     }
+    return nullptr;
 }
 
 // TODO: combine this with the overlap method below, which
@@ -220,7 +212,7 @@ bool Ooze::foundFood(Pickup* food) {
         bool overlap = collision::checkCol(rect, *fRect);
         if (overlap) {
             //food->use();
-            ate = ate + 1;
+            ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
             //std::cout << s << std::endl;
             return true;
@@ -244,24 +236,53 @@ OozeState Ooze::getState() {
 
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
 
-    if (ate > 2) {
-        state = CLONING;
-        TestRoom::setSpawnOoze(true);
-        Ooze(*this);
-        ate = 0;
-        std::cout << "hangry" << std::endl;
-        return true;
-    } else if (state){
-        state = HANGRY;
-        std::cout << "hangry" << std::endl;
-        return true;
+    switch(this->state) {
+        case ROAMING: {
+            std::cout << "roaming" << std::endl;
+            break;
+        }
+        case HANGRY: {
+            std::cout << "hangry" << std::endl;
+            if (false) { // switch to when over food
+                state = EATING;
+                return true;
+            }
+            break;
+        }
+        case EATING: {
+            std::cout << "eating" << std::endl;
+            if (ate > 2) { // time to eat
+                ate = 0;
+                state = CLONING;
+                return true;
+            }
+            break;
+        }
+        case CLONING: {
+            std::cout << "cloning" << std::endl;
+            TestRoom::setSpawnOoze(true);
+            Ooze(*this);
+            state = ROAMING;
+            return true;
+            break;
+        }
+        case FIGHTING: {
+            
+            break;
+        }
+        case FLEEING: {
+            
+            break;
+        }
+        case HIDING: {
+            
+            break;
+        }
+        case DYING: {
+            
+            break;
+        }
     }
-    else {
-        state = ROAMING;
-        return true;
-        std::cout << "roaming" << std::endl;
-    }
-    
     return false;
 }
 
