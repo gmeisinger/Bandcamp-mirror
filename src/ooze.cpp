@@ -235,7 +235,10 @@ OozeState Ooze::getState() {
 
 
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
-
+    if ( stats.health <= 0 ) {
+        state = DYING;
+    }
+    
     switch(this->state) {
         case ROAMING: {
             std::cout << "roaming" << std::endl;
@@ -268,10 +271,17 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
         }
         case FIGHTING: {
             
+            if ( stats.health < stats.health_cost || oozeNumber < stats.num_cost ) {
+                state = FLEEING;
+                return true;
+            }
             break;
         }
         case FLEEING: {
-            
+// look for hiding places
+/*            if ( next to hiding spot ) {
+                state = HIDING;
+            } */
             break;
         }
         case HIDING: {
@@ -279,7 +289,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
             break;
         }
         case DYING: {
-            
+            this->~Ooze();
             break;
         }
     }
