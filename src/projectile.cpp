@@ -6,20 +6,11 @@
 #include "include/projectile.h"
 
 constexpr int FIRED_SPEED = 6;
-
-SDL_Rect projRect; //The Collision Box
-char projType;
-//Image Stuff
-SDL_Texture* projImg;
-SDL_Rect projImgRect;
-SDL_Rect projDrawBox;	//Where the Image is drawn on screen
-Uint32 projTicks;
+constexpr int DAMAGE = 1;
 static int totalInstance = 0;//How many instances of the object exist?
+
 int projNumber = 0;
-bool projUsed;
 bool spaceHeld = false;
-int playerXVel;
-int playerYVel;
 
 Projectile::Projectile(char type, int playerX, int playerY) {
 	switch(type){
@@ -155,6 +146,10 @@ void Projectile::updatePosition(Uint32 ticks){
 void Projectile::checkProjOverlap(int curX, int curY, std::vector<std::vector<int>> grid) {
 	if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) || 
 	   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
+/*        if(collision with ooze in objectList) {
+            oozePointer = ooze from list;
+            oozePointer->hurt(DAMAGE);
+        } */
 		projUsed = true;
     }
 }

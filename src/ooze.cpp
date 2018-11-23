@@ -41,8 +41,6 @@ hostility{0}
 
     lastRoom = nullptr;
     initialized = false;
-
-    iter = 0;
 }
 
 //Other constructor?
@@ -115,24 +113,21 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     bool stateChange = updateState(objectList, ticks);
 
 	bool overlap = checkOozeOverlap(objectList, ticks);
-    bool los;
 	if(!overlap){    
-        //uncomment the line below to change the ooze to chasing the pickups
-        if(iter % 15 == 0)
-            target = pickTarget(objectList, grid);
-
+        target = pickTarget(objectList, grid);
         if (target) {
-            //check which direction the target is 
+            //check which direction the target is
             //Only move if we can see the player
             moveLine(grid, target);
-            updatePosition();
+            
         //updateVelocity(x_deltav,y_deltav);
         }
         //If we don't have a line of sight with the player or pickup, check the other room
         else {
             //moveRoom(grid);
         }
-    }    
+        updatePosition();
+    }
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
@@ -141,8 +136,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> *objectList, std::vec
     //checkBounds(screen_w, screen_h, true);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid, true);
-
-    iter++;
 }
 
 /* Summary
@@ -177,7 +170,9 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
 }
 
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid) {
-    if( state == HANGRY ) {
+    iter++;
+    if( state == HANGRY && iter > 15) {
+        iter = 0;
         std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
         while(it != objectList->end()){
             if (!it->first.substr(0,6).compare("Pickup")) {
@@ -235,9 +230,6 @@ OozeState Ooze::getState() {
 
 
 bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks) {
-    if ( stats.health <= 0 ) {
-        state = DYING;
-    }
     
     switch(this->state) {
         case ROAMING: {
@@ -254,7 +246,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
         }
         case EATING: {
             std::cout << "eating" << std::endl;
-            if (ate > 2) { // time to eat
+            if (ate > 0) { // time to eat
                 ate = 0;
                 state = CLONING;
                 return true;
@@ -278,8 +270,8 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> *objectList, Uin
             break;
         }
         case FLEEING: {
-// look for hiding places
-/*            if ( next to hiding spot ) {
+            // look for hiding places
+            /*if ( next to hiding spot ) {
                 state = HIDING;
             } */
             break;
@@ -645,5 +637,13 @@ void Ooze::initRoom(std::vector<std::vector<int>> grid, SDL_Rect* t) {
         std::cout << "Retry" << std::endl;
         rect.x += tile_s;
         rect.y += tile_s;
+    }
+}
+
+void Ooze::hurt(int damage) {
+    stats.health -= damage;
+    
+    if ( stats.health <= 0 ) {
+        state = DYING;
     }
 }

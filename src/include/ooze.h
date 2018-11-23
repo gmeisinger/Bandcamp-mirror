@@ -142,6 +142,7 @@ public:
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
     //void updateAnimation(Uint32 ticks);
+    void hurt(int damage);
 };
 
 #endif  //  OOZE_H_

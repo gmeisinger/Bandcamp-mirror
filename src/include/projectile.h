@@ -16,14 +16,19 @@ class Projectile : public Object
 {
 	private:
 		char projType;
-		SDL_Rect projRect;
-		SDL_Rect projDrawBox;
+		SDL_Rect projRect; //The Collision Box
 		bool up;
 	    bool down;
 	    bool left;
 	    bool right;
 		int playerXVel;
 		int playerYVel;
+        bool projUsed;
+        //Image Stuff
+        SDL_Texture* projImg;
+        SDL_Rect projImgRect;
+        SDL_Rect projDrawBox;	//Where the Image is drawn on screen
+        Uint32 projTicks;
 
 	public:
 		void input(const Uint8* keystate);
