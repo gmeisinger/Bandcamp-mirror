@@ -588,8 +588,8 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     std::vector<std::vector<Tile*>> map = tilemap->getMap();
     Tile* endTile;
     Tile* tile;
-    bool horWall;
-    bool verWall;
+    bool horWall = false;
+    bool verWall = false;
     for(int i = 0; i < intersects.size(); i++) {
         intersect = intersects[i];
         
