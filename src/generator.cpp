@@ -147,12 +147,12 @@ void Generator::cutDoor(SDL_Rect intersect) {
 		//horizontal wall
 		r = intersect.y;
 		c = intersect.x + (intersect.w/2);
-		map[r][c] = 1;
+		map[r][c] = 4;
 	}
 	else if(intersect.w < intersect.h && intersect.h > 2) {
 		r = intersect.y + (intersect.h/2);
 		c = intersect.x;
-		map[r][c] = 1;
+		map[r][c] = 4;
 	}
 	
 }

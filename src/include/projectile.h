@@ -9,7 +9,7 @@
 
 #include "collision.h"
 #include "object.h"
-#include "testroom.h"
+#include "randommap.h"
 #include "utils.h"
 
 class Projectile : public Object
@@ -26,13 +26,13 @@ class Projectile : public Object
 	public:
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
-		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks);
 		std::string getInstanceName();
 		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
 		Projectile(char type, int playerX, int playerY);
         ~Projectile();
 		Projectile();
-		void checkProjOverlap(int curX, int curY, std::vector<std::vector<int>> grid);
+		void checkProjOverlap(int curX, int curY, std::vector<std::vector<Tile*>> &grid);
 		SDL_Rect* getProjRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
