@@ -32,7 +32,7 @@ class Projectile : public Object
 		Projectile(char type, int playerX, int playerY);
         ~Projectile();
 		Projectile();
-		void checkProjOverlap(int curX, int curY, std::vector<std::vector<Tile*>> &grid);
+		void checkProjOverlap(std::vector<std::vector<Tile*>> &grid);
 		SDL_Rect* getProjRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
