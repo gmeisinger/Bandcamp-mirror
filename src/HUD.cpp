@@ -50,7 +50,7 @@ void HUD::init(SDL_Renderer* _renderer)
 	int imgFlags = IMG_INIT_PNG;
 	int retFlags = IMG_Init(imgFlags);
 	hud.push_back(utils::loadTexture(renderer_h, "Physics/HUD.png"));
-	hud.push_back(utils::loadTexture(renderer_h, "Physics/gitgud.png"));
+	hud.push_back(utils::loadTexture(renderer_h, "Physics/dead.png"));
 	SDL_Rect Temp = {54, 54, 33, 91};
 	SDL_Rect Oxygen = {109, 54, 33, 91};
 	SDL_Rect Health = {164, 54, 33, 91};
@@ -63,9 +63,7 @@ void HUD::init(SDL_Renderer* _renderer)
  *
  *
 */
-void HUD::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
-		
-}
+void HUD::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){}
 
 /* 
  * Keystate - which keys are pressed 

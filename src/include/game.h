@@ -10,6 +10,10 @@
 
 class GSM;
 
+//extern int SCREEN_WIDTH;
+//extern int SCREEN_HEIGHT;
+//extern int TILE_SIZE;
+
 class Game {
 	private:
 		bool running;

@@ -7,15 +7,17 @@
 #include "include/credits.h"
 #include "include/GSM.h"
 
+//int SCREEN_WIDTH = 800;
+//int SCREEN_HEIGHT = 600;
+//int TILE_SIZE = 32;
+
+
 //Starts new game
 Game::Game() {
 	gWindow = nullptr;
 	gRenderer = nullptr;
 	running = false;
 	GSM * gsm;
-	screen_w = SCREEN_WIDTH;
-	screen_h = SCREEN_HEIGHT;
-	tile_s = TILE_SIZE;
 }
 
 /* Called from Main 

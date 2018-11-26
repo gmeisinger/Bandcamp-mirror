@@ -15,6 +15,7 @@
 #include "circle.h"
 #include "global.h"
 #include "pickup.h"
+#include "tile.h"
 #include "generator.h"
 #include "tilemap.h"
 #include "room.h"
@@ -96,16 +97,16 @@ public:
     
     
     // NEW
-    Pickup* getPickup(std::unordered_map<std::string, Object*> *objectList);
-    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid);
+
+    Pickup* getPickup(std::unordered_map<std::string, Object*> &objectList);
+    SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid);
     bool foundFood(Pickup* pickUp);
     int getAte();
     OozeState getState();
-    void initRoom(std::vector<std::vector<int>> grid, SDL_Rect* t);
+    void initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t);
 
     // Updates
-    void update(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
-    bool updateState(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+    bool updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks);
     void updateVelocity(int _xdv, int _ydv); 
     void updatePosition();
     void updateAnimation(Uint32 ticks);
@@ -114,17 +115,18 @@ public:
     void input(const Uint8* keystate);
     void init(SDL_Renderer* gRenderer);
     void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
-    void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
+    void update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks);
     SDL_Renderer* draw(SDL_Renderer* renderer, SDL_Rect cam);
-    bool checkOozeOverlap(std::unordered_map<std::string, Object*> *objectList, Uint32 ticks);
+    bool checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks);
     bool isUsed();
 
     //Movement
+
     void checkBounds(int max_width, int max_height, bool move);
-    bool checkCollision(int curX, int curY, std::vector<std::vector<int>> grid, bool move);
-    bool drawLine(std::vector<std::vector<int>> grid, SDL_Rect* target);
-    void moveLine(std::vector<std::vector<int>> grid, SDL_Rect* target);
-    void moveRoom(std::vector<std::vector<int>> grid);
+    bool checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid, bool move);
+    bool drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target);
+    void moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target);
+    void moveRoom(std::vector<std::vector<Tile*>> &grid);
     
     // Math
     void increaseHostility();

@@ -97,9 +97,9 @@ void Projectile::init(SDL_Renderer *renderer){
 	}
 }
 		
-void Projectile::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
+void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	updatePosition(ticks);
-	checkProjOverlap(projRect.x, projRect.y, grid);
+	checkProjOverlap(grid);
 }
 
 SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
@@ -143,14 +143,14 @@ void Projectile::updatePosition(Uint32 ticks){
 	}
 }
 
-void Projectile::checkProjOverlap(int curX, int curY, std::vector<std::vector<int>> grid) {
+void Projectile::checkProjOverlap(std::vector<std::vector<Tile*>> &grid) {
 	if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) || 
 	   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
-/*        if(collision with ooze in objectList) {
-            oozePointer = ooze from list;
-            oozePointer->hurt(DAMAGE);
-        } */
-		projUsed = true;
+		  projUsed = true;
+        /*        if(collision with ooze in objectList) {
+         oozePointer = ooze from list;
+         oozePointer->hurt(DAMAGE);
+         } */
     }
 }
 
