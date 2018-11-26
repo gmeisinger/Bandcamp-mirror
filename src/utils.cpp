@@ -39,3 +39,18 @@ void utils::destroyTextureVector(std::vector<SDL_Texture*> vect)
 		i = nullptr;
 	}
 }
+
+/* normDist_sd1:
+ * Random number generator using Normal Distribution, Mean of 0, Standard Distribution 1
+ * Generates number usually between [-3,3], most commonly 0
+ */
+//std::default_random_engine generator;
+//std::random_device r;
+std::mt19937 generator{};                                 // Random number generator
+//generator.seed(std::random_device()());                 // Seed Generator
+std::uniform_int_distribution<int> distribution(-3,3);   // Create Distribution
+
+int utils::normDist_sd1() {
+    return(distribution(generator));
+}
+//std::cout << dice()+dice()+dice() << std::endl;

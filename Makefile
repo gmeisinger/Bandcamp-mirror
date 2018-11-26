@@ -24,11 +24,11 @@ OBJ = $(patsubst src/%.cpp, obj/%.o, $(SRC))
 # it's the same in unix. 'twould mean our installs can be different and still coexist.
 
 ifeq ($(OS), Windows_NT)
-	DETECTED_OS = $(OS)
+	DETECTED_OS = $(OS) -ggdb
 	CC = g++ -std=c++11
 	CFLAGS = -c -IC:/mingwdev/include/SDL2
 	INCLUDE = -IC:/mingwdev/include/SDL2
-	LFLAGS = -LC:/mingwdev/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -o $(OUT)
+	LFLAGS = -LC:/mingwdev/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -o $(OUT)
 	LFLAGScr = -LC:/mingwdev/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 else ifeq ($(shell uname -s), Darwin)
 	DETECTED_OS := $(shell uname -s)

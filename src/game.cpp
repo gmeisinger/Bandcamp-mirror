@@ -7,13 +7,10 @@
 #include "include/credits.h"
 #include "include/GSM.h"
 
-constexpr int SCREEN_WIDTH = 800;
-constexpr int SCREEN_HEIGHT = 600;
-constexpr int TILE_SIZE = 32;
+//int SCREEN_WIDTH = 800;
+//int SCREEN_HEIGHT = 600;
+//int TILE_SIZE = 32;
 
-int screen_w;
-int screen_h;
-int tile_s;
 
 //Starts new game
 Game::Game() {
@@ -21,9 +18,6 @@ Game::Game() {
 	gRenderer = nullptr;
 	running = false;
 	GSM * gsm;
-	screen_w = SCREEN_WIDTH;
-	screen_h = SCREEN_HEIGHT;
-	tile_s = TILE_SIZE;
 }
 
 /* Called from Main 
@@ -75,7 +69,7 @@ bool Game::init() {
         return false;
     }
 	// Set renderer draw/clear color
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	
 	
 	//Start the GSM
@@ -89,13 +83,15 @@ bool Game::init() {
 	return true;
 }
 
+// Game 
 void Game::update(Uint32 ticks) {
 	gsm->update(ticks);
 }
 
+// Updates image displayed to user 
 void Game::draw() {
 	//Clear the Screen
-	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
+	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen
@@ -144,9 +140,9 @@ void Game::run() {
   
 
 	//credits
-	Credits creds = Credits(gRenderer);
-	creds.load();
-	creds.play();
+	//Credits creds = Credits(gRenderer);
+	//creds.load();
+	//creds.play();
 
 	// Tear down and end.  Returns to main
 	close();

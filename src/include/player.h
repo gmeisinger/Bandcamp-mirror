@@ -10,6 +10,7 @@
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
+#include "global.h"
 
 class Player : public Object
 {
@@ -20,33 +21,41 @@ class Player : public Object
         int y_deltav;
         int x_vel;
         int y_vel;
-		bool up;
-		bool down;
-		bool left;
-		bool right;
-		SpriteSheet sheet;
+		int cooldownTicks;
+	    bool up;
+	    bool down;
+	    bool left;
+	    bool right;
+		bool space;
+		bool projCooldown;
+		bool projActive;
+		char projsType;
+	    SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;
         Animation* anim;
+		SDL_Renderer* rendererReference;
+		std::unordered_map<std::string, Object*> projList;
 		
     public:
         Player(SDL_Rect _rect);
 		Player();
         ~Player();
-		    std::string getInstanceName();
-		    void init(SDL_Renderer* gRenderer);
-		    void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
-		    void input(const Uint8* keystate);
-		    SDL_Renderer* draw(SDL_Renderer* gRenderer, SDL_Rect cam);
-		    void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
+		std::string getInstanceName();
+		void init(SDL_Renderer* gRenderer);
+		void update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks);
+		void input(const Uint8* keystate);
+		SDL_Renderer* draw(SDL_Renderer* gRenderer, SDL_Rect cam);
+		void setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows);
         void updateVelocity(int _xdv, int _ydv);
         void updatePosition();
         void checkBounds(int max_width, int max_height);
-        void checkCollision(int curX, int curY, std::vector<std::vector<int>> grid);
+        void checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid);
         int getWidth();
         int getHeight();
         int getX();
         int getY();
         SDL_Rect* getRect();
+        SDL_Rect* getHitRect();
         void addAnimation(std::string tag, Animation anim);
         Animation* getAnimation(std::string tag);
         void setAnimation(std::string tag);

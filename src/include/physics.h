@@ -1,7 +1,7 @@
 #ifndef BANDCAMP_PHYSICS_H_
 #define BANDCAMP_PHYSICS_H_
 
-class Room
+class Room2
 {
 	public:
 		void init_room();
@@ -19,4 +19,4 @@ class Room
 		int oxygen, temperature, pressure;
 };
 
-#endif  //  BANDCAMP_PHYSICS_H_
+#endif  //  BANDCAMP_PHYSICS_H_ 
