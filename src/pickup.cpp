@@ -96,12 +96,12 @@ void Pickup::init(SDL_Renderer *renderer){
 /* Summary
  * Argument  
  *
-*/		
-void Pickup::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
+*/
+void Pickup::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
-	if(used)
-		TestRoom::setSpawnPickup(true);
+	if (used) RandomMap::setSpawnPickup(true);
+
 }
 
 /* Summary
@@ -154,7 +154,7 @@ void Pickup::updatePosition(Uint32 ticks){
 }
 
 //Checks if the player overlapped with the pickup and acts accordingly
-void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *objectList) {
+void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> &objectList) {
 	bool overlap = pickupPlayer->getX() < pickupRect.x + pickupRect.w &&
 				   pickupPlayer->getX() + pickupPlayer->getWidth() > pickupRect.x &&
 				   pickupPlayer->getY() < pickupRect.y + pickupRect.h &&
@@ -179,8 +179,8 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> *object
 		//delete this;
 	} else {
 		// Check for collisions with any ooze. Calling foundFood also updates the ooze
-		std::unordered_map<std::string, Object*>::iterator it = objectList->begin();
-    	while(it != objectList->end()){
+		std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+    	while(it != objectList.end()){
 	        if (!it->first.substr(0,4).compare("ooze")) {
 	        	Ooze* temp = (Ooze*)it->second;
 	            if (temp->foundFood(this)) {
