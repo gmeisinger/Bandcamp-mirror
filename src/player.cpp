@@ -22,8 +22,8 @@ int x_deltav;
 int y_deltav;
 int x_vel;
 int y_vel;
+int cooldownTicks;
 bool overlapEnemy;
-char projsType = 'r';
 
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
@@ -33,13 +33,16 @@ Player::Player(SDL_Rect _rect) {
     y_deltav = 0;
     x_vel = 0;
     y_vel = 0;
+	cooldownTicks = 0;
 	up = false;
 	down = false;
 	left = false;
 	right = false;
 	space = false;
-	spaceHeld = false;
+	projCooldown = false;
+	projActive = false;
     overlapEnemy = false;
+	projsType = 's';
 	std::unordered_map<std::string, Object*> projList;
     player = this;
 }
@@ -250,14 +253,29 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
-	if (space && !spaceHeld) {
+	if (space && !projCooldown && !projActive) {
 		//std::cout << "\nPressed space bar" << std::endl;
+
 		/* Projectile *newProj = new Projectile(projsType);
 		projList[newProj->getInstanceName()] = newProj;
 		newProj->init(rendererReference); */
 		spaceHeld = true;
 	} else if (!space) {
 		spaceHeld = false;
+
+		Projectile *newProj = new Projectile(projsType, playerRect.x, playerRect.y);
+		projList[newProj->getInstanceName()] = newProj;
+		newProj->init(rendererReference);
+		projCooldown = true;
+		projActive = true;
+	} else if (projCooldown) {
+		if (cooldownTicks >= 75) {
+			cooldownTicks = 0;
+			projCooldown = false;
+		} else {
+			cooldownTicks++;
+		}
+
 	}
 
 	updateVelocity(x_deltav, y_deltav);
@@ -281,6 +299,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 	while(it != projList.end()) {
 		if(it->second->isUsed()) {
 			it = projList.erase(it);
+			projActive = false;
 			break;
 		} else {
 			it->second->update(objectList, grid, ticks);
@@ -293,15 +312,21 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
  * Argument  
  *
 */
-void Player::input(const Uint8* keystate)
-{
+void Player::input(const Uint8* keystate) {
 	up = keystate[SDL_SCANCODE_W];
 	left = keystate[SDL_SCANCODE_A];
 	down = keystate[SDL_SCANCODE_S];
 	right = keystate[SDL_SCANCODE_D];
 	space = keystate[SDL_SCANCODE_SPACE];
-	if (keystate[SDL_SCANCODE_1]) projsType = 'r';
-	else if (keystate[SDL_SCANCODE_2]) projsType = 'g';
+	if (up) projsType = 'n';
+	else if (left) projsType = 'e';
+	else if (down) projsType = 's';
+	else if (right) projsType = 'w';
+	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
+	while(it != projList.end()){
+		it->second->input(keystate);
+		it++;
+	}
 }
 
 /* Summary
@@ -316,7 +341,7 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
 	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
 	while(it != projList.end()){
-		renderer = it->second->draw(renderer, cam);
+		renderer = it->second->draw(renderer, {x_vel, y_vel, 0, 0});
 		it++;
 	}
 	return renderer;
@@ -356,7 +381,7 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> 
         if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
             x_vel = 0; 
             playerRect.x = curX;
-            hitRect.x = curX + SHORTEN_DIST/2;   
+            hitRect.x = curX + SHORTEN_DIST/2; 
         }
     }
     
