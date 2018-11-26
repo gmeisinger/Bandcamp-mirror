@@ -139,7 +139,10 @@ std::vector<std::vector<int>> Tilemap::genRandomMap() {
 }
 
 std::vector<std::vector<int>> Tilemap::genRandomCave() {
-	return generate_cave(35, 3, 4, 40, 8, 3);
+	Cave cave = Cave();
+	std::vector<std::vector<int>> cave_map = cave.generate_cave(35, 3, 4, 40, 8, 3);
+	rooms = cave.get_cave_room();
+	return cave_map;
 }
 
 

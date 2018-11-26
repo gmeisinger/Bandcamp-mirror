@@ -64,9 +64,13 @@ void TestRoom::init(SDL_Renderer* reference){
 	//Set the starting room for the ooze
 	rooms = tilemap.getRooms();
 	std::cout << "numRooms: " << rooms.size() << std::endl;
-	Room oozeRoom = *rooms[rand()%(rooms.size())];
+	std::cout << "big yeralt " << std::endl;
+	Room oozeRoom = *rooms[0];
+	std::cout << "boinnk " << std::endl;
 	o = Ooze(&oozeRoom, &p, &h);
+	std::cout << "A" << std::endl;
 	o.init(reference);
+	std::cout << "bingus " << std::endl;
 	//Player and HUD in the Room
 	objectList["player"] = &p;
 	objectList["hud"] = &h;
