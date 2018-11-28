@@ -7,6 +7,7 @@
 #include <SDL.h>
 #include <SDL_image.h>
 #include <random>
+#include <chrono>
 
 namespace utils
 {

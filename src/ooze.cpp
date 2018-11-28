@@ -231,11 +231,11 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
     
     switch(this->state) {
         case ROAMING: {
-            std::cout << "roaming" << std::endl;
+//            std::cout << "roaming" << std::endl;
             break;
         }
         case HANGRY: {
-            std::cout << "hangry" << std::endl;
+//            std::cout << "hangry" << std::endl;
             if (false) { // switch to when over food
                 state = EATING;
                 return true;

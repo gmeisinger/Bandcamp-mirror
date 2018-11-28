@@ -44,10 +44,14 @@ void utils::destroyTextureVector(std::vector<SDL_Texture*> vect)
  * Random number generator using Normal Distribution, Mean of 0, Standard Distribution 1
  * Generates number usually between [-3,3], most commonly 0
  */
-//std::default_random_engine generator;
-//std::random_device r;
-std::mt19937 generator{};                                 // Random number generator
-//generator.seed(std::random_device()());                 // Seed Generator
+
+// Create Timer
+typedef std::chrono::high_resolution_clock myclock;
+myclock::time_point beginning = myclock::now();
+// Obtain a seed from the timer
+myclock::duration d = myclock::now() - beginning;
+unsigned seed2 = d.count();
+std::mt19937 generator(seed2);                                 // Random number generator
 std::uniform_int_distribution<int> distribution(-3,3);   // Create Distribution
 
 int utils::normDist_sd1() {
