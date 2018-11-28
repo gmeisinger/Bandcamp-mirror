@@ -1,66 +1,94 @@
 
+//The headers
 #include <SDL.h>
 #include <SDL_image.h>
+#include <SDL_ttf.h>
 #include <SDL_mixer.h>
 #include <string>
+#include <iostream>
 
-bool init()
+SDL_Texture *LoadTexture(std::string filePath, SDL_Renderer *renderTarget)
 {
-    //Initialize all SDL subsystems
-    if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 )
+    SDL_Texture *texture = nullptr;
+    SDL_Texture *texture = nullptr;
+    if(surface == NULL)
+        std::cout << "ERROR" << std::endl;
+    else
     {
-        return false;    
+        texture = SDL_CreateTextureFromSurface(renderTarget, surface);
+        SDL_SetTextureColorMod(texture, 128, 255, 255);
+        if(texture == NULL)
+            std::cout << "ERROR" << std::endl;
     }
-    
-    //Set up the screen
-    screen = SDL_SetVideoMode( SCREEN_WIDTH, SCREEN_HEIGHT, SCREEN_BPP, SDL_SWSURFACE );
-    
-    //If there was an error in setting up the screen
-    if( screen == NULL )
-    {
-        return false;    
-    }
-    
-    //Initialize SDL_mixer
-    if( Mix_OpenAudio( 22050, MIX_DEFAULT_FORMAT, 2, 4096 ) == -1 )
-    {
-        return false;    
-    }
-    
-    //Set the window caption
-    SDL_WM_SetCaption( "Monitor Music", NULL );
-    
-    //If everything initialized fine
-    return true;
-}
+    SDL_FreeSurface(surface);
 
-bool load_files()
+    return texture;    
+}// end *LoadTexture
+
+
+int main(int argc, char *argV[])
 {
+    SDL_Window *window = nullptr;
+    SDL_Texture *currentImage = nullptr;
+    SDL_Renderer *renderTarget = nullptr;
 
-    //Load the music
-    music = Mix_LoadMUS("CS1666 Game Music 1 128bpm Cm.wav");
-    
-    //If there was a problem loading the music
-    if( music == NULL )
+    SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
+
+    window = SDL_CreateWindow()
+
+    if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+        std::cout << "ERROR" << Mix_GetErro() << std::endl;
+
+    Mix_Music *bgm = Mix_LoadMUS("");
+
+    bool isRunning = true;
+    SDL_Event ev;
+
+    while(isRunning)
     {
-        return false;    
-    }
+        while(SDL_PollEvent(&ev) != 0)
+        {
+            if(ev.type == SDL_QUIT)
+                isRunning = false;
+            else if(ev.type == SDL_KEYDOWN)
+            {
+                switch(ev.key.keysym.sym)
+                {
+                    case SDL_m:
+                        if(!Mix_PlayingMusic())
+                            Mix_PlayMusic(bgm, -1);
+                        else if(Mix_PauseMusic())
+                            Mix_ResumeMusic();
+                        else
+                            Mix_PauseMusic();
+                        break;
+                    
+                }
+            }    
 
-    //If no problems, continue
-    return true;    
-}//end load_files
+        }//end while(SDL_PollEvent(&ev) != 0)    
 
-void clean_up()
-{
-    //Free the surfaces
-    SDL_FreeSurface( background );
-   
-    //Free the music
-    Mix_FreeMusic( music );
-    
-    //Quit SDL_mixer
-    Mix_CloseAudio();
-    
-    //Quit SDL
+        SDL_RenderClear(renderTarget);
+        SDL_RenderCopy(renderTarget, currentImage, NULL, NULL);
+        SDL_RenderPresent(renderTarget);        
+
+    }//end while(isRunning)
+
+
+    // clean up
+    SDL_DestroyWindow(window);
+    SDL_DestroyTexture(currentImage);
+    SDL_DestroyRenderer(renderTarget);
+    Mix_FreeMusic(bgm);
+
+
+    window = nullptr;
+    currentImage = nullptr;
+    renderTarget = nullptr;
+    bgm = nullptr;
+
+    Mix_Quit();    
     SDL_Quit();
-}
+
+    return 0;
+}//end main
