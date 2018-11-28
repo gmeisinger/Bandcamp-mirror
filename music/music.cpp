@@ -34,12 +34,12 @@ int main(int argc, char *argV[])
 
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
-    window = SDL_CreateWindow()
+    window = SDL_CreateWindow("Bandcamp Music Tester", SDL_WINDOWPSO_CENTERED, SDL_WINDOWPSO_CENTERED, 640, 480, 0);
 
     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
         std::cout << "ERROR" << Mix_GetErro() << std::endl;
 
-    Mix_Music *bgm = Mix_LoadMUS("");
+    Mix_Music *bgm = Mix_LoadMUS("CS1666 Game Music 4 110bpm Cm.wav");
 
     bool isRunning = true;
     SDL_Event ev;
@@ -54,7 +54,7 @@ int main(int argc, char *argV[])
             {
                 switch(ev.key.keysym.sym)
                 {
-                    case SDL_m:
+                    case SDL_m: // play or resume music 
                         if(!Mix_PlayingMusic())
                             Mix_PlayMusic(bgm, -1);
                         else if(Mix_PauseMusic())
@@ -62,7 +62,9 @@ int main(int argc, char *argV[])
                         else
                             Mix_PauseMusic();
                         break;
-                    
+                    case SDL_n: // pause music
+                        Mix_HaltMusic();
+                        break;
                 }
             }    
 
