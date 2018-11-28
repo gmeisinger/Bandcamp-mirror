@@ -1,3 +1,7 @@
+/* Team Bandcamp
+ * Class function: serve as main loggic for music in our game
+ * @author: Brad Munson
+*/
 
 //The headers
 #include <SDL.h>
