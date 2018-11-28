@@ -10,7 +10,7 @@
 SDL_Texture *LoadTexture(std::string filePath, SDL_Renderer *renderTarget)
 {
     SDL_Texture *texture = nullptr;
-    SDL_Texture *surface = IMG_Load(filePath.c_str());
+    SDL_Surface *surface = IMG_Load(filePath.c_str());
     if(surface == NULL)
         std::cout << "ERROR" << std::endl;
     else
@@ -34,10 +34,10 @@ int main(int argc, char *argV[])
 
     SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO);
 
-    window = SDL_CreateWindow("Bandcamp Music Tester", SDL_WINDOWPSO_CENTERED, SDL_WINDOWPSO_CENTERED, 640, 480, 0);
+    window = SDL_CreateWindow("Bandcamp Music Tester", SDL_WINDOWPOS_CENTERED, SDL_WINDOWPOS_CENTERED, 640, 480, 0);
 
     if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
-        std::cout << "ERROR" << Mix_GetErro() << std::endl;
+        std::cout << "ERROR" << Mix_GetError() << std::endl;
 
     Mix_Music *bgm = Mix_LoadMUS("CS1666 Game Music 4 110bpm Cm.wav");
 
@@ -54,15 +54,15 @@ int main(int argc, char *argV[])
             {
                 switch(ev.key.keysym.sym)
                 {
-                    case SDL_m: // play or resume music 
+                    case SDLK_m: // play or resume music 
                         if(!Mix_PlayingMusic())
                             Mix_PlayMusic(bgm, -1);
-                        else if(Mix_PauseMusic())
+                        else if(Mix_PausedMusic())
                             Mix_ResumeMusic();
                         else
                             Mix_PauseMusic();
                         break;
-                    case SDL_n: // pause music
+                    case SDLK_n: // pause music
                         Mix_HaltMusic();
                         break;
                 }
