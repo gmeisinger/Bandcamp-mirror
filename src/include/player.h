@@ -26,7 +26,12 @@ class Player : public Object
 	    bool down;
 	    bool left;
 	    bool right;
+        bool up_ar;
+        bool down_ar;
+        bool left_ar;
+        bool right_ar;
 		bool space;
+        bool x;
 		bool projCooldown;
 		bool projActive;
 		char projsType;

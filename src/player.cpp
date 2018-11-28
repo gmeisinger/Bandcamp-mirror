@@ -38,7 +38,12 @@ Player::Player(SDL_Rect _rect) {
 	down = false;
 	left = false;
 	right = false;
+    up_ar = false;
+    left_ar = false;
+    right_ar = false;
+    down_ar = false;
 	space = false;
+    x = false;
 	projCooldown = false;
 	projActive = false;
     overlapEnemy = false;
@@ -245,15 +250,15 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
     int curX = playerRect.x;
     int curY = playerRect.y;
 
-	if (up)
+	if (up || up_ar)
 		y_deltav -= 1;
-	if (left)
+	if (left || left_ar)
 		x_deltav -= 1;
-	if (down)
+	if (down|| down_ar)
 		y_deltav += 1;
-	if (right)
+	if (right || right_ar)
 		x_deltav += 1;
-	if (space && !projCooldown && !projActive) {
+	if ((space || x) && !projCooldown && !projActive) {
 		//std::cout << "\nPressed space bar" << std::endl;
 		Projectile *newProj = new Projectile(projsType, playerRect.x, playerRect.y);
 		projList[newProj->getInstanceName()] = newProj;
@@ -261,7 +266,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		projCooldown = true;
 		projActive = true;
 	} else if (projCooldown) {
-		if (cooldownTicks >= 75) {
+		if (cooldownTicks >= 25) {
 			cooldownTicks = 0;
 			projCooldown = false;
 		} else {
@@ -308,11 +313,16 @@ void Player::input(const Uint8* keystate) {
 	left = keystate[SDL_SCANCODE_A];
 	down = keystate[SDL_SCANCODE_S];
 	right = keystate[SDL_SCANCODE_D];
+    up_ar = keystate[SDL_SCANCODE_UP];
+    left_ar = keystate[SDL_SCANCODE_LEFT];
+    down_ar = keystate[SDL_SCANCODE_DOWN];
+    right_ar = keystate[SDL_SCANCODE_RIGHT];
 	space = keystate[SDL_SCANCODE_SPACE];
-	if (up) projsType = 'n';
-	else if (left) projsType = 'e';
-	else if (down) projsType = 's';
-	else if (right) projsType = 'w';
+    x = keystate[SDL_SCANCODE_X];
+	if (up || up_ar) projsType = 'n';
+	else if (left || left_ar) projsType = 'e';
+	else if (down || down_ar) projsType = 's';
+	else if (right || right_ar) projsType = 'w';
 	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
 	while(it != projList.end()){
 		it->second->input(keystate);
