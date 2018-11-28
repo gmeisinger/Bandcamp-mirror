@@ -210,12 +210,12 @@ void RandomMap::input(const Uint8* keystate){
 	
 	//When you come back into the room after a pause, you will most likely still be holding down
 	//the enter key. This prevents you from going straight back into the pause menu.
-	if(enterHeld && keystate[SDL_SCANCODE_RETURN])
+	if(enterHeld && (keystate[SDL_SCANCODE_RETURN] || keystate[SDL_SCANCODE_ESCAPE]))
 		pauseB = false;
 	else
 	{
 		enterHeld = false;
-		pauseB = keystate[SDL_SCANCODE_RETURN];
+		pauseB = keystate[SDL_SCANCODE_RETURN] || keystate[SDL_SCANCODE_ESCAPE];
 		
 		std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 		while(it != objectList.end()){
