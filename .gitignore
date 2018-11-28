@@ -9,6 +9,9 @@
 *.o
 bin/*
 *.swp
+*.dll
+bandcamp
+*.exe
 
 .release_time
 .gradle

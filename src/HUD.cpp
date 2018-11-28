@@ -1,11 +1,7 @@
 /* Team Bandcamp
- * Class function: 
- * 
+ * Class function: Heads up display 
+ * Displays important information for player 
 */
-
-#include <algorithm>
-#include <vector>
-#include <SDL.h>
 
 #include "include/HUD.h"
 #include "include/utils.h"
@@ -28,7 +24,7 @@ int currentHealth;
 // int currentPower;
 
 //Forward declaration
-
+// Set up HUD 
 HUD::HUD()
 {
     init_h = false;
@@ -36,13 +32,16 @@ HUD::HUD()
 	currentOxygen = 100;
 	currentHealth = 90;
 	// currentPower = 90;	// can add for power
+    hud_g = this;
 }
 
+// Deconstructor for HUD 
 HUD::~HUD()
 {
     utils::destroyTextureVector(hud);
 }
 
+// Initialize HUD 
 void HUD::init(SDL_Renderer* _renderer)
 {
 	renderer_h = _renderer;
@@ -59,15 +58,27 @@ void HUD::init(SDL_Renderer* _renderer)
 	init_h = true;
 }
 
-void HUD::update(std::vector<Object*> objectList, Uint32 ticks){
-		
-}
+/* Update hud 
+ * arguments 
+ *
+ *
+*/
+void HUD::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){}
 
+/* 
+ * Keystate - which keys are pressed 
+ *
+*/
 void HUD::input(const Uint8* keystate){
 	
 }
 
-SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level, int health_level) { //, int power_level can add for power 
+std::string HUD::getInstanceName(){
+	return "HUD";
+}
+
+SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int temperature_level, int health_level) {
+
 	Oxygen = {109, std::min(144, 54+(91-(oxygen_level-9))), 33, std::max(1, oxygen_level-9)};
 	switch(oxygen_level)
 	{
@@ -216,10 +227,16 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 	return renderer_h;
 }
 
-SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer){
+// Draw 
+SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer, SDL_Rect cam){
 	gRenderer = change_levels(gRenderer, currentOxygen, currentTemp, currentHealth); // , currentPower can add for power level
 	SDL_SetRenderDrawColor(renderer_h, 0, 0, 0, 255);
 	SDL_RenderCopy(gRenderer, hud[0], NULL, NULL);
 	if (currentHealth == 0) SDL_RenderCopy(gRenderer, hud[1], NULL, NULL);
 	return gRenderer;
+}
+
+// 
+bool HUD::isUsed() {
+	return false;
 }

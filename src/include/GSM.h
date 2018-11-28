@@ -6,18 +6,27 @@
 #include <iostream>
 #include <string>
 #include <vector>
+#include <SDL_image.h>
 #include "screen.h"
+#include "menu.h"
+#include "randommap.h"
+
+
+#include "testtransition_1.h"
 
 class GSM {
 	private:
 		std::vector<Screen*> roomList;
-		int currentScreen;
 		int previousScreen; //To check if we changed rooms
 		bool running;
 		SDL_Renderer* rendererReference;
+		Menu * testMenu;
 	public:
+		
 		GSM();
 		//~GSM();
+		static int currentScreen;
+		static void setCurrentScreen(int newScreen);
 		void init(SDL_Renderer *renderer);
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
