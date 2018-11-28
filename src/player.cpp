@@ -254,15 +254,6 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 	if (right)
 		x_deltav += 1;
 	if (space && !projCooldown && !projActive) {
-		//std::cout << "\nPressed space bar" << std::endl;
-
-		/* Projectile *newProj = new Projectile(projsType);
-		projList[newProj->getInstanceName()] = newProj;
-		newProj->init(rendererReference); */
-		spaceHeld = true;
-	} else if (!space) {
-		spaceHeld = false;
-
 		Projectile *newProj = new Projectile(projsType, playerRect.x, playerRect.y);
 		projList[newProj->getInstanceName()] = newProj;
 		newProj->init(rendererReference);
