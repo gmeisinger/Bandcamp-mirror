@@ -8,18 +8,16 @@
 #include "credits.h"
 #include "GSM.h"
 
-class GSM;
-
-//extern int SCREEN_WIDTH;
-//extern int SCREEN_HEIGHT;
-//extern int TILE_SIZE;
+	extern int screen_w;
+	extern int screen_h;
+	extern int tile_s;
 
 class Game {
 	private:
 		bool running;
 		SDL_Window* gWindow;
 		SDL_Renderer* gRenderer;
-		GSM * gsm;
+		GSM gsm;
 	public:
 		Game();
 		//~Game();
