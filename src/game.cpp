@@ -14,6 +14,7 @@ constexpr int TILE_SIZE = 32;
 int screen_w;
 int screen_h;
 int tile_s;
+bool run_in_credits = false;
 
 //Starts new game
 Game::Game() {
@@ -113,10 +114,16 @@ void Game::run() {
 		draw();
 		last_time = cur_time;
 	}
+	
 	//credits
-	//Credits creds = Credits(gRenderer);
-	//creds.load();
-	//creds.play();
+	if(run_in_credits)
+	{
+		Credits creds = Credits(gRenderer);
+		creds.load();
+		creds.play();		
+	}//end if(run_in_credits) 
+
+	
 	close();
 }
 
