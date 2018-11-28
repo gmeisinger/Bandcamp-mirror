@@ -17,7 +17,7 @@ SDL_Texture* utils::loadTexture(SDL_Renderer* renderer, std::string fname) {
 		return nullptr;
 	}
 	//color key
-	SDL_SetColorKey(startSurf, SDL_FALSE, SDL_MapRGB(startSurf->format, 0, 0xFF, 0xFF));
+	SDL_SetColorKey(startSurf, SDL_TRUE, SDL_MapRGB(startSurf->format, 0, 0xFF, 0xFF));
     //create texture from image
 	newTexture = SDL_CreateTextureFromSurface(renderer, startSurf);
 	if (newTexture == nullptr) {
@@ -39,18 +39,3 @@ void utils::destroyTextureVector(std::vector<SDL_Texture*> vect)
 		i = nullptr;
 	}
 }
-
-/* normDist_sd1:
- * Random number generator using Normal Distribution, Mean of 0, Standard Distribution 1
- * Generates number usually between [-3,3], most commonly 0
- */
-//std::default_random_engine generator;
-//std::random_device r;
-std::mt19937 generator{};                                 // Random number generator
-//generator.seed(std::random_device()());                 // Seed Generator
-std::uniform_int_distribution<int> distribution(-3,3);   // Create Distribution
-
-int utils::normDist_sd1() {
-    return(distribution(generator));
-}
-//std::cout << dice()+dice()+dice() << std::endl;

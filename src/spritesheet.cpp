@@ -8,15 +8,12 @@
 SDL_Texture* texture;
 std::vector< std::vector< SDL_Rect > > clips;
 
-//
 SpriteSheet::SpriteSheet(SDL_Texture* _texture) {
 	texture = _texture;
 }
 
-//
 SpriteSheet::SpriteSheet() {}
 
-//
 SpriteSheet::~SpriteSheet() {
 
 }
@@ -35,7 +32,6 @@ void SpriteSheet::setClips(int _cols, int _rows, int _width, int _height) {
 	}
 }
 
-//
 SDL_Texture* SpriteSheet::getTexture() {
 	return texture;
 }
