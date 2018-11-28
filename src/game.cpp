@@ -25,7 +25,7 @@ Game::Game() {
 	screen_w = SCREEN_WIDTH;
 	screen_h = SCREEN_HEIGHT;
 	tile_s = TILE_SIZE;
-}
+}//end constructor
 
 bool Game::init() {
 	
@@ -65,11 +65,11 @@ bool Game::init() {
 	
 	running = true;
 	return true;
-}
+}//end init
 
 void Game::update(Uint32 ticks) {
 	gsm.update(ticks);
-}
+}//end update
 
 void Game::draw() {
 	//Clear the Screen
@@ -79,11 +79,11 @@ void Game::draw() {
 	//Draw the current Screen
 	gRenderer = gsm.draw(gRenderer);
 	SDL_RenderPresent(gRenderer);
-}
+}//end draw
 
 void Game::input(const Uint8* keystate){
 	gsm.input(keystate);
-}
+}// end input
 
 //main game loop
 void Game::run() {
@@ -125,17 +125,21 @@ void Game::run() {
 
 	
 	close();
-}
+}//end run
 
 //free memory and quit
-void Game::close() {
+void Game::close()
+{
 	
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
+	Mix_FreeMusic(bgm);
+
     gRenderer = nullptr;
 	gWindow = nullptr;
 
 	// Quit SDL subsystems
+    Mix_Quit();
     IMG_Quit();
 	SDL_Quit();
-}
+}//end close
