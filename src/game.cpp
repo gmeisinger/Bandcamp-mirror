@@ -11,6 +11,7 @@ constexpr int SCREEN_WIDTH = 800;
 constexpr int SCREEN_HEIGHT = 600;
 constexpr int TILE_SIZE = 32;
 
+Mix_Music *bgm;
 int screen_w;
 int screen_h;
 int tile_s;
@@ -25,11 +26,12 @@ Game::Game() {
 	screen_w = SCREEN_WIDTH;
 	screen_h = SCREEN_HEIGHT;
 	tile_s = TILE_SIZE;
+
 }//end constructor
 
 bool Game::init() {
 	
-	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
+	if (SDL_Init(SDL_INIT_VIDEO | SDL_INIT_AUDIO) < 0) {
 		std::cout << "SDL could not initialize! SDL_Error: " << SDL_GetError() << std::endl;
 		return false;
 	}
@@ -57,6 +59,8 @@ bool Game::init() {
 		printf( "SDL_image could not initialize! SDL_image Error: %s\n", IMG_GetError() );
 		return false;
 	}
+
+
 	// Set renderer draw/clear color
 	SDL_SetRenderDrawColor(gRenderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	
@@ -95,6 +99,13 @@ void Game::run() {
 	Uint32 cur_time = 0;
 	Uint32 ticks = 0;
 	
+
+	//music logic
+	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
+        std::cout << "ERROR" << Mix_GetError() << std::endl;	
+    //set a default for now ;)
+    bgm = Mix_LoadMUS("music/New Territory/CS1666 Game Music 4 110bpm Cm.wav");
+
 	//main loop
 	while(running) {
 		//handle events on queue
@@ -103,8 +114,25 @@ void Game::run() {
 			if(e.type == SDL_QUIT) {
 				running = false;
 			}
-		
-		}
+			else if(e.type == SDL_KEYDOWN)// pressed key for music
+            {
+                switch(e.key.keysym.sym)
+                {
+                    case SDLK_m: // play or resume music 
+                        if(!Mix_PlayingMusic())
+                            Mix_PlayMusic(bgm, -1);
+                        else if(Mix_PausedMusic())
+                            Mix_ResumeMusic();
+                        else
+                            Mix_PauseMusic();
+                        break;
+                    case SDLK_n: // pause music
+                        Mix_HaltMusic();
+                        break;
+                }//end switch
+			}//end else if(e.type == SDL_KEYDOWN)
+
+		}//end while(SDL_PollEvent(&e) != 0)
 		
 		const Uint8* keystate = SDL_GetKeyboardState( NULL );
 		cur_time = SDL_GetTicks();
@@ -113,7 +141,8 @@ void Game::run() {
 		update(ticks);
 		draw();
 		last_time = cur_time;
-	}
+	
+	}//end while(running)
 	
 	//credits
 	if(run_in_credits)
@@ -137,7 +166,7 @@ void Game::close()
 
     gRenderer = nullptr;
 	gWindow = nullptr;
-
+	bgm = nullptr;
 	// Quit SDL subsystems
     Mix_Quit();
     IMG_Quit();
