@@ -5,7 +5,7 @@ class Room2
 {
 	public:
 		void init_room();
-		void adv_init_room(int o, int t, int p);
+		void adv_init_room(int o, int t, int p, int o2, int t2, int p2);
 		int give_oxygen();
 		int give_temperature();
 		void lower_pressure(int num_of_breaches);
@@ -16,7 +16,19 @@ class Room2
 		void adv_lower_temperature();
 		void raise_temperature(int resource_value);
 	private:
-		int oxygen, temperature, pressure;
+		int oxygen, temperature, pressure, num_breaches;
+		bool breached;
 };
+
+class Breach
+{
+	public:
+		void set_type(int type, Room2 room);
+		void check_type();
+		int return_type();
+		void seal_breach();
+	private:
+		bool isInterior, isExterior;
+}
 
 #endif  //  BANDCAMP_PHYSICS_H_ 
