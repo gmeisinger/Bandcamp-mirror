@@ -2,19 +2,18 @@
  * Class function: 
  * 
 */
-
-#include <SDL.h>
-#include <vector>
-#include <unordered_map>
-
 #include "include/player.h"
 #include "include/game.h"
+#include "include/collision.h"
 #include "include/spritesheet.h"
+#include "include/projectile.h"
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
+constexpr int SHORTEN_DIST = 6;
 
 SDL_Rect playerRect;
+SDL_Rect hitRect;
 SDL_Rect* frame;
 SpriteSheet sheet;
 std::unordered_map<std::string, Animation*> anims;
@@ -23,20 +22,31 @@ int x_deltav;
 int y_deltav;
 int x_vel;
 int y_vel;
+int cooldownTicks;
+bool overlapEnemy;
 
 //Constructor - takes a texture, width and height
 Player::Player(SDL_Rect _rect) {
     playerRect = _rect;
+    hitRect = {playerRect.x + SHORTEN_DIST/2, playerRect.y +SHORTEN_DIST, playerRect.w - SHORTEN_DIST/2, playerRect.h - SHORTEN_DIST};
     x_deltav = 0;
     y_deltav = 0;
     x_vel = 0;
     y_vel = 0;
+	cooldownTicks = 0;
 	up = false;
 	down = false;
 	left = false;
 	right = false;
+	space = false;
+	projCooldown = false;
+    overlapEnemy = false;
+	projsType = 's';
+	std::unordered_map<std::string, Object*> projList;
+    player = this;
 }
 
+//
 Player::Player(){}
 
 //destructor
@@ -44,27 +54,65 @@ Player::~Player() {
 
 }
 
-void Player::init(SDL_Renderer* gRenderer){
-	
+//
+std::string Player::getInstanceName(){
+	return "Player"; //There should only be one instance in the current room
 }
 
+/* Summary
+ * Argument  
+ *
+*/
+void Player::init(SDL_Renderer* gRenderer){
+	rendererReference = gRenderer;
+	
+	//set up player animations
+	setSpriteSheet(utils::loadTexture(gRenderer, "res/spaceman.png"), 4, 4);
+	addAnimation("down", Animation(getSheet().getRow(0)));
+	addAnimation("up", Animation(getSheet().getRow(1)));
+	addAnimation("left", Animation(getSheet().getRow(2)));
+	addAnimation("right", Animation(getSheet().getRow(3)));
+	setAnimation("down");
+
+}
+
+/* Summary
+ * Argument  
+ *
+*/
 void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
     sheet.setClips(_cols, _rows, playerRect.w, playerRect.h);
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 SpriteSheet Player::getSheet() {
     return sheet;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::addAnimation(std::string tag, Animation anim) {
     anims[tag] = anim;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 Animation* Player::getAnimation(std::string tag) {
     return &anims[tag];
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::setAnimation(std::string tag) {
     anim = &anims[tag];
 }
@@ -89,10 +137,19 @@ int Player::getY() {
     return playerRect.y;
 }
 
+//
 SDL_Rect* Player::getRect() {
     return &playerRect;
 }
 
+SDL_Rect* Player::getHitRect() {
+    return &hitRect;
+}
+
+/* Summary
+ * Argument  
+ *
+*/
 void Player::updateVelocity(int _xdv, int _ydv) {
     // If we dont want out dot to be in a frictionless vacuum...
     if (_xdv == 0) {
@@ -124,15 +181,20 @@ void Player::updateVelocity(int _xdv, int _ydv) {
     else if (y_vel > MAX_SPEED)
         y_vel = MAX_SPEED;
 
-    // Also update position
-   this->updatePosition();
 }
 
+// 
 void Player::updatePosition() {
     playerRect.x += x_vel;
     playerRect.y += y_vel;
+    hitRect.x += x_vel;
+    hitRect.y += y_vel;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::checkBounds(int max_width, int max_height) {
     if (playerRect.x < BORDER_SIZE)
         playerRect.x = BORDER_SIZE;
@@ -145,6 +207,10 @@ void Player::checkBounds(int max_width, int max_height) {
         playerRect.y = max_height - playerRect.h - BORDER_SIZE;
 }
 
+/* Summary
+ * Argument  
+ *
+*/
 void Player::updateAnimation(Uint32 ticks) {
     if(x_vel == 0 && y_vel == 0) {
         anim->reset();
@@ -169,9 +235,14 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::vector<Object*> objectList, Uint32 ticks) {
+void Player::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
 	int x_deltav = 0;
 	int y_deltav = 0;
+    
+    //Get the position of the player before they move
+    //Needed for collision detection
+    int curX = playerRect.x;
+    int curY = playerRect.y;
 
 	if (up)
 		y_deltav -= 1;
@@ -181,8 +252,25 @@ void Player::update(std::vector<Object*> objectList, Uint32 ticks) {
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
+	if (space && !projCooldown) {
+		//std::cout << "\nPressed space bar" << std::endl;
+		Projectile *newProj = new Projectile(projsType, playerRect.x, playerRect.y);
+		projList[newProj->getInstanceName()] = newProj;
+		newProj->init(rendererReference);
+		projCooldown = true;
+	} else if (projCooldown) {
+		if (cooldownTicks >= 50) {
+			cooldownTicks = 0;
+			projCooldown = false;
+		} else {
+			cooldownTicks++;
+		}
+	}
 
 	updateVelocity(x_deltav, y_deltav);
+
+    //Checks if you are overlapping an enemy, slows down velocity if you are
+    //checkEnemy(x_deltav, y_deltav);
 
     //update animation
     updateAnimation(ticks);
@@ -191,21 +279,109 @@ void Player::update(std::vector<Object*> objectList, Uint32 ticks) {
 	updatePosition();
 
 	// Check you haven't moved off the screen
-	checkBounds(screen_w, screen_h);
+	//checkBounds(screen_w, screen_h);
+
+    //Check you haven't collided with object
+    checkCollision(curX, curY, grid);
+	
+	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
+	while(it != projList.end()) {
+		if(it->second->isUsed()) {
+			it = projList.erase(it);
+			break;
+		} else {
+			it->second->update(objectList, grid, ticks);
+		}
+		it++;
+	}
 }
 
-void Player::input(const Uint8* keystate)
-{
+/* Summary
+ * Argument  
+ *
+*/
+void Player::input(const Uint8* keystate) {
 	up = keystate[SDL_SCANCODE_W];
 	left = keystate[SDL_SCANCODE_A];
 	down = keystate[SDL_SCANCODE_S];
 	right = keystate[SDL_SCANCODE_D];
+	space = keystate[SDL_SCANCODE_SPACE];
+	if (up) projsType = 'n';
+	else if (left) projsType = 'e';
+	else if (down) projsType = 's';
+	else if (right) projsType = 'w';
+	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
+	while(it != projList.end()){
+		it->second->input(keystate);
+		it++;
+	}
 }
 
-SDL_Renderer* Player::draw(SDL_Renderer* renderer) {
-	//SDL_SetRenderDrawColor(renderer, 0x00, 0xFF, 0x00, 0xFF);
-	//SDL_RenderFillRect(renderer, &playerRect);
-    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), getRect());
-	
-   return renderer;
+/* Summary
+ * Argument  
+ *
+*/
+SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
+    SDL_Rect* dest = new SDL_Rect;
+    *dest = playerRect;
+    dest->x -= cam.x;
+    dest->y -= cam.y;
+    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
+	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
+	while(it != projList.end()){
+		renderer = it->second->draw(renderer, cam);
+		it++;
+	}
+	return renderer;
+}
+
+/* Summary
+ * Argument  
+ *
+*/
+bool Player::isUsed() {
+    return false;
+}
+
+/* Summary
+ * Argument  
+ *
+*/
+void Player::setEnemy(bool _overlap) {
+    overlapEnemy = _overlap;
+}
+
+void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid)
+{
+    if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
+        playerRect.x = curX;
+        hitRect.x = curX + SHORTEN_DIST/2;
+    }
+    
+    if(collision::checkColTop(hitRect, grid, 32) || collision::checkColBottom(hitRect, grid, 32)) {
+        playerRect.y = curY;
+        hitRect.y = curY+SHORTEN_DIST;
+
+        playerRect.x += x_vel;
+        hitRect.x += x_vel;
+
+        y_vel = 0;
+        if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
+            x_vel = 0; 
+            playerRect.x = curX;
+            hitRect.x = curX + SHORTEN_DIST/2; 
+        }
+    }
+    
+}
+
+/* Summary
+ * Argument  
+ *
+*/
+void Player::checkEnemy(int _xdv, int _ydv){
+    if(overlapEnemy){
+        x_vel -= x_vel/2;
+        y_vel -= y_vel/2;
+    }
 }
