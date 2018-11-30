@@ -108,7 +108,7 @@ void Projectile::init(SDL_Renderer *renderer){
 		
 void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	updatePosition(ticks);
-	checkProjOverlap(grid);
+	checkProjOverlap(objectList, grid);
 }
 
 SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
@@ -152,17 +152,41 @@ void Projectile::updatePosition(Uint32 ticks){
 	}
 }
 
-void Projectile::checkProjOverlap(std::vector<std::vector<Tile*>> &grid) {
-	if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) || 
-	   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
-		projUsed = true;
-    }
+void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()) {
+		if(it->second->getInstanceName().find("ooze") != -1) {
+			if (collision::checkCol(projRect, *(it->second->getRect()))) {
+				it = objectList.erase(it);
+				projUsed = true;
+				break;
+			}
+		}
+		it++;
+	}
+	
+	if (!projUsed) {
+		//Uhhhhh......
+		if(collision::checkColLeft(projRect, grid, 32)) {
+			//Create breach
+			projUsed = true;
+		} else if (collision::checkColRight(projRect, grid, 32)) {
+			//Create breach
+			projUsed = true;
+		} else if (collision::checkColTop(projRect, grid, 32)) {
+			//Create breach
+			projUsed = true;
+		} else if (collision::checkColBottom(projRect, grid, 32)) {
+			//Create breach
+			projUsed = true;
+		}
+	}
 }
 
 bool Projectile::isUsed() {
 	return projUsed;
 }
 
-SDL_Rect* Projectile::getProjRect() {
+SDL_Rect* Projectile::getRect() {
     return &projRect;
 }

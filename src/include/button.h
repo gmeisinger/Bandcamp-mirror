@@ -34,6 +34,7 @@ class Button : public Object
 		bool isUsed();
 		void input(const Uint8* keystate);
 		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
+		SDL_Rect* getRect();
 };
 
 #endif // BANDCAMP_BUTTON_H_

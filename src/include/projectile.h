@@ -34,8 +34,8 @@ class Projectile : public Object
 		Projectile(char type, int playerX, int playerY);
         ~Projectile();
 		Projectile();
-		void checkProjOverlap(std::vector<std::vector<Tile*>> &grid);
-		SDL_Rect* getProjRect();
+		void checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid);
+		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
 };

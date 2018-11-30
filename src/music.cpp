@@ -11,6 +11,7 @@
 #include <string>
 #include <iostream>
 
+/*
 SDL_Texture *LoadTexture(std::string filePath, SDL_Renderer *renderTarget)
 {
     SDL_Texture *texture = nullptr;
@@ -98,3 +99,4 @@ int main(int argc, char *argV[])
 
     return 0;
 }//end main
+*/
