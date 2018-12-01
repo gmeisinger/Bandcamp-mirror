@@ -22,7 +22,7 @@ OBJ = $(patsubst src/%.cpp, obj/%.o, $(SRC))
 # but do not appear to cause problems if all includes are thrown into the base MinGW
 # install. this is true even if the specified directories do not exist. with luck,
 # it's the same in unix. 'twould mean our installs can be different and still coexist.
-
+ 
 ifeq ($(OS), Windows_NT)
 	DETECTED_OS = $(OS) -ggdb
 	CC = g++ -std=c++11
@@ -41,8 +41,8 @@ else
 	DETECTED_OS := $(shell uname -s)
 	CC = g++ -std=c++11 -ggdb
 	CFLAGS = -c -I/usr/include/SDL2
-	INCLUDE = -I/usr/include/SDL2 -lSDL2_ttf
-	LFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -o $(OUT)
+	INCLUDE = -I/usr/include/SDL2 -lSDL2_ttf -lSDL2_mixer
+	LFLAGS = -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -o $(OUT)
 	LFLAGScr = -lSDL2 -lSDL2_image 
 endif
 
