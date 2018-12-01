@@ -33,10 +33,10 @@ ifeq ($(OS), Windows_NT)
 else ifeq ($(shell uname -s), Darwin)
 	DETECTED_OS := $(shell uname -s)
 	CC = g++ -std=c++11
-	CFLAGS = -c -I/Library/Frameworks/SDL2.framework/Headers  -I/Library/Frameworks/SDL2_image.framework/Headers -I/Library/Frameworks/SDL2_ttf.framework/Headers -F/Library/Frameworks/
-	INCLUDE = -I/Library/Frameworks/SDL2.framework/Headers -I/Library/Frameworks/SDL2_image.framework/Headers -I/Library/Frameworks/SDL2_ttf.framework/Headers -F/Library/Frameworks/
-	LFLAGS = -framework SDL2 -framework SDL2_image -framework SDL2_ttf -o $(OUT) 
-	LFLAGScr = -framework SDL2 -framework SDL2_image -framework SDL2_ttf
+	CFLAGS = -c -I/Library/Frameworks/SDL2.framework/Headers  -I/Library/Frameworks/SDL2_image.framework/Headers -I/Library/Frameworks/SDL2_ttf.framework/Headers -I/Library/Frameworks/SDL2_mixer.framework/Headers -F/Library/Frameworks/
+	INCLUDE = -I/Library/Frameworks/SDL2.framework/Headers -I/Library/Frameworks/SDL2_image.framework/Headers -I/Library/Frameworks/SDL2_ttf.framework/Headers -I/Library/Frameworks/SDL2_mixer.framework/Headers -F/Library/Frameworks/
+	LFLAGS = -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer -o $(OUT) 
+	LFLAGScr = -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer
 else
 	DETECTED_OS := $(shell uname -s)
 	CC = g++ -std=c++11 -ggdb
