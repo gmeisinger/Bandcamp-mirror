@@ -64,6 +64,7 @@ class Player : public Object
         bool isUsed();
         void setEnemy(bool _overlap);
         void checkEnemy(int _xdv, int _ydv);
+        bool getProjActive();
 };
 
 #endif  //  BANDCAMP_PLAYER_H_

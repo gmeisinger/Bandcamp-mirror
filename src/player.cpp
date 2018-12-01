@@ -388,3 +388,10 @@ void Player::checkEnemy(int _xdv, int _ydv){
         y_vel -= y_vel/2;
     }
 }
+
+/* getter method to be used by the ooze for its behavior
+ * Returns: bool 
+*/
+bool Player::getProjActive() {
+    return projActive;
+}

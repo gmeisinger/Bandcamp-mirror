@@ -29,6 +29,7 @@ hostility{0}
     y_vel = 1;
 
     ate = 0;
+    int ateTicks = 0;
     
     // Genetic statistics
     stats.health =      3 + utils::normDist_sd1();
@@ -42,9 +43,6 @@ hostility{0}
     lastRoom = nullptr;
     initialized = false;
 }
-
-//Other constructor?
-//Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
 // Copy Constructor
 Ooze::Ooze(const Ooze& other)
@@ -62,15 +60,15 @@ std::string Ooze::getInstanceName(){
 	return "ooze-"+ss.str();
 }
 
-/* Summary
- * Argument  
- *
+/* Inherited input method (not used)
+ * Argument: irrelevent  
+ * 
 */
 void Ooze::input(const Uint8* keystate){}
 
-/* Summary
- * Argument  
- *
+/* init method, sets sprite and animation
+ * Argument: SDL_Renderer* gRenderer
+ * Returns: void
 */
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
@@ -78,17 +76,19 @@ void Ooze::init(SDL_Renderer* gRenderer) {
     setAnimation("wandering");
 }
 
-/* Summary
- * Argument  
- *
+/* setSpriteSheet method, takes in texture and number of columns and rows
+ * Argument: SDL_Texture* _sheet, int _cols, int _rows  
+ * Returns: void
 */
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
     sheet.setClips(_cols, _rows, rect.w, rect.h);
 }
 
-//*********TO DO:
-//update motion here
+/* update method, performs some updates here and also calls other update methods
+ * Argument: unordered_map<string, Object*> &objectList, vector<vector<Tile*>> &grid, Uint32 ticks  
+ * Returns: void
+*/
 void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
@@ -113,8 +113,12 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     bool stateChange = updateState(objectList, ticks);
 
 	bool overlap = checkOozeOverlap(objectList, ticks);
-	if(!overlap){    
-        target = pickTarget(objectList, grid);
+	if(!overlap){  
+        if (iter > 15) {  // slow down rate of checking for new target
+            // maybe do if stateChange?
+            target = pickTarget(objectList, grid);
+            iter = 0;
+        }
         if (target) {
             //check which direction the target is
             //Only move if we can see the player
@@ -125,6 +129,9 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
         //If we don't have a line of sight with the player or pickup, check the other room
         else {
             //moveRoom(grid);
+
+            //for now, just slow down to a stop if there's no target
+            //updateVelocity(x_deltav,y_deltav);
         }
         updatePosition();
     }
@@ -133,29 +140,26 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     updateAnimation(ticks);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid, true);
+    iter++;
 }
 
-/* Summary
- * Argument  
- *
+/* increaseHostility. When called, if less than max, increase by 1
 */
 void Ooze::increaseHostility() {
 	if (hostility < 10)
 		hostility++;
 }
 
-/* Summary
- * Argument  
- *
+/* decreaseHostility. When called, if more than min, decrease by 1
 */
 void Ooze::decreaseHostility() {
 	if (hostility >  0)
 		hostility--;
 }
 
-/* Summary
- * Argument  
- *
+/* draw method. Used to draw ooze in current animation frame
+ * Argument: SDL_Renderer* renderer, SDL_Rect cam
+ * Returns: SDL_Renderer*
 */
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_Rect* dest = new SDL_Rect;
@@ -166,12 +170,17 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
    return renderer;
 }
 
+/* pickTarget method, used to find the Object rect this Ooze is currently trying to chase
+ * could be a pickup or the Player. Which it chooses depends on its state.
+ * Argument: unordered_map<string, Object*> &objectList, vector<vector<Tile*>> &grid
+ * Returns: SDL_Rect*
+*/
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
-    iter++;
-    if( state == HANGRY && iter > 15) {
-        iter = 0;
+    //iter++;
+    if ( state == HANGRY ) {//&& iter > 15) {
+        //iter = 0;
         std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
-        while(it != objectList.end()){
+        while (it != objectList.end()) {
             if (!it->first.substr(0,6).compare("Pickup")) {
                 //std::cout << "there is a pickup :) " << std::endl;
                 Pickup* temp = (Pickup*)it->second;
@@ -196,14 +205,16 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
     return nullptr;
 }
 
-// TODO: combine this with the overlap method below, which
-//       checks for overlap betw. ooze and player
+/* foundFood method. Used to check for collision with a Pickup. Note that this is only called from Pickup.
+ * Used in Pickup's checkPickupOverlap method. That method is the one that sets the used to true.
+ * Argument: Pickup* food
+ * Returns: bool
+*/
 bool Ooze::foundFood(Pickup* food) {
     if (food) {
         SDL_Rect* fRect = food->getRect();
         bool overlap = collision::checkCol(rect, *fRect);
         if (overlap) {
-            //food->use();
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
             //std::cout << s << std::endl;
@@ -213,20 +224,26 @@ bool Ooze::foundFood(Pickup* food) {
     return false;
 }
 
-/* Summary
- * Argument  
- *
+/* getAte getter method. Used to check if (how many) the ooze has eaten a pickup.
+ * Argument: none
+ * Returns: int
 */
 int Ooze::getAte() {
     return ate;
 }
 
-
+/* getState getter method. Used to check the state of the ooze.
+ * Argument: none
+ * Returns: OozeState
+*/
 OozeState Ooze::getState() {
     return state;
 }
 
-
+/* updateState method. Used to update the state of the Ooze.
+ * Argument: unordered_map<string, Object*> &objectList, Uint32 ticks
+ * Returns: bool
+*/
 bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks) {
     
     switch(this->state) {
@@ -235,22 +252,30 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case HANGRY: {
-            std::cout << "hangry" << std::endl;
-            if (false) { // switch to when over food
+            //std::cout << "hangry" << std::endl;
+            if (player->getProjActive()) {
+                state = FLEEING; 
+                return true;
+            }
+            if (ate > 0) { // clone after one pickup fo00d
+                ate = 0;
                 state = EATING;
                 return true;
             }
             break;
         }
+        /*
         case EATING: {
             std::cout << "eating" << std::endl;
             if (ate > 0) { // time to eat
+                //ateTicks += ticks;
                 ate = 0;
                 state = CLONING;
                 return true;
             }
             break;
         }
+        */
         case CLONING: {
             std::cout << "cloning" << std::endl;
             RandomMap::setSpawnOoze(true);
@@ -268,6 +293,11 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case FLEEING: {
+            // go opposite of player if possible??
+            if (!player->getProjActive()) {
+                state = HANGRY; 
+                return true;
+            }
             // look for hiding places
             /*if ( next to hiding spot ) {
                 state = HIDING;
@@ -286,8 +316,11 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
     return false;
 }
 
-//Checks if the player overlapped with the ooze and acts accordingly
-//based on pickup's method
+
+/* Checks if the player overlapped with the ooze and acts accordingly
+ * Argument: unordered_map<string, Object*> &objectList, Uint32 ticks  
+ * Returns: bool
+*/
 bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks) {
 	SDL_Rect* pRect = player->getRect();
 	bool overlap = collision::checkCol(rect, *pRect);
@@ -295,7 +328,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList
 		overlapTicks += ticks;
 		if (overlapTicks > stats.attack) {
 			hud_g->currentHealth = std::max(0, hud_g->currentHealth-damage);
-			std::string s = "HIT: "+getInstanceName();
+			//std::string s = "HIT: "+getInstanceName();
 			//std::cout << s << std::endl;
 			overlapTicks = 0;
 		}
@@ -308,9 +341,9 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList
 	return overlap;
 }
 
-/* Summary
- * Argument  
- *
+/* updateAnimation simply sets the next frame of the animation based on time
+ * Argument: Uint32 ticks
+ * Returns: void
 */
 void Ooze::updateAnimation(Uint32 ticks) {
 
@@ -326,18 +359,16 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-/* Summary
- * Argument  
- *
+/* updatePosition setter method
 */
 void Ooze::updatePosition() {
     rect.x += x_vel;
     rect.y += y_vel;
 }
 
-/* Summary
- * Argument  
- *
+/* checkBounds method used to ensure ooze doesn't travel outside map 
+ * Argument: int max_width, int max_height, bool move
+ * Returns: void
 */
 void Ooze::checkBounds(int max_width, int max_height, bool move) {
     if(move)
@@ -379,10 +410,6 @@ void Ooze::checkBounds(int max_width, int max_height, bool move) {
 }
 
 
-/* Summary
- * Argument  
- *
-*/
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
@@ -545,6 +572,7 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 
 //This version of Bresenham's moves the player in as stright a line as possible to 
 //the player
+//Depending on the state of the Oooze, it might move towards or away.
 void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     int deltaX = target->x - rect.x;
     int deltaY = target->y - rect.y;
@@ -559,14 +587,25 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     deltaX = abs(deltaX * 2);
     deltaY = abs(deltaY * 2);
 
-    if (target->y > rect.y) 
-        yDir = 1;
-	if (target->x > rect.x) 
-        xDir = 1;
-	if (target->y < rect.y) 
-        yDir = -1;
-	if (target->x < rect.x) 
-        xDir = -1;
+    if (state == FLEEING) {
+        if (target->y > rect.y) 
+            yDir = -1;
+        if (target->x > rect.x) 
+            xDir = -1;
+        if (target->y < rect.y) 
+            yDir = 1;
+        if (target->x < rect.x) 
+            xDir = 1;
+    } else {
+        if (target->y > rect.y) 
+            yDir = 1;
+    	if (target->x > rect.x) 
+            xDir = 1;
+    	if (target->y < rect.y) 
+            yDir = -1;
+    	if (target->x < rect.x) 
+            xDir = -1;
+    }
 
     if(deltaX > deltaY) {
         moveSlope = deltaY * 2 - deltaX;
