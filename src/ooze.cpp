@@ -28,7 +28,7 @@ hostility{0}
     x_vel = 1;
     y_vel = 1;
 
-    ate = 0;
+    ate = 1;
     
     // Genetic statistics
     stats.health =      std::max(1, 3   + utils::normDist());
@@ -52,9 +52,20 @@ hostility{0}
 
 // Copy Constructor
 Ooze::Ooze(const Ooze& other)
-    :Ooze(other.curRoom)
 {
-//    this.
+    curRoom = other.curRoom;
+    stats.health =      std::max(1, other.stats.health   + utils::normDist());
+    stats.attack =      std::max(1, other.stats.attack  + utils::normDist()); //time delay between ticks damage
+    stats.speed =       std::max(1, 3   + utils::normDist());
+    stats.health_cost = std::max(1, 3   + utils::normDist());
+    stats.num_cost =    std::max(1, 3   + utils::normDist());
+    std::cout << "Ooze "  << oozeNumber  << ":"
+    << " HP " << stats.health
+    << " ATK " << stats.attack
+    << " SPD " << stats.speed
+    << " HC " << stats.health_cost
+    << " NC " << stats.num_cost
+    << "\n";
 }
 
 //Destructor
