@@ -31,14 +31,18 @@ hostility{0}
     ate = 0;
     
     // Genetic statistics
-    stats.health =      std::max(1, 3   + utils::normDist_sd1());
-    stats.attack =      std::max(1, 50  + utils::normDist_sd1()); //time delay between ticks damage
-    stats.speed =       std::max(1, 3   + utils::normDist_sd1());
-    stats.health_cost = std::max(1, 3   + utils::normDist_sd1());
-    stats.num_cost =    std::max(1, 3   + utils::normDist_sd1());
-    std::cout << "ooze health: " << stats.health << "\n";
-    std::cout << "ooze attack: " << stats.attack << "\n";
-
+    stats.health =      std::max(1, 3   + utils::normDist());
+    stats.attack =      std::max(1, 50  + utils::normDist()); //time delay between ticks damage
+    stats.speed =       std::max(1, 3   + utils::normDist());
+    stats.health_cost = std::max(1, 3   + utils::normDist());
+    stats.num_cost =    std::max(1, 3   + utils::normDist());
+    std::cout << "Ooze "  << oozeNumber  << ":"
+        << " HP " << stats.health
+        << " ATK " << stats.attack
+        << " SPD " << stats.speed
+        << " HC " << stats.health_cost
+        << " NC " << stats.num_cost
+        << "\n";
     lastRoom = nullptr;
     initialized = false;
 }

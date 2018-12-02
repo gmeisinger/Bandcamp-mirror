@@ -45,16 +45,21 @@ void utils::destroyTextureVector(std::vector<SDL_Texture*> vect)
  * Generates number usually between [-3,3], most commonly 0
  */
 
-// Create Timer
-typedef std::chrono::high_resolution_clock myclock;
-myclock::time_point beginning = myclock::now();
-// Obtain a seed from the timer
-myclock::duration d = myclock::now() - beginning;
-unsigned seed2 = d.count();
-std::mt19937 generator(seed2);                                 // Random number generator
-std::uniform_int_distribution<int> distribution(-3,3);   // Create Distribution
 
-int utils::normDist_sd1() {
-    return(distribution(generator));
+typedef std::chrono::high_resolution_clock myclock; // Create Timer
+myclock::time_point beginning = myclock::now();     // Set beginning
+myclock::duration d = myclock::now() - beginning;   // Take time span
+unsigned seed2 = d.count();                         // Obtain a seed from the timer
+std::mt19937 generator(seed2);                                 // Random number generator
+std::uniform_int_distribution<int> uniform_dist(-3,3);   // Create Distribution
+std::normal_distribution<float> norm_dist(0,2);   // Create Distribution
+
+// Generates int with high probability of being -1,0, or 1, with lesser probabilies outside of that range
+int utils::normDist() {
+    return((int)norm_dist(generator));
+}
+// Generates int in [-3,3] range with equal probability
+int utils::uniformDist() {
+    return(uniform_dist(generator));
 }
 //std::cout << dice()+dice()+dice() << std::endl;
