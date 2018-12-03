@@ -127,14 +127,15 @@ void RandomMap::update(Uint32 ticks){
 	}*/
 
 	if (updateCount == 0) {
-		h.currentTemp = std::max(0, h.currentTemp-5);
-		h.currentOxygen = std::max(0, h.currentOxygen-5);
-		if (h.currentTemp == 0) {
-			h.currentHealth = std::max(0, h.currentHealth-5);
-		}
-		if (h.currentOxygen == 0) {
-			h.currentHealth = std::max(0, h.currentHealth-5);
-		}
+		Room ro = rooms.getRoom(0);
+		h.currentTemp = ro->physics.give_temperature();
+		h.currentOxygen = ro->physics.give_oxygen();
+		// if (h.currentTemp == 0) {
+			// h.currentHealth = std::max(0, h.currentHealth-5);
+		// }
+		// if (h.currentOxygen == 0) {
+			// h.currentHealth = std::max(0, h.currentHealth-5);
+		// }
 	}
 	updateCount = (updateCount+1)%UPDATE_MAX;
 }
