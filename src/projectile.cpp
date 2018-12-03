@@ -140,25 +140,12 @@ void Projectile::updatePosition(Uint32 ticks){
 }
 
 void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
-	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
-	while(it != objectList.end()) {
-		if(it->second->getInstanceName().find("ooze") != -1) {
-			if (collision::checkCol(projRect, *(it->second->getRect()))) {
-				projUsed = true;
-				break;
-			}
-		}
-		it++;
-	}
-	
-	if (!projUsed) {
-		if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) ||
-		   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
-			Breach* newBreach = new Breach(projType, projRect, projDrawBox);
-			newBreach->init(rendererReference);
-			objectList[newBreach->getInstanceName()] = newBreach;
-			projUsed = true;
-		}
+	if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) ||
+	   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
+		Breach* newBreach = new Breach(projType, projRect, projDrawBox);
+		newBreach->init(rendererReference);
+		objectList[newBreach->getInstanceName()] = newBreach;
+		projUsed = true;
 	}
 }
 

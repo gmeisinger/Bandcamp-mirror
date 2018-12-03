@@ -157,6 +157,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 		if(it->second->getInstanceName().find("proj") != -1) {
 			if (collision::checkCol(rect, *(it->second->getRect()))) {
 				std::cout << "Ooze hit" << std::endl;
+				it = objectList.erase(it);
 				//Call function to damage/kill ooze
 				break;
 			}
