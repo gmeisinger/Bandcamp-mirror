@@ -1,6 +1,8 @@
 #ifndef BANDCAMP_PHYSICS_H_
 #define BANDCAMP_PHYSICS_H_
 
+#include "utils.h"
+
 class Room2
 {
 	public:
@@ -9,6 +11,7 @@ class Room2
 		void adv_init_room(int o, int t, int p, int o2, int t2, int p2);
 		int give_oxygen();
 		int give_temperature();
+		void lower_pressure();
 		void lower_pressure(int num_of_breaches);
 		void lower_oxygen();
 		void adv_lower_oxygen();

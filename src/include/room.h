@@ -4,7 +4,8 @@
 #include <SDL.h>
 #include <vector>
 
-#inlcude "physics.h"
+#include "physics.h"
+#include "utils.h"
 
 class Room
 {
