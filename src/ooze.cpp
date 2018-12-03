@@ -12,7 +12,7 @@ Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 // Constructor
 Ooze::Ooze(Room* room):
-state{HANGRY},
+state{ROAMING}, ////////////
 hostility{0}
 {
     target = player->getRect();
@@ -42,6 +42,7 @@ hostility{0}
 
     lastRoom = nullptr;
     initialized = false;
+    //srand(time(NULL));
 }
 
 // Copy Constructor
@@ -201,6 +202,23 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
         }
     }else if ( state == FIGHTING ) {
         return player->getRect();
+    }else if ( state == ROAMING ) {
+        if (target == nullptr) { //only change 'target' when there
+
+            randRect = {rand()%this->curRoom->getRect()->w, rand()%this->curRoom->getRect()->h, 30, 30};
+            std::cout << "random x: " << randRect.x << ", curRoom h: " << this->curRoom->getRect()->h << std::endl;
+            /*randRect.x = (rand()%randRect.w)
+            target = {30,30};
+            curRoom->getRect()
+            
+            rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};*/
+            return &randRect;
+        } else if (drawLine(grid, target)) {
+            return target;
+        } else {
+            return nullptr;
+        }
+        
     }
     return nullptr;
 }
@@ -248,7 +266,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
     
     switch(this->state) {
         case ROAMING: {
-            std::cout << "roaming" << std::endl;
+            //std::cout << "roaming" << std::endl;
             break;
         }
         case HANGRY: {
@@ -589,11 +607,19 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     int moveSlope = 0;
     int xDir;
     int yDir;
+    int dir;
 
     deltaX = abs(deltaX * 2);
     deltaY = abs(deltaY * 2);
 
-    if (state == FLEEING) { //move in opposite direction
+    if (state == DODGING) {
+        dir = rand()%2;
+        int temp = deltaX;
+        deltaX = deltaY;
+        deltaY = temp;
+    }
+
+    if (state == FLEEING | state == DODGING && dir == 0) { //move in opposite direction if fleeing, or to left if dodge
         if (target->y > rect.y) 
             yDir = -1;
         if (target->x > rect.x) 
@@ -602,16 +628,7 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
             yDir = 1;
         if (target->x < rect.x) 
             xDir = 1;
-    } else if (state == DODGING) { // can choose to move left or right? for now left by default
-        if (target->y > rect.y) 
-            yDir = -1;
-        if (target->x > rect.x) 
-            xDir = -1;
-        if (target->y < rect.y) 
-            yDir = 1;
-        if (target->x < rect.x) 
-            xDir = 1;
-    } else {
+    } else { //move towards target, or to right if dodge
         if (target->y > rect.y) 
             yDir = 1;
     	if (target->x > rect.x) 
@@ -622,40 +639,7 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
             xDir = -1;
     }
 
-    if (state == DODGING) {
-        int temp = deltaX;
-        deltaX = deltaY;
-        deltaY = temp;
 
-        /*if(deltaX > deltaY) {
-            moveSlope = deltaY * 2 - deltaX;
-            if(moveSlope >= 0) {
-                startY += yDir;
-                moveSlope -= deltaX;
-                y_vel = yDir;
-            }
-            else
-                y_vel = 0;
-
-            startX += xDir;
-            moveSlope += deltaY;
-            x_vel = xDir;
-        }
-        else {
-            moveSlope = deltaX * 2 - deltaY;
-            if(moveSlope >= 0) {
-                startX += xDir;
-                moveSlope -= deltaY;
-                x_vel = xDir;
-            }
-            else
-                x_vel = 0;
-
-            startY += yDir;
-            moveSlope += deltaX;
-            y_vel = yDir;
-        }  */ 
-    } 
 
     if(deltaX > deltaY) {
         moveSlope = deltaY * 2 - deltaX;

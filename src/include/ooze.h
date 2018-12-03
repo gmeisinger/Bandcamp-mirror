@@ -49,7 +49,8 @@ private:
     SDL_Rect rect; // includes x_pos, y_pos, width, height
     //Used to check line of sight
     SDL_Rect colRect;
-
+    SDL_Rect randRect; //sorry I just love rectangles
+    
     int x_vel;
     int y_vel;
     int x_deltav;
