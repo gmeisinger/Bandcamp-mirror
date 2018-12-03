@@ -14,7 +14,7 @@ Mix_Music *bgm;
 //change to true to display credits
 bool run_in_credits = false;
 //change to ture to display music debugging output
-bool music_debug = false;
+bool music_debug = true;
 //used to change through tracks of the song
 int track_counter = 0;
 //Starts new game
@@ -130,7 +130,7 @@ void Game::run() {
 		std::cout << "Loaidng Background music Successful" << std::endl;	
 	//play music
 	Mix_PlayMusic(bgm, -1);
-	
+
 	//main loop 
 	while(running) {
 		//handle events on queue
