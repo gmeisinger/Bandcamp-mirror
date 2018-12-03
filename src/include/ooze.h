@@ -79,7 +79,8 @@ private:
     Room* curRoom;
     Tilemap* tilemap;
     Tile* lastRoom;
-
+    std::vector<Room*> neighbors;
+    
     bool initialized;
     bool squeeze;
     int squeezeItr;

@@ -18,6 +18,7 @@ tilemap{t}
 {
     target = player->getRect();
     curRoom = room;
+    neighbors = curRoom->getNeighbors();
     SDL_Rect *temp = curRoom->getRect();
     rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
@@ -267,7 +268,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                         else if(collision::checkCol(rect, *roomTiles.endTile)) {
                             state = HANGRY;
                             squeeze = false;
-                            //switchRoom();
+                            switchRoom();
                             return nullptr; 
                         }
                         else 
@@ -525,8 +526,8 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     int endY = target->y;
     colRect = {startX, startY, rect.w, rect.h};
     int slope = 0;
-    int xDir;
-    int yDir;
+    int xDir = 0;
+    int yDir = 0;
     bool sight = false;
 
     if (target->y > rect.y) 
@@ -676,6 +677,33 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         }
         tile = map[r][c];
         temp1 = tile->getDest();
+
+        if(horWall) {
+        t = c;
+        if (temp1->y > rect.y) {
+            l = r+2;
+            r = r-1;
+        }
+        if (temp1->y < rect.y) {
+            l = r-2;
+            r = r+1;
+        }
+        }
+        if(verWall) {
+            l = r;
+            if (temp1->x > rect.x) {
+                t = c+2;
+                c = c-1;
+            }
+            if (temp1->x < rect.x) {
+                t = c-2;
+                c = c+1;
+            }
+        }
+        
+        tile = map[r][c];
+        temp1 = tile->getDest();
+
         bool los = drawLine(grid, temp1);
         std::cout << los << std::endl;
         //if(collision::checkCol(curRoom->getRectCopy(), *temp1) && lastRoom != map[r][c]) {
@@ -691,33 +719,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         roomTiles.door = temp1;
         std::cout << "coo" << std::endl;
     }
-    std::cout << "r " << r << " c " << c << " l " << l << " t " << t << std::endl;
-    if(horWall) {
-        t = c;
-        if (temp1->y > rect.y) {
-            l = r+2;
-            r = r-1;
-        }
-        if (temp1->y < rect.y) {
-            l = r-2;
-            r = r+1;
-        }
-    }
-    if(verWall) {
-        l = r;
-        if (temp1->x > rect.x) {
-            t = c+2;
-            c = c-1;
-        }
-        if (temp1->x < rect.x) {
-            t = c-2;
-            c = c+1;
-        }
-    }
-    std::cout << "r " << r << " c " << c << " l " << l << " t " << t << std::endl;
-    tile = map[r][c];
     endTile = map[l][t];
-    temp1 = tile->getDest();
     temp2 = endTile->getDest();
     roomTiles.startTile = temp1;
     roomTiles.endTile = temp2; 
@@ -742,16 +744,15 @@ void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t) {
 }
 
 void Ooze::switchRoom() {
-    std::vector<Room*> n = curRoom->getNeighbors();
-
-    for(int i = 0; i < n.size(); i++) {
-        if(collision::checkCol(n[i]->getRectCopy(), rect)) {
-            curRoom = n[i];
+    for(int i = 0; i < neighbors.size(); i++) {
+        if(collision::checkCol(neighbors[i]->getRectCopy(), *roomTiles.endTile)) {
+            std::cout << "ERE" << std::endl;
+            curRoom = neighbors[i];
+            neighbors = curRoom->getNeighbors();
             roomTiles.door = nullptr;
             roomTiles.startTile = nullptr;
             roomTiles.endTile = nullptr;
             intersects = curRoom->getIntersects();
-            std::cout << "END IN SWITCH" << std:: endl;
             return;
         }
     }
