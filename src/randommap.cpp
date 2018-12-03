@@ -14,6 +14,7 @@
 #include "include/circle.h"
 #include "include/collision.h"
 #include "include/pickup.h"
+#include "include/tilemap.h"
 
 constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
