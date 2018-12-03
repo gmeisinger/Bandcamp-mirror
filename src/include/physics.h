@@ -5,6 +5,7 @@ class Room2
 {
 	public:
 		void init_room();
+		void rand_room();
 		void adv_init_room(int o, int t, int p, int o2, int t2, int p2);
 		int give_oxygen();
 		int give_temperature();
