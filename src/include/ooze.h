@@ -30,7 +30,9 @@ enum OozeState { // is public
         FIGHTING,
         FLEEING,
         HIDING,
-        DYING
+        DYING,
+        ROOMEXIT,
+        ROOMENTER
 };
 
 class Ooze : public Object {
@@ -47,6 +49,7 @@ class Ooze : public Object {
     struct RoomTiles{
         SDL_Rect* startTile;
         SDL_Rect* endTile;
+        SDL_Rect* door;
     };
 
 private:
@@ -78,6 +81,8 @@ private:
     Tilemap* tilemap;
 
     bool initialized;
+    bool squeeze;
+    int squeezeItr;
     std::vector<SDL_Rect> intersects;
     int iter;
     
@@ -132,7 +137,7 @@ public:
     bool drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target);
     void moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target);
     void moveRoom(std::vector<std::vector<Tile*>> &grid);
-    
+    void switchRoom();
     // Math
     void increaseHostility();
     void decreaseHostility();
