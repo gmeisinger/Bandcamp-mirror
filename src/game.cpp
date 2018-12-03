@@ -13,6 +13,9 @@
 Mix_Music *bgm; 
 //change to true to display credits
 bool run_in_credits = false;
+//change to ture to display music debugging output
+bool music_debug = false;
+//used to change through tracks of the song
 int track_counter = 0;
 //Starts new game
 Game::Game() {
@@ -152,7 +155,7 @@ void Game::run() {
                         switch(track_counter)
                         {
                         	case 0: 
-                        		bgm = Mix_LoadMUS("music/New Territory/Minimon1.wav");
+                        		bgm = Mix_LoadMUS("music/CS1666 Game Music 6 120bpm C Minor.wav");
 	                        	Mix_PlayMusic(bgm, -1);                        		
                         		track_counter = 1;
                         		break;
@@ -190,7 +193,7 @@ void Game::run() {
 
                         break;
                 }//end switch(e.key.keysym.sym)
-                
+
 			}//end else if(e.type == SDL_KEYDOWN)
 		
 		}//end while(SDL_PollEvent(&e) != 0)
