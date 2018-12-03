@@ -12,8 +12,8 @@ Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 // Constructor
 Ooze::Ooze(Room* room):
-state{HANGRY},
-hostility{0}
+    state{HANGRY},
+    hostility{0}
 {
     target = player->getRect();
     curRoom = room;
@@ -53,7 +53,10 @@ Ooze::Ooze(const Ooze& other):
 {
     totalOoze++;
     oozeNumber = totalOoze;
+    
     curRoom = other.curRoom;
+    SDL_Rect *temp = curRoom->getRect();
+    rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
     
     stats = other.stats;
     Mutate();
@@ -241,6 +244,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
     switch(this->state) {
         case ROAMING: {
 //            std::cout << "roaming" << std::endl;
+            state = HANGRY;
             break;
         }
         case HANGRY: {
