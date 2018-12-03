@@ -20,8 +20,14 @@ void Room2::init_room() //this will always be used for the first room
 void Room2::rand_room() //this will be every room but the first, creating random values between 100 and 25(?) for each attribute
 {
 	oxygen = (rand()%100)+25; //this will go from a range of 25 to 125
+	if(oxygen>100)
+		oxygen = 100;
 	temperature = (rand()%100)+25;
+	if(temperature>100)
+		temperature = 100;
 	pressure = (rand()%100)+25;
+	if(pressure>100)
+		pressure = 100;
 	bool breached = false;
 	num_breaches = 0;
 	std::cout << "Room was created with:" <<std::endl;
