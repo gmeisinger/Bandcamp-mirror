@@ -124,6 +124,9 @@ void Game::run() {
     //set a default for now ;)
     bgm = Mix_LoadMUS("music/New Territory/CS1666 Game Music 4 110bpm Cm.wav");
 	
+	//play music
+	Mix_PlayMusic(bgm, -1);
+
 	//main loop 
 	while(running) {
 		//handle events on queue
@@ -144,8 +147,10 @@ void Game::run() {
                         else
                             Mix_PauseMusic();
                         break;
-                    case SDLK_n: // pause music
+                    case SDLK_n: // new track
                         Mix_HaltMusic();
+                        bgm = Mix_LoadMUS("music/New Territory/Theme.wav");
+                        Mix_PlayMusic(bgm, -1);
                         break;
                 }//end switch
 			}//end else if(e.type == SDL_KEYDOWN)
