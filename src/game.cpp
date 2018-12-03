@@ -147,12 +147,12 @@ void Game::run() {
                         else
                             Mix_PauseMusic();
                         break;
-                    case SDLK_n: // new track
+                    case SDLK_n: // load a new track by pressing n
                         Mix_HaltMusic();
                         switch(track_counter)
                         {
                         	case 0: 
-                        		bgm = Mix_LoadMUS("music/New Territory/Retrobass.wav");
+                        		bgm = Mix_LoadMUS("music/New Territory/Minimon1.wav");
 	                        	Mix_PlayMusic(bgm, -1);                        		
                         		track_counter = 1;
                         		break;
