@@ -287,12 +287,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()) {
 		if (it->second->getInstanceName().find("proj") != -1 || it->second->getInstanceName().find("breach") != -1) {
-			if(it->second->isUsed()) {
-				it = objectList.erase(it);
-				break;
-			} else {
-				it->second->draw(rendererReference, correction);
-			}
+			it->second->draw(rendererReference, correction);
 		}
 		it++;
 	}
