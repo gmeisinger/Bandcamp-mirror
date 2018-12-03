@@ -249,7 +249,7 @@ void Game::close() {
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
 	Mix_FreeMusic(bgm);
-	MixFreeChunk(fire);
+	Mix_FreeChunk(fire);
 
     gRenderer = nullptr;
 	gWindow = nullptr;
