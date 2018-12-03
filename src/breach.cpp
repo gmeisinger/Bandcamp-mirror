@@ -5,8 +5,6 @@
 
 #include "include/breach.h"
 
-constexpr int FIRED_SPEED = 6;
-
 Uint32 bTicks;
 static int totalInstance = 0;
 
