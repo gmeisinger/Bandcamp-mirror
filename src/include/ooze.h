@@ -56,6 +56,7 @@ private:
     SDL_Rect rect; // includes x_pos, y_pos, width, height
     //Used to check line of sight
     SDL_Rect colRect;
+    SDL_Rect roomRect;
 
     int x_vel;
     int y_vel;
@@ -114,7 +115,7 @@ public:
     bool foundFood(Pickup* pickUp);
     int getAte();
     OozeState getState();
-    void initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t);
+    void initRoom(std::vector<std::vector<Tile*>> &grid);
 
     // Updates
     bool updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks);

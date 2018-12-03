@@ -19,8 +19,8 @@ tilemap{t}
     target = player->getRect();
     curRoom = room;
     neighbors = curRoom->getNeighbors();
-    SDL_Rect *temp = curRoom->getRect();
-    rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
+    roomRect = curRoom->getRectCopy();
+    rect = {((roomRect.x + roomRect.w)/2) * tile_s, ((roomRect.y + roomRect.h)/2) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	int overlapTicks = 0;
@@ -49,7 +49,6 @@ tilemap{t}
     intersects = curRoom->getIntersects();
     squeeze = false;
     squeezeItr = 0;
-
     iter = 0;
 }
 
@@ -103,11 +102,13 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
+     
+    std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
+
     if(!initialized) {
-        initRoom(grid, curRoom->getRect());
+        initRoom(grid);
         initialized = true;
     } 
-    
     //Get the position of the ooze before it moves
     int x_deltav = 0;
 	int y_deltav = 0;
@@ -144,7 +145,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
         checkCollision(curX, curY, grid, true);
 
     iter++;
-    
 }
 
 /* Summary
@@ -731,7 +731,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
 }
 
 //Lets make sure our poor ooze isn't stuck in a wall
-void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t) {
+void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid) {
     int attempts = 0;
     while((collision::checkColLeft(rect, grid, 32) 
     || collision::checkColRight(rect, grid, 32) 
@@ -745,7 +745,8 @@ void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t) {
 
 void Ooze::switchRoom() {
     for(int i = 0; i < neighbors.size(); i++) {
-        if(collision::checkCol(neighbors[i]->getRectCopy(), *roomTiles.endTile)) {
+        roomRect = neighbors[i]->getRectCopy();
+        if(collision::checkCol(roomRect, *roomTiles.endTile)) {
             std::cout << "ERE" << std::endl;
             curRoom = neighbors[i];
             neighbors = curRoom->getNeighbors();
