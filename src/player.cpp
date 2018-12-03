@@ -40,7 +40,6 @@ Player::Player(SDL_Rect _rect) {
 	right = false;
 	space = false;
 	projCooldown = false;
-	projActive = false;
     overlapEnemy = false;
 	projsType = 's';
 	std::unordered_map<std::string, Object*> projList;
@@ -74,7 +73,6 @@ void Player::init(SDL_Renderer* gRenderer){
 	addAnimation("left", Animation(getSheet().getRow(2)));
 	addAnimation("right", Animation(getSheet().getRow(3)));
 	setAnimation("down");
-
 }
 
 /* Summary
@@ -253,14 +251,13 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
-	if (space && !projCooldown && !projActive) {
-		Projectile *newProj = new Projectile(projsType, playerRect.x, playerRect.y);
-		projList[newProj->getInstanceName()] = newProj;
+	if (space && !projCooldown) {
+		Projectile* newProj = new Projectile(projsType, playerRect.x, playerRect.y);
 		newProj->init(rendererReference);
+		projList[newProj->getInstanceName()] = newProj;
 		projCooldown = true;
-		projActive = true;
 	} else if (projCooldown) {
-		if (cooldownTicks >= 75) {
+		if (cooldownTicks >= 50) {
 			cooldownTicks = 0;
 			projCooldown = false;
 		} else {
@@ -290,7 +287,6 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 	while(it != projList.end()) {
 		if(it->second->isUsed()) {
 			it = projList.erase(it);
-			projActive = false;
 			break;
 		} else {
 			it->second->update(objectList, grid, ticks);
@@ -357,7 +353,7 @@ void Player::setEnemy(bool _overlap) {
 void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid)
 {
     if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
-        playerRect.x = curX;
+		playerRect.x = curX;
         hitRect.x = curX + SHORTEN_DIST/2;
     }
     

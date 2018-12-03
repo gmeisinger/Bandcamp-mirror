@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "breach.h"
 #include "collision.h"
 #include "object.h"
 #include "randommap.h"
@@ -24,6 +25,11 @@ class Projectile : public Object
 	    bool right;
 		int playerXVel;
 		int playerYVel;
+		SDL_Renderer* rendererReference;
+		int projNumber;
+		bool projUsed;
+		SDL_Texture* projImg;
+		SDL_Rect projImgRect;
 
 	public:
 		void input(const Uint8* keystate);

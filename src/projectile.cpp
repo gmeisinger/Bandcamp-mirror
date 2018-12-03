@@ -7,19 +7,8 @@
 
 constexpr int FIRED_SPEED = 6;
 
-SDL_Rect projRect; //The Collision Box
-char projType;
-//Image Stuff
-SDL_Texture* projImg;
-SDL_Rect projImgRect;
-SDL_Rect projDrawBox;	//Where the Image is drawn on screen
 Uint32 projTicks;
 static int totalInstance = 0;//How many instances of the object exist?
-int projNumber = 0;
-bool projUsed;
-bool spaceHeld = false;
-int playerXVel;
-int playerYVel;
 
 Projectile::Projectile(char type, int playerX, int playerY) {
 	switch(type){
@@ -49,6 +38,8 @@ Projectile::Projectile(char type, int playerX, int playerY) {
 	left = false;
 	right = false;
 	projUsed = false;
+	playerXVel = 0;
+	playerYVel = 0;
 	//std::cout << s << std::endl;
 }
 
@@ -68,7 +59,9 @@ void Projectile::input(const Uint8* keystate) {
 }
 
 std::string Projectile::getInstanceName(){
-	return "proj-"+std::to_string(projNumber);
+	std::ostringstream ss;
+	ss << projNumber;
+	return "proj-"+ss.str();
 }
 
 void Projectile::init(SDL_Renderer *renderer){
@@ -104,6 +97,8 @@ void Projectile::init(SDL_Renderer *renderer){
 			projImgRect.h = 8;
 			break;
 	}
+	
+	rendererReference = renderer;
 }
 		
 void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
@@ -166,18 +161,11 @@ void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &obje
 	}
 	
 	if (!projUsed) {
-		//Uhhhhh......
-		if(collision::checkColLeft(projRect, grid, 32)) {
-			//Create breach
-			projUsed = true;
-		} else if (collision::checkColRight(projRect, grid, 32)) {
-			//Create breach
-			projUsed = true;
-		} else if (collision::checkColTop(projRect, grid, 32)) {
-			//Create breach
-			projUsed = true;
-		} else if (collision::checkColBottom(projRect, grid, 32)) {
-			//Create breach
+		if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) ||
+		   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
+			Breach* newBreach = new Breach(projType, projRect, projDrawBox);
+			newBreach->init(rendererReference);
+			objectList[newBreach->getInstanceName()] = newBreach;
 			projUsed = true;
 		}
 	}
