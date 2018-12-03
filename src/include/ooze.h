@@ -75,10 +75,10 @@ private:
     std::unordered_map<std::string, Animation> anims;
     int ate;
     SDL_Rect *target;
-    SDL_Rect *lastRoom;
 
     Room* curRoom;
     Tilemap* tilemap;
+    Tile* lastRoom;
 
     bool initialized;
     bool squeeze;

@@ -123,7 +123,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	bool overlap = checkOozeOverlap(objectList, ticks);
     bool los;
 	if(!overlap){    
-        if(iter % 10 == 0)
+        if(iter % 5 == 0)
             target = pickTarget(objectList, grid);
 
         if (target) {
@@ -661,7 +661,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
-        if(intersect->w > intersect->h && intersect->w > 2) {
+        if(intersect->w > intersect->h && intersect->w > 2 && !horWall) {
             //horizontal wall
             r = intersect->y;
             c = intersect->x + (intersect->w/2);
@@ -676,13 +676,20 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         }
         tile = map[r][c];
         temp1 = tile->getDest();
-        if(collision::checkCol(curRoom->getRectCopy(), *temp1)) {
+        bool los = drawLine(grid, temp1);
+        std::cout << los << std::endl;
+        //if(collision::checkCol(curRoom->getRectCopy(), *temp1) && lastRoom != map[r][c]) {
+        if(los && lastRoom != map[r][c]) {
             roomTiles.door = temp1;
+            lastRoom = tile;
             break;
-        }
+        }            
     }    
     if(roomTiles.door == nullptr){
-        return;
+        tile = lastRoom;
+        temp1 = tile->getDest();
+        roomTiles.door = temp1;
+        std::cout << "coo" << std::endl;
     }
     std::cout << "r " << r << " c " << c << " l " << l << " t " << t << std::endl;
     if(horWall) {
