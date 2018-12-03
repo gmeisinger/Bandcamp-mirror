@@ -17,6 +17,19 @@ void Room2::init_room() //this will always be used for the first room
 	num_breaches = 0;
 }
 
+void Room2::rand_room() //this will be every room but the first, creating random values between 100 and 25(?) for each attribute
+{
+	oxygen = (rand()%100)+25; //this will go from a range of 25 to 125
+	temperature = (rand()%100)+25;
+	pressure = (rand()%100)+25;
+	bool breached = false;
+	num_breaches = 0;
+	std::cout << "Room was created with:" <<std::endl;
+	std::cout << "oxygen: " << oxygen <<std::endl;
+	std::cout << "temperature:" << temperature << std::endl;
+	std::cout << "pressure:" << pressure << std::endl;
+}
+
 void Room2::adv_init_room(int o, int t, int p, int o2, int t2, int p2) 	//this will need to be "randomized"
 /* Summary
  * Argument  
@@ -116,7 +129,7 @@ void Room2::adv_lower_oxygen() //something porportional with pressure
 	{
 		oxygen = 100*(int)n;
 	}
-	printf("oxygen level: %d", oxygen);
+	std::cout << "oxygen level: " << oxygen << std::endl;
 }
 
 void Room2::raise_oxygen(int resource_value)
@@ -142,7 +155,7 @@ void Room2::adv_lower_temperature() //k=T1/P1 T2=k*P2
 	int k = temperature/previous_pressure;
 	int temp = k*pressure;
 	temperature = temp;
-	printf("temperature level: %d", temperature);
+	std::cout << "temperature level: " << temperature << std::endl;
 }
 
 void Room2::raise_temperature(int resource_value)
