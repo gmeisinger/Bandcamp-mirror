@@ -88,6 +88,9 @@ std::vector<Room*> Tilemap::getRooms() {
 	return rooms;
 }
 
+Room* Tilemap::getRoom(int index) {
+	return rooms[index];
+}
 
 
 void Tilemap::genTestTransitionRoom(){
