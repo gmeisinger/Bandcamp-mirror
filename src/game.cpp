@@ -189,7 +189,8 @@ void Game::run() {
                         }//end switch(track_counter) 
 
                         break;
-                }//end switch
+                }//end switch(e.key.keysym.sym)
+                
 			}//end else if(e.type == SDL_KEYDOWN)
 		
 		}//end while(SDL_PollEvent(&e) != 0)
