@@ -21,6 +21,7 @@ class WarpTile : public Object
 		int destScreen; //If you are warping to a different screen, note it here
 		bool fade; //If you want a fade transition, note it here
 		SDL_Renderer* reference; //When you init the fadeObj, you need a reference to the sdl_renderer
+		SDL_Rect* getRect();
 	
 	public:
 		void input(const Uint8* keystate);

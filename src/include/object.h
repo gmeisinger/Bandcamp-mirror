@@ -16,6 +16,7 @@ class Object
 		virtual void update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) = 0;
 		virtual SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam) = 0;
 		virtual bool isUsed() = 0;
+		virtual SDL_Rect* getRect() = 0;
 };
 
 #endif  //  BANDCAMP_OBJECT_H_

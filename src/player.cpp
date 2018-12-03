@@ -42,8 +42,9 @@ Player::Player(SDL_Rect _rect) {
 	projCooldown = false;
     overlapEnemy = false;
 	projsType = 's';
-	std::unordered_map<std::string, Object*> projList;
+	//std::unordered_map<std::string, Object*> projList;
     player = this;
+	correction = {0,0,0,0};
 }
 
 //
@@ -73,7 +74,6 @@ void Player::init(SDL_Renderer* gRenderer){
 	addAnimation("left", Animation(getSheet().getRow(2)));
 	addAnimation("right", Animation(getSheet().getRow(3)));
 	setAnimation("down");
-
 }
 
 /* Summary
@@ -253,10 +253,9 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 	if (right)
 		x_deltav += 1;
 	if (space && !projCooldown) {
-		//std::cout << "\nPressed space bar" << std::endl;
-		Projectile *newProj = new Projectile(projsType, playerRect.x, playerRect.y);
-		projList[newProj->getInstanceName()] = newProj;
+		Projectile* newProj = new Projectile(projsType, playerRect.x, playerRect.y);
 		newProj->init(rendererReference);
+		objectList[newProj->getInstanceName()] = newProj;
 		projCooldown = true;
 	} else if (projCooldown) {
 		if (cooldownTicks >= 50) {
@@ -265,6 +264,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		} else {
 			cooldownTicks++;
 		}
+
 	}
 
 	updateVelocity(x_deltav, y_deltav);
@@ -284,13 +284,10 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
     //Check you haven't collided with object
     checkCollision(curX, curY, grid);
 	
-	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
-	while(it != projList.end()) {
-		if(it->second->isUsed()) {
-			it = projList.erase(it);
-			break;
-		} else {
-			it->second->update(objectList, grid, ticks);
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()) {
+		if (it->second->getInstanceName().find("proj") != -1 || it->second->getInstanceName().find("breach") != -1) {
+			it->second->draw(rendererReference, correction);
 		}
 		it++;
 	}
@@ -310,11 +307,6 @@ void Player::input(const Uint8* keystate) {
 	else if (left) projsType = 'e';
 	else if (down) projsType = 's';
 	else if (right) projsType = 'w';
-	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
-	while(it != projList.end()){
-		it->second->input(keystate);
-		it++;
-	}
 }
 
 /* Summary
@@ -327,11 +319,6 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->x -= cam.x;
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
-	std::unordered_map<std::string, Object*>::iterator it = projList.begin();
-	while(it != projList.end()){
-		renderer = it->second->draw(renderer, cam);
-		it++;
-	}
 	return renderer;
 }
 
@@ -353,26 +340,40 @@ void Player::setEnemy(bool _overlap) {
 
 void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid)
 {
-    if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
-        playerRect.x = curX;
+	if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
+		playerRect.x = curX;
         hitRect.x = curX + SHORTEN_DIST/2;
+		
+		correction.x = 0;
+		correction.w = 1;
     }
     
     if(collision::checkColTop(hitRect, grid, 32) || collision::checkColBottom(hitRect, grid, 32)) {
         playerRect.y = curY;
         hitRect.y = curY+SHORTEN_DIST;
-
         playerRect.x += x_vel;
         hitRect.x += x_vel;
-
         y_vel = 0;
-        if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
+		
+		correction.y = 0;
+		correction.h = 1;
+		
+		correction.x = x_vel;
+        
+		if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
             x_vel = 0; 
             playerRect.x = curX;
-            hitRect.x = curX + SHORTEN_DIST/2; 
+            hitRect.x = curX + SHORTEN_DIST/2;
+			
+			correction.x = 0;
+			correction.w = 1;
         }
     }
-    
+
+	if (correction.w == 1) correction.w = 0;
+	else correction.x = x_vel;
+	if (correction.h == 1) correction.h = 0;
+	else correction.y = y_vel;
 }
 
 /* Summary

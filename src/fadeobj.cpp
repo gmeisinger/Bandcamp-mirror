@@ -74,3 +74,5 @@ bool FadeObj::isFadeIn(){
 int FadeObj::getDest(){
 	return dest;
 }
+
+SDL_Rect* FadeObj::getRect(){return NULL;}

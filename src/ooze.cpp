@@ -11,9 +11,10 @@ constexpr int BORDER_SIZE = 32;
 Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 // Constructor
-Ooze::Ooze(Room* room):
+Ooze::Ooze(Room* room, Tilemap* t):
 state{HANGRY},
-hostility{0}
+hostility{0},
+tilemap{t}
 {
     target = player->getRect();
     curRoom = room;
@@ -39,8 +40,12 @@ hostility{0}
     std::cout << "health" << stats.health << "\n";
     std::cout << "attack" << stats.attack << "\n";
 
+    roomTiles.startTile = nullptr;
+    roomTiles.endTile = nullptr;
+
     lastRoom = nullptr;
     initialized = false;
+    intersects = curRoom->getIntersects();
 
     iter = 0;
 }
@@ -50,7 +55,7 @@ hostility{0}
 
 // Copy Constructor
 Ooze::Ooze(const Ooze& other)
-    :Ooze(other.curRoom)
+    :Ooze(other.curRoom, other.tilemap)
 {
 //    this.
 }
@@ -110,7 +115,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 
     int pickupX;
     int pickupY;
-	
+
     //might move order of update calls
     bool stateChange = updateState(objectList, ticks);
 
@@ -128,18 +133,37 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
             updatePosition();
         //updateVelocity(x_deltav,y_deltav);
         }
-        //If we don't have a line of sight with the player or pickup, check the other room
         else {
-            //moveRoom(grid);
+            moveRoom(grid);
+
+            if(rect.x == roomTiles.startTile->x && rect.y == roomTiles.startTile->y) 
+                moveLine(grid, roomTiles.endTile);
+            else
+                moveLine(grid, roomTiles.startTile);
+
+            updatePosition();
         }
     }    
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
-    updatePosition();
+    
+    //checkBounds(screen_w, screen_h, true);
     //Check you haven't collided with object
     checkCollision(curX, curY, grid, true);
-
+	
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()) {
+		if(it->second->getInstanceName().find("proj") != -1) {
+			if (collision::checkCol(rect, *(it->second->getRect()))) {
+				std::cout << "Ooze hit" << std::endl;;
+				//Call function to damage/kill ooze
+				break;
+			}
+		}
+		it++;
+	}
+	
     iter++;
 }
 
@@ -194,7 +218,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                         bool losPlayer = drawLine(grid, player->getRect());
                         if(losPlayer)
                             return player->getRect();
-                        else
+                        //If we don't have a line of sight with the player or pickup, check the other room
                         return nullptr;    
                     }                    
                 }
@@ -442,8 +466,6 @@ bool Ooze::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &g
 //Uses Bresenham's alg to check to see if we have a line of sight with the player
 //This draws the line fully but does NOT move the player at all
 bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
-    int deltaX = target->x - rect.x;
-    int deltaY = target->y - rect.y;
     int startX = rect.x;
     int startY = rect.y;
     int endX = target->x;
@@ -454,18 +476,23 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     int yDir;
     bool sight = false;
 
-    deltaX = abs(deltaX * 2);
-    deltaY = abs(deltaY * 2);
-
     if (target->y > rect.y) 
         yDir = 1;
 	if (target->x > rect.x) 
         xDir = 1;
-	if (target->y < rect.y) 
+	if (target->y < rect.y) {
+        endY = target->y + target->h;
         yDir = -1;
-	if (target->x < rect.x) 
+    }
+	if (target->x < rect.x) {
+        endX = target->x + target->w;
         xDir = -1;
+    }
         
+    int deltaX = endX - startX;
+    int deltaY = endY - startY;
+    deltaX = abs(deltaX * 2);
+    deltaY = abs(deltaY * 2);
 
     if(deltaX > deltaY) {
         slope = deltaY * 2 - deltaX;
@@ -566,30 +593,58 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 
 //If we don't see the player or a pickup, move to the next room
 void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
-    std::vector<SDL_Rect> intersects = curRoom->getIntersects();
-    //If we've moved before
-    if(lastRoom) {
-        for(int i = 0; i < intersects.size(); i++) {
-            SDL_Rect* tar = &intersects.at(i);
-            if(!collision::checkCol(*lastRoom, *tar)) {
-                if(tar->x + tar->w < rect.x)
-                    tar->x = tar->x + tar->w;
-                if(tar->y + tar->h < rect.y)
-                    tar->y = tar->y +tar->h;
-                bool los = drawLine(grid, tar);
-                if(los)
-                    moveLine(grid, tar);
-                lastRoom = tar;
-                break;
-            }
+    SDL_Rect* temp1;
+    SDL_Rect* temp2;
+    SDL_Rect intersect;
+    std::vector<std::vector<Tile*>> map = tilemap->getMap();
+    Tile* endTile;
+    Tile* tile;
+    bool horWall;
+    bool verWall;
+    for(int i = 0; i < intersects.size(); i++) {
+        intersect = intersects[i];
+        
+        int r,c = 0;
+        int l,t = 0;
+        if(intersect.w > intersect.h && intersect.w > 2) {
+            //horizontal wall
+            r = intersect.y;
+            c = intersect.x + (intersect.w/2);
+            horWall = true;
         }
-    }
-    else {
-        SDL_Rect tar = {intersects.at(0).x * tile_s, intersects.at(0).y * tile_s, intersects.at(0).w, intersects.at(0).h};
-        //moveLine(grid, &tar);
-        lastRoom = &tar;
-    }
+        else if(intersect.w < intersect.h && intersect.h > 2) {
+            r = intersect.y + (intersect.h/2);
+            c = intersect.x;
+            verWall = true;
+        }
+        tile = map[r][c];
+        temp1 = tile->getDest();
+        
+        if (temp1->y > rect.y) {
+            r = r+1;
+            l = r-2;
+        }
+        if (temp1->y < rect.y) {
+            r = r-1;
+            l = r+2;
+        }
+        if (temp1->x > rect.x) {
+            c = c+1;
+            t = c-2;
+        }
+        if (temp1->x < rect.x) {
+            c = c-1;
+            t = c+2;
+        }
 
+        tile = map[r][c];
+        endTile = map[l][t];
+        temp1 = tile->getDest();
+        temp2 = endTile->getDest();
+
+        roomTiles.startTile = temp1;
+        roomTiles.endTile = temp2;
+    } 
 }
 
 //Lets make sure our poor ooze isn't stuck in a wall

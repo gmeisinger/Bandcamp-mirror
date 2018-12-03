@@ -194,3 +194,5 @@ SDL_Renderer* Door::draw(SDL_Renderer *renderer, SDL_Rect cam){
 }
 
 bool Door::isUsed(){return false;}
+
+SDL_Rect* Door::getRect(){return NULL;}

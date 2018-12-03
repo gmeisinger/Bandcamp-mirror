@@ -20,6 +20,7 @@ constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
 
 bool spawnOoze = false;
+bool spawnPickup = true;
 // Heads up display 
 HUD h;
 Player p;
@@ -30,7 +31,7 @@ std::vector<Room*> rooms;
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
 Ooze o;
-static bool spawnPickup = true;
+
 RandomMap::RandomMap() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
 	updateCount = 1;
@@ -63,11 +64,13 @@ void RandomMap::init(SDL_Renderer* reference){
 	
 	tilemap.init();
 	tilemap.genRandomMap();
-	//Set the starting room for the ooze
 	rooms = tilemap.getRooms();
+	
+	//Set the starting room for the ooze
 	std::cout << "numRooms: " << rooms.size() << std::endl;
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
-	o = Ooze(&oozeRoom);
+	std::cout << "HERE" << std::endl;
+	o = Ooze(&oozeRoom, &tilemap);
 	o.init(reference);
 	//Player and HUD in the Room
 	objectList["player"] = &p;
@@ -154,7 +157,7 @@ void RandomMap::cloneOoze(SDL_Renderer* reference) {
 		moveOoze(reference);
 	}*/
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
-	Ooze *newO = new Ooze(&oozeRoom);
+	Ooze *newO = new Ooze(&oozeRoom, &tilemap);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made
@@ -195,7 +198,6 @@ void RandomMap::movePickup(SDL_Renderer* reference, std::vector<std::vector<Tile
 }
 
 // used to allow other objects to tell testroom to spawn a pickup
-
 void RandomMap::setSpawnOoze(bool set) {
 	spawnOoze = set;
 }
