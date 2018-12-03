@@ -10,7 +10,8 @@
 //int SCREEN_WIDTH = 800;
 //int SCREEN_HEIGHT = 600;
 //int TILE_SIZE = 32;
-Mix_Music *bgm; 
+Mix_Music *bgm;
+Mix_Chunk *fire; 
 //change to true to display credits
 bool run_in_credits = false;
 //change to ture to display music debugging output
@@ -128,6 +129,9 @@ void Game::run() {
     bgm = Mix_LoadMUS("music/New Territory/Time 4 Exploration.wav");
 	if(music_debug)
 		std::cout << "Loaidng Background music Successful" << std::endl;	
+	fire = Mix_LoadWAV("music/Soundfx/pew.wav");
+	if(music_debug)
+		std::cout << "Loaidng Fire Sfx Successful" << std::endl;		
 	//play music
 	Mix_PlayMusic(bgm, -1);
 
@@ -143,6 +147,9 @@ void Game::run() {
             {
                 switch(e.key.keysym.sym)
                 {
+                    case SDLK_SPACE: //play pew; player fires gun
+                    	Mix_PlayChannel(-1, fire, 0);
+                    	break;
                     case SDLK_p: // play or resume music 
                         if(!Mix_PlayingMusic())
                             Mix_PlayMusic(bgm, -1);
@@ -242,10 +249,12 @@ void Game::close() {
 	SDL_DestroyRenderer(gRenderer);
 	SDL_DestroyWindow(gWindow);
 	Mix_FreeMusic(bgm);
+	Mix_FreeChunk(fire);
 
     gRenderer = nullptr;
 	gWindow = nullptr;
 	bgm = nullptr;
+	fire = nullptr;
 
 	// Quit SDL subsystems
     Mix_Quit();
