@@ -253,13 +253,13 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
         }
         case HANGRY: {
             //std::cout << "hangry" << std::endl;
-            if (player->getProjActive()) {
-                state = FLEEING; 
+            if (player->getProjActive() && target == player->getRect()) {
+                state = DODGING;
                 return true;
             }
             if (ate > 0) { // clone after one pickup fo00d
                 ate = 0;
-                state = EATING;
+                //state = EATING;
                 return true;
             }
             break;
@@ -294,14 +294,20 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
         }
         case FLEEING: {
             // go opposite of player if possible??
-            if (!player->getProjActive()) {
-                state = HANGRY; 
-                return true;
-            }
+
+            
             // look for hiding places
             /*if ( next to hiding spot ) {
                 state = HIDING;
             } */
+            break;
+        }
+        case DODGING: {
+            if (!player->getProjActive()) {
+                state = HANGRY; 
+                return true;
+            }
+            //if hit, switch to fleeing
             break;
         }
         case HIDING: {
@@ -572,7 +578,7 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 
 //This version of Bresenham's moves the player in as stright a line as possible to 
 //the player
-//Depending on the state of the Oooze, it might move towards or away.
+//Depending on the state of the Ooze, it might move towards or away.
 void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     int deltaX = target->x - rect.x;
     int deltaY = target->y - rect.y;
@@ -587,7 +593,16 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     deltaX = abs(deltaX * 2);
     deltaY = abs(deltaY * 2);
 
-    if (state == FLEEING) {
+    if (state == FLEEING) { //move in opposite direction
+        if (target->y > rect.y) 
+            yDir = -1;
+        if (target->x > rect.x) 
+            xDir = -1;
+        if (target->y < rect.y) 
+            yDir = 1;
+        if (target->x < rect.x) 
+            xDir = 1;
+    } else if (state == DODGING) { // can choose to move left or right? for now left by default
         if (target->y > rect.y) 
             yDir = -1;
         if (target->x > rect.x) 
@@ -606,6 +621,41 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     	if (target->x < rect.x) 
             xDir = -1;
     }
+
+    if (state == DODGING) {
+        int temp = deltaX;
+        deltaX = deltaY;
+        deltaY = temp;
+
+        /*if(deltaX > deltaY) {
+            moveSlope = deltaY * 2 - deltaX;
+            if(moveSlope >= 0) {
+                startY += yDir;
+                moveSlope -= deltaX;
+                y_vel = yDir;
+            }
+            else
+                y_vel = 0;
+
+            startX += xDir;
+            moveSlope += deltaY;
+            x_vel = xDir;
+        }
+        else {
+            moveSlope = deltaX * 2 - deltaY;
+            if(moveSlope >= 0) {
+                startX += xDir;
+                moveSlope -= deltaY;
+                x_vel = xDir;
+            }
+            else
+                x_vel = 0;
+
+            startY += yDir;
+            moveSlope += deltaX;
+            y_vel = yDir;
+        }  */ 
+    } 
 
     if(deltaX > deltaY) {
         moveSlope = deltaY * 2 - deltaX;
@@ -635,6 +685,7 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
         moveSlope += deltaX;
         y_vel = yDir;
     }   
+    
 }
 
 //If we don't see the player or a pickup, move to the next room

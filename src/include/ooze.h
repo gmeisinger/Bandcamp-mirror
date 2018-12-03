@@ -25,7 +25,7 @@ class Pickup;
 enum OozeState { // is public
         HANGRY, //temp state
         ROAMING,
-        EATING,
+        DODGING,
         CLONING,
         FIGHTING,
         FLEEING,
