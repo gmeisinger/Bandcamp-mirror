@@ -30,8 +30,8 @@ void Room2::rand_room() //this will be every room but the first, creating random
 		pressure = 100;
 	bool breached = false;
 	num_breaches = 0;
-	std::cout << "Room was created with:" << std::endl;
-	std::cout << "oxygen: " << oxygen << std::endl;
+	std::cout << "Room was created with:" <<std::endl;
+	std::cout << "oxygen: " << oxygen <<std::endl;
 	std::cout << "temperature:" << temperature << std::endl;
 	std::cout << "pressure:" << pressure << std::endl;
 }
@@ -94,9 +94,11 @@ void Room2::lower_pressure() //depending on how many breaches in the room
 	// }
 	if(breached)
 	{
-		//int i;
-		for(int i=0; i<=num_breaches; i++)
+		int i;
+		for(i=0; i<=num_breaches, i++)
 			pressure-=5;
+		if(pressure<=0)
+			pressure = 0;
 	}
 }
 
@@ -120,7 +122,7 @@ void Room2::adv_lower_oxygen() //something porportional with pressure
 	double P = (double)pressure;
 	double V = 8.314472; 			//since we are assuming this can be whatever we want, which we'll set to match the gas constant R (for percentage values)
 	double n; 						//what we are looking for
-	double R = 8.314472; 			//this is the Ideal Gas Law's constant
+	double R = 8.314472 			//this is the Ideal Gas Law's constant
 	double T = (double)temperature;
 	
 	//rearranging formula to n = (PV)/(RT)
@@ -170,7 +172,7 @@ void Room2::raise_temperature(int resource_value)
 	temperature+=resource_value;
 }
 
-/*void Breach::set_type(int type, Room2 room)
+void Breach::set_type(int type, Room2 room)
 {
 	room.breached = true;
 	if(type == 1)
@@ -208,4 +210,4 @@ void Breach::seal_breach()
 	{
 		breached = false;
 	}
-}*/
+}
