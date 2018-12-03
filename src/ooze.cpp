@@ -31,18 +31,13 @@ hostility{0}
     ate = 1;
     
     // Genetic statistics
-    stats.health =      std::max(1, 3   + utils::normDist());
-    stats.attack =      std::max(1, 50  + utils::normDist()); //time delay between ticks damage
-    stats.speed =       std::max(1, 3   + utils::normDist());
-    stats.health_cost = std::max(1, 3   + utils::normDist());
-    stats.num_cost =    std::max(1, 3   + utils::normDist());
-    std::cout << "Ooze "  << oozeNumber  << ":"
-        << " HP " << stats.health
-        << " ATK " << stats.attack
-        << " SPD " << stats.speed
-        << " HC " << stats.health_cost
-        << " NC " << stats.num_cost
-        << "\n";
+    stats.health =      3 ;
+    stats.attack =      50; //time delay between ticks damage
+    stats.speed =       3 ;
+    stats.health_cost = 3 ;
+    stats.num_cost =    3 ;
+    Mutate();
+    
     lastRoom = nullptr;
     initialized = false;
 }
@@ -51,21 +46,18 @@ hostility{0}
 //Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
 // Copy Constructor
-Ooze::Ooze(const Ooze& other)
+Ooze::Ooze(const Ooze& other):
+    sheet{other.sheet},
+    anim{other.anim},
+    target{other.target}
 {
+    totalOoze++;
+    oozeNumber = totalOoze;
     curRoom = other.curRoom;
-    stats.health =      std::max(1, other.stats.health   + utils::normDist());
-    stats.attack =      std::max(1, other.stats.attack  + utils::normDist()); //time delay between ticks damage
-    stats.speed =       std::max(1, 3   + utils::normDist());
-    stats.health_cost = std::max(1, 3   + utils::normDist());
-    stats.num_cost =    std::max(1, 3   + utils::normDist());
-    std::cout << "Ooze "  << oozeNumber  << ":"
-    << " HP " << stats.health
-    << " ATK " << stats.attack
-    << " SPD " << stats.speed
-    << " HC " << stats.health_cost
-    << " NC " << stats.num_cost
-    << "\n";
+    
+    stats = other.stats;
+    Mutate();
+    
 }
 
 //Destructor
@@ -182,6 +174,7 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
 }
 
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
+    // Trigger picking algorithm every 15 frames or so
     iter++;
     if( state == HANGRY && iter > 15) {
         iter = 0;
@@ -222,6 +215,7 @@ bool Ooze::foundFood(Pickup* food) {
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
             //std::cout << s << std::endl;
+            state = EATING;
             return true;
         }
     }
@@ -268,7 +262,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
         }
         case CLONING: {
             std::cout << "cloning" << std::endl;
-            RandomMap::setSpawnOoze(true);
+//            RandomMap::setSpawnOoze(true);
             Ooze(*this);
             state = ROAMING;
             return true;
@@ -654,6 +648,25 @@ void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t) {
     }
 }
 
+void Ooze::Mutate(){
+    // Genetic statistics
+    stats.health =      std::max(1, stats.health      + utils::normDist());
+    stats.attack =      std::max(1, stats.attack      + utils::normDist()); //time delay between ticks damage
+    stats.speed =       std::max(1, stats.speed       + utils::normDist());
+    stats.health_cost = std::max(1, stats.health_cost + utils::normDist());
+    stats.num_cost =    std::max(1, stats.num_cost    + utils::normDist());
+    
+    std::cout << "Ooze "  << oozeNumber  << ":"
+    << " HP " << stats.health
+    << " ATK " << stats.attack
+    << " SPD " << stats.speed
+    << " HC " << stats.health_cost
+    << " NC " << stats.num_cost
+    << "\n";
+}
+
+
+    
 void Ooze::hurt(int damage) {
     stats.health -= damage;
     

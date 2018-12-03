@@ -44,6 +44,7 @@ class Ooze : public Object {
         int health_cost;
         int num_cost;
     };
+    void Mutate();
     
 
 private:
