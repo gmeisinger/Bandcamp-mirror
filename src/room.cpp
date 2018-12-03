@@ -4,6 +4,7 @@ Room::Room() {
 	rect = {0,0,0,0};
 	neighbors = {};
 	intersect_rects = {};
+	physics.init_room();
 }
 
 //constructor takes a rect
@@ -11,6 +12,7 @@ Room::Room(SDL_Rect _rect) {
 	rect = _rect;
 	neighbors = {};
 	intersect_rects = {};
+	physics.rand_room();
 }
 
 //destructor

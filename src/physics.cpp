@@ -94,8 +94,8 @@ void Room2::lower_pressure() //depending on how many breaches in the room
 	// }
 	if(breached)
 	{
-		//int i;
-		for(int i=0; i<=num_breaches; i++)
+		int i;
+		for(i=0; i<=num_breaches, i++)
 			pressure-=5;
 		if(pressure<=0)
 			pressure = 0;
@@ -122,7 +122,7 @@ void Room2::adv_lower_oxygen() //something porportional with pressure
 	double P = (double)pressure;
 	double V = 8.314472; 			//since we are assuming this can be whatever we want, which we'll set to match the gas constant R (for percentage values)
 	double n; 						//what we are looking for
-	double R = 8.314472; 			//this is the Ideal Gas Law's constant
+	double R = 8.314472 			//this is the Ideal Gas Law's constant
 	double T = (double)temperature;
 	
 	//rearranging formula to n = (PV)/(RT)
