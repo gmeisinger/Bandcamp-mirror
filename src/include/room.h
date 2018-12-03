@@ -4,12 +4,16 @@
 #include <SDL.h>
 #include <vector>
 
+#include "physics.h"
+#include "utils.h"
+
 class Room
 {
 private:
 	SDL_Rect rect;
 	std::vector<Room*> neighbors;
 	std::vector<SDL_Rect> intersect_rects;
+	Room2 physics;
 public:
 	Room();
 	Room(SDL_Rect _rect);

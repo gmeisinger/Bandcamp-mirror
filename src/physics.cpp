@@ -25,9 +25,7 @@ void Room2::rand_room() //this will be every room but the first, creating random
 	temperature = (rand()%100)+25;
 	if(temperature>100)
 		temperature = 100;
-	pressure = (rand()%100)+25;
-	if(pressure>100)
-		pressure = 100;
+	pressure = 100;
 	bool breached = false;
 	num_breaches = 0;
 	std::cout << "Room was created with:" <<std::endl;

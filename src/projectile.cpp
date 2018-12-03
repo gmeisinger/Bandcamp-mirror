@@ -13,20 +13,20 @@ static int totalInstance = 0;//How many instances of the object exist?
 Projectile::Projectile(char type, int playerX, int playerY) {
 	switch(type){
 		case 'n':
-			projRect = {playerX + 12, playerY - 32, 8, 32};
-			projDrawBox = {412, 268, 8, 32};
+			projRect = {playerX + 12, playerY + 8, 8, 32};
+			projDrawBox = {412, 308, 8, 32};
 			break;
 		case 'e':
-			projRect = {playerX - 32, playerY + 12, 32, 8};
-			projDrawBox = {368, 312, 32, 8};
+			projRect = {playerX + 8, playerY + 12, 32, 8};
+			projDrawBox = {408, 312, 32, 8};
 			break;
 		case 's':
-			projRect = {playerX + 12, playerY + 32, 8, 32};
-			projDrawBox = {412, 332, 8, 32};
+			projRect = {playerX + 12, playerY - 8, 8, 32};
+			projDrawBox = {412, 292, 8, 32};
 			break;
 		case 'w':
-			projRect = {playerX + 32, playerY + 12, 32, 8};
-			projDrawBox = {432, 312, 32, 8};
+			projRect = {playerX - 8, playerY + 12, 32, 8};
+			projDrawBox = {392, 312, 32, 8};
 			break;
 	}
 	projTicks = 0;
