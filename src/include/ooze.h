@@ -20,6 +20,7 @@
 #include "generator.h"
 #include "tilemap.h"
 #include "room.h"
+#include "projectile.h"
 
 class Pickup;
 

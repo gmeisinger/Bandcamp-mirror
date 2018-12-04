@@ -237,7 +237,7 @@ void Player::updateAnimation(Uint32 ticks) {
 }
 
 void Player::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
-	std::cout << "Entered Player update" << std::endl;
+	//std::cout << "Entered Player update" << std::endl;
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -294,7 +294,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		}
 		it++;
 	}
-	std::cout << "Exiting Player update" << std::endl;
+	//std::cout << "Exiting Player update" << std::endl;
 }
 
 /* Summary

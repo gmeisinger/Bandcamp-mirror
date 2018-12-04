@@ -20,15 +20,20 @@
 constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
 
-int updateMax = 0;
+int roomMax = 0;
+int doorMax = 0;
+int waitTicks = 0;
 bool spawnOoze = false;
 bool spawnPickup = true;
+bool changedHUD = false;
+int changedRoomNum = 0;
 // Heads up display 
 HUD h;
 Player p;
 
 //Rooms, helps us determine where to spawn ooze and pickups
 std::vector<Room*> rooms;
+std::vector<Door*> doors;
 
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
@@ -36,7 +41,8 @@ Ooze o;
 
 RandomMap::RandomMap() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
-	updateCount = 0;
+	roomCount = 0;
+	doorCount = 0;
 	oldTemp = 100;
 	oldO2 = 100;
 	oldAte = 0;
@@ -67,11 +73,12 @@ void RandomMap::init(SDL_Renderer* reference){
 	tilemap.init();
 	tilemap.genRandomMap();
 	rooms = tilemap.getRooms();
+	doors = {};
 	
 	//Set the starting room for the ooze
-	std::cout << "numRooms: " << rooms.size() << std::endl;
+	//std::cout << "numRooms: " << rooms.size() << std::endl;
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
-	std::cout << "HERE" << std::endl;
+	//std::cout << "HERE" << std::endl;
 	o = Ooze(&oozeRoom, &tilemap);
 	o.init(reference);
 	//Player and HUD in the Room
@@ -80,16 +87,16 @@ void RandomMap::init(SDL_Renderer* reference){
 	objectList["hud"] = &h;
     hud_g = &h;
 	// Change to add ooze to list as initialized
-	//objectList["ooze"] = &o;
+	objectList["ooze"] = &o;
 
 	//add doors dynamically
 	placeDoors(reference);
-	objectList[o.getInstanceName()] = &o;
+	//objectList[o.getInstanceName()] = &o;
 }
 
 // ADD COMMENTS 
 void RandomMap::update(Uint32 ticks){
-	std::cout << std::endl << "Entered RandomMap update" << std::endl;
+	//std::cout << std::endl << "Entered RandomMap update" << std::endl;
 	if(pauseB)
 	{ //If you set the currentScreen in the Input method it will cause an array out of bounds error.
 		pauseB = false;
@@ -105,14 +112,50 @@ void RandomMap::update(Uint32 ticks){
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
 		it->second->update(objectListRef, tilemap.getMapRef(), ticks);
+		
+		if (waitTicks == 0) {
+			if (it->second->getInstanceName().find("breach") != -1) {
+				std::vector<Room*> breachRooms = {};
+				for(Room* room : rooms) {
+					if(room->contains(it->second->getRect())) {
+						breachRooms.push_back(room);
+					}
+				}
+				if (breachRooms.size() == 2) {
+					int oxyTarget = (breachRooms[0]->physics.give_oxygen() + breachRooms[1]->physics.give_oxygen()) / 2;
+					int tempTarget = (breachRooms[0]->physics.give_temperature() + breachRooms[1]->physics.give_temperature()) / 2;
+					int presTarget = (breachRooms[0]->physics.give_pressure() + breachRooms[1]->physics.give_pressure()) / 2;
+					breachRooms[0]->physics.changeOxy(oxyTarget);
+					breachRooms[0]->physics.changeTemp(tempTarget);
+					breachRooms[0]->physics.changePres(presTarget);
+					breachRooms[1]->physics.changeOxy(oxyTarget);
+					breachRooms[1]->physics.changeTemp(tempTarget);
+					breachRooms[1]->physics.changePres(presTarget);
+				} else if (breachRooms.size() == 1) {
+					int oldPres = breachRooms[0]->physics.give_pressure();
+					breachRooms[0]->physics.changeOxyExternal();
+					breachRooms[0]->physics.changeTempExternal(oldPres);
+				}
+				breachRooms = {};
+			}
+		}
+		
 		if(it->second->isUsed()) {
-			std::cout << "About to remove object from list (RandomMap)" << std::endl;
+			if (it->second->getInstanceName().find("Pickup") != -1) {
+				for(Room* room : rooms) {
+					if(room->contains(it->second->getRect())) {
+						Pickup* temp = (Pickup*)it->second;
+						if (temp->pickupType == 'o') room->physics.raise_oxygen(temp->pickupValue);
+						else room->physics.raise_temperature(temp->pickupValue);
+					}
+				}
+			}
 			it = objectList.erase(it);
-			std::cout << "Succeeded in removing object from list (RandomMap)" << std::endl;
 			break;
 		}
 		it++;
 	}
+	
 	//update camera to player position
 	camera.x = p.getX() - (camera.w/2);
 	camera.y = p.getY() - (camera.h/2);
@@ -131,42 +174,37 @@ void RandomMap::update(Uint32 ticks){
 		camera.y = grid.size() * tile_s;
 	}*/
 
-	updateMax = rooms.size();
-	Room* ro = tilemap.getRoom(updateCount);
-	//get rooms around the door
-	
-	//average the rooms by calling adv_init_room(pass all the values)
-	
-	//double check to make sure that ro values are updated
-	
-	//check if breach occured
-		//jump to breach class (pass through ro->physics)
-			//all of this will be in breach class
-			//lower_pressure() (which is based off how many breaches/time passed)
-			//adv_lower_temperature() from physics
-			//adv_lower_oxygen() from physics
-	
-	//physics update hud
-	if (collision::checkCol(*(p.getRect()), ro->getRectCopy())) {
-		h.currentTemp = ro->physics.give_temperature();
-		h.currentOxygen = ro->physics.give_oxygen();
-	} else {
-		h.currentTemp = tilemap.getRoom(0)->physics.give_temperature();
-		h.currentOxygen = tilemap.getRoom(0)->physics.give_oxygen();
+	if (!doors.empty()) {
+		doorMax = doors.size();
+		Door dr = *(doors[doorCount]);
+		if (dr.getState() == 3) {
+			int oxyTarget = (dr.rooms[0]->physics.give_oxygen() + dr.rooms[1]->physics.give_oxygen()) / 2;
+			int tempTarget = (dr.rooms[0]->physics.give_temperature() + dr.rooms[1]->physics.give_temperature()) / 2;
+			dr.rooms[0]->physics.changeOxy(oxyTarget);
+			dr.rooms[0]->physics.changeTemp(tempTarget);
+			dr.rooms[1]->physics.changeOxy(oxyTarget);
+			dr.rooms[1]->physics.changeTemp(tempTarget);
+		}
+		if (!(doorMax == 0)) doorCount = (doorCount+1)%doorMax;
 	}
 	
-	//pushback updated values
-	
-	
-	//old code-----------------------------------------------------------------------------------------------------
-	// if (h.currentTemp == 0) {
-		// h.currentHealth = std::max(0, h.currentHealth-5);
-	// }
-	// if (h.currentOxygen == 0) {
-		// h.currentHealth = std::max(0, h.currentHealth-5);
-	// }
-	updateCount = (updateCount+1)%updateMax;
-	std::cout << "Exited RandomMap update" << std::endl << std::endl;
+	roomMax = rooms.size();
+	Room* ro = tilemap.getRoom(roomCount);
+	if (changedHUD && roomCount == changedRoomNum) changedHUD = false;
+	SDL_Rect _temp = *(ro->getRect());
+	if (!changedHUD && collision::checkCol(*(p.getRect()), {_temp.x*32, _temp.y*32, _temp.w*32, _temp.h*32})) {
+		h.currentTemp = ro->physics.give_temperature();
+		h.currentOxygen = ro->physics.give_oxygen();
+		if (waitTicks == 0) {
+			if (h.currentTemp == 0) h.currentHealth = std::max(h.currentHealth-1, 0);
+			if (h.currentOxygen == 0) h.currentHealth = std::max(h.currentHealth-2, 0);
+			if (h.currentTemp == 100 && h.currentOxygen == 100) h.currentHealth = std::min(h.currentHealth+1, 90);
+		}
+		changedHUD = true;
+		changedRoomNum = roomCount;
+	}
+	roomCount = (roomCount+1)%roomMax;
+	waitTicks = (waitTicks+1)%10;
 }
 
 // ADD COMMENTS 
@@ -174,9 +212,9 @@ void RandomMap::update(Uint32 ticks){
 // based off of movePickup
 // TODO: finish this shit
 void RandomMap::cloneOoze(SDL_Renderer* reference) {
-	//int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
-	//int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
-	//SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
+	int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
+	int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
+	SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
 
 	
 	/*if(collision::checkCol(OozeBox, leftWall) 
@@ -278,6 +316,7 @@ void RandomMap::placeDoors(SDL_Renderer* renderer) {
 				for(Room* room : rooms) {
 					if(room->contains(d->getRect())) {
 						d->addRoom(room);
+						doors.push_back(d);
 					}
 				}
 			}

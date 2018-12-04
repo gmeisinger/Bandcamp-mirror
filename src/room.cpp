@@ -51,7 +51,8 @@ std::vector<SDL_Rect> Room::getIntersects() {
 }
 
 bool Room::contains(SDL_Rect* _rect) {
-	if(SDL_HasIntersection(_rect, &rect)) {
+	SDL_Rect _temp = {rect.x*32, rect.y*32, rect.w*32, rect.h*32};
+	if(SDL_HasIntersection(_rect, &_temp)) {
 		return true;
 	}
 	else return false;
