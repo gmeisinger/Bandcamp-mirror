@@ -20,14 +20,11 @@ tilemap{t}
     curRoom = room;
     neighbors = curRoom->getNeighbors();
     roomRect = *curRoom->getRect();
-    std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
 
     //roomRect.h -= 2;
     //roomRect.w -= 2;
     //roomRect.x += 1;
     //roomRect.y += 1;
-    //std::cout << "og w: " << room->getRect()->w *tile_s << " (" << room->getRect()->w << "), og h: " << room->getRect()->h *tile_s << " (" << room->getRect()->h << ")"<< std::endl;
-    //std::cout << "og x: " << room->getRect()->x *tile_s << ", og y: " << room->getRect()->y *tile_s<< std::endl;
 
     rect = {(roomRect.x + (roomRect.w/2)) * tile_s, (roomRect.y + (roomRect.h/2)) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
@@ -255,26 +252,16 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
         case FIGHTING: {
           return player->getRect();
         }
+        // in roaming case, a random 'target' within the current room is created (randRect) and its pointer 
+        // is returned as the target the ooze will use moveLine until it reaches that faux target, 
+        // then creates a new one
         case ROAMING: {
           losTarget = drawLine(grid, target);
-          //std::cout << "target x was " << target->x << ", my x is " << rect.x << std::endl;
-          if (!losTarget) { //only change 'target' when there isnt one
-              int shit = ((rand() % roomRect.w) + roomRect.x ) * tile_s;
-                /*if (roomRect.y > roomRect.h) {
-                    int fuck = ((rand() % roomRect.h) + roomRect.y) * tile_s;
-                } else {
 
-                }*/
-              int fuck = ((rand() % roomRect.h) + roomRect.y) * tile_s;
-              randRect = {shit, fuck, 30, 30};
-              std::cout << "NEW random x: " << randRect.x << " randy y: " << randRect.y << std::endl;
-              std::cout << "my x : " << rect.x << ", my y : " << rect.y << std::endl;
-              std::cout << "room? w : " << (roomRect.w ) * tile_s << " + " << roomRect.x * tile_s << " room h : " << (roomRect.h )* tile_s <<  " + " << (roomRect.y) * tile_s << std::endl;
-
+          if (!losTarget) { //only change 'target' when neccessary
+              randRect = {((rand() % roomRect.w) + roomRect.x ) * tile_s, ((rand() % roomRect.h) + roomRect.y) * tile_s, 30, 30};
               return &randRect;
           } else {
-              //bool losTarget = drawLine(grid, target); 
-              std::cout << "still going towards last" << std::endl;
               return target;
           }
           return nullptr;
