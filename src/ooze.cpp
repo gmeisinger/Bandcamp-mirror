@@ -250,7 +250,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
                 state = HANGRY;
                 return true;
             }
-            std::cout << "roaming" << std::endl;
+//            std::cout << "roaming" << std::endl;
 
             break;
         }
