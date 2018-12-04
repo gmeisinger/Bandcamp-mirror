@@ -114,7 +114,7 @@ void PauseMenu::input(const Uint8* keystate){
 		6 - Return - Start Button
 	*/
 	
-	if(keystate[SDL_SCANCODE_W])
+	if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP])
 	{
 		if(keyHeld[0] >= 1)
 			keyHeld[0] = 2;
@@ -124,7 +124,7 @@ void PauseMenu::input(const Uint8* keystate){
 	else
 		keyHeld[0] = 0;
 	
-	if(keystate[SDL_SCANCODE_S])
+	if(keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN])
 	{
 		if(keyHeld[1] >= 1)
 			keyHeld[1] = 2;
@@ -134,7 +134,7 @@ void PauseMenu::input(const Uint8* keystate){
 	else
 		keyHeld[1] = 0;
 	
-	if(keystate[SDL_SCANCODE_A])
+	if(keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT])
 	{
 		if(keyHeld[2] >= 1)
 			keyHeld[2] = 2;
@@ -144,7 +144,7 @@ void PauseMenu::input(const Uint8* keystate){
 	else
 		keyHeld[2] = 0;
 	
-	if(keystate[SDL_SCANCODE_D])
+	if(keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT])
 	{
 		if(keyHeld[3] >= 1)
 			keyHeld[3] = 2;
@@ -174,7 +174,7 @@ void PauseMenu::input(const Uint8* keystate){
 	else
 		keyHeld[5] = 0;
 	
-	if(keystate[SDL_SCANCODE_RETURN])
+	if(keystate[SDL_SCANCODE_RETURN] || keystate[SDL_SCANCODE_ESCAPE])
 	{
 		//When you come back into the room after a pause, you will most likely still be holding down
 		//the enter key. This prevents you from going straight back into the pause menu.

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
@@ -45,6 +46,7 @@ class Ooze : public Object {
         int health_cost;
         int num_cost;
     };
+    void Mutate();
     
     struct RoomTiles{
         SDL_Rect* startTile;
@@ -95,7 +97,7 @@ public:
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
-    int damage = 5;
+    int damage = 1; // keep this at 1
     // Constructors & destructor
     Ooze(); // Default constructor
     Ooze(Room* room, Tilemap* t);
@@ -156,6 +158,7 @@ public:
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
     //void updateAnimation(Uint32 ticks);
+    void hurt(int damage);
 };
 
 #endif  //  OOZE_H_

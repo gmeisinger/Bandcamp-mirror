@@ -5,9 +5,9 @@
 
 #include "include/projectile.h"
 
+
 constexpr int FIRED_SPEED = 6;
 
-Uint32 projTicks;
 static int totalInstance = 0;//How many instances of the object exist?
 
 Projectile::Projectile(char type, int playerX, int playerY) {

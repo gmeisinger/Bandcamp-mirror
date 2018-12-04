@@ -17,8 +17,7 @@ class Projectile : public Object
 {
 	private:
 		char projType;
-		SDL_Rect projRect;
-		SDL_Rect projDrawBox;
+		SDL_Rect projRect; //The Collision Box
 		bool up;
 	    bool down;
 	    bool left;
@@ -31,6 +30,8 @@ class Projectile : public Object
 		SDL_Texture* projImg;
 		SDL_Rect projImgRect;
 		SDL_Rect correction;
+        SDL_Rect projDrawBox;
+        Uint32 projTicks;
 
 	public:
 		void input(const Uint8* keystate);

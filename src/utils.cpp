@@ -40,17 +40,24 @@ void utils::destroyTextureVector(std::vector<SDL_Texture*> vect)
 	}
 }
 
-/* normDist_sd1:
+/* Outside function parts for normDist & uniform dist:
  * Random number generator using Normal Distribution, Mean of 0, Standard Distribution 1
  * Generates number usually between [-3,3], most commonly 0
  */
-//std::default_random_engine generator;
-//std::random_device r;
-std::mt19937 generator{};                                 // Random number generator
-//generator.seed(std::random_device()());                 // Seed Generator
-std::uniform_int_distribution<int> distribution(-3,3);   // Create Distribution
+typedef std::chrono::high_resolution_clock myclock; // Create Timer
+myclock::time_point beginning = myclock::now();     // Set beginning
+myclock::duration d = myclock::now() - beginning;   // Take time span
+unsigned seed2 = d.count();                         // Obtain a seed from the timer
+std::mt19937 generator(seed2);                                 // Random number generator
+std::uniform_int_distribution<int> uniform_dist(-4,4);   // Create Distribution
+std::normal_distribution<float> norm_dist(0,2);   // Create Distribution
 
-int utils::normDist_sd1() {
-    return(distribution(generator));
+// Generates int with high probability of being -1,0, or 1, with lesser probabilies outside of that range
+int utils::normDist() {
+    return((int)norm_dist(generator));
+}
+// Generates int in [-4,4] range with equal probability
+int utils::uniformDist() {
+    return(uniform_dist(generator));
 }
 //std::cout << dice()+dice()+dice() << std::endl;
