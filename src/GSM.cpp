@@ -9,12 +9,14 @@
 #include "include/menu.h"
 
 #include "include/PauseMenu.h"
+#include "include/death.h"
 
 
 int GSM::currentScreen = 0;
 RandomMap randomMap;
 TestTransition_1 testTransitionScreen; 
 PauseMenu pauseMenu;
+Death deathScreen;
 bool pause;	//Is the game paused
 int tempScreen; //What was the room before you paused?
 
@@ -37,6 +39,9 @@ GSM::GSM(){
 	roomList.push_back(&randomMap);
 	pauseMenu = PauseMenu();
 	roomList.push_back(&pauseMenu);
+	deathScreen = Death();
+	roomList.push_back(&deathScreen);
+
 	previousScreen = 0;
 	pause = false;
 	running = false;		// does this refer to the game running bool? its own from GSM.h

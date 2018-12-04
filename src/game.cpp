@@ -97,7 +97,7 @@ void Game::update(Uint32 ticks) {
 // Updates image displayed to user 
 void Game::draw() {
 	//Clear the Screen
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+	//SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen
@@ -127,6 +127,7 @@ void Game::run() {
         std::cout << "ERROR" << Mix_GetError() << std::endl;	
     //set a default for now ;)
     bgm = Mix_LoadMUS("music/Leftfield Worm.wav");
+
 	if(music_debug)
 		std::cout << "Loaidng Background music Successful" << std::endl;	
 	fire = Mix_LoadWAV("music/Soundfx/pew.wav");
@@ -232,6 +233,7 @@ void Game::change_track()
     		track_counter = 5;
     		if(music_debug)
 				std::cout << "Track selection - Time 4 Exploration" << std::endl;                        		
+
     		break;
     	case 5:
     		bgm = Mix_LoadMUS("music/CS1666 Game Music 5 120bpm Cm.wav");
@@ -247,6 +249,7 @@ void Game::change_track()
     		if(music_debug)
 				std::cout << "Track selection - Throbbing Beat" << std::endl;	                        	
     		break;    		
+
     	default: //title; something went wrong
         	bgm = Mix_LoadMUS("music/New Territory/Theme.wav");
         	Mix_PlayMusic(bgm, -1);                        		

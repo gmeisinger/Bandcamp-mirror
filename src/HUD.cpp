@@ -5,6 +5,7 @@
 
 #include "include/HUD.h"
 #include "include/utils.h"
+#include "include/GSM.h"
 
 // Global Variables
 bool init_h;
@@ -63,7 +64,14 @@ void HUD::init(SDL_Renderer* _renderer)
  *
  *
 */
-void HUD::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){}
+void HUD::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
+	if(currentHealth == 0) {
+		GSM::currentScreen = 4;
+		currentHealth = 90;
+		currentTemp = 100;
+		currentOxygen = 100;
+	}
+}
 
 /* 
  * Keystate - which keys are pressed 

@@ -679,6 +679,7 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 //This version of Bresenham's moves the player in as stright a line as possible to 
 //the player
 void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
+    if(target == nullptr) return;
     int deltaX = target->x - rect.x;
     int deltaY = target->y - rect.y;
     int startX = rect.x;
