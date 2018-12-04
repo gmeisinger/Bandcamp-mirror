@@ -13,16 +13,14 @@ class Room2
 		void adv_init_room(int o, int t, int p, int o2, int t2, int p2);
 		int give_oxygen();
 		int give_temperature();
-		void lower_pressure();
-		void lower_pressure(int num_of_breaches);
-		void lower_oxygen();
-		void adv_lower_oxygen();
+		int give_pressure();
 		void raise_oxygen(int resource_value);
-		void lower_temperature();
-		void adv_lower_temperature();
 		void raise_temperature(int resource_value);
 		void changeOxy(int target);
 		void changeTemp(int target);
+		void changePres(int target);
+		void changeOxyExternal();
+		void changeTempExternal(int oldPres);
 	private:
 		int oxygen, temperature, pressure, num_breaches;
 		bool breached;
