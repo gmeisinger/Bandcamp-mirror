@@ -47,3 +47,10 @@ std::vector<Room*> Room::getNeighbors() {
 std::vector<SDL_Rect> Room::getIntersects() {
 	return intersect_rects;
 }
+
+bool Room::contains(SDL_Rect* _rect) {
+	if(SDL_HasIntersection(_rect, &rect)) {
+		return true;
+	}
+	else return false;
+}

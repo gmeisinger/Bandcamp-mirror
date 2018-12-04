@@ -21,6 +21,7 @@ public:
 	void addIntersect(SDL_Rect rect);
 	std::vector<Room*> getNeighbors();
 	std::vector<SDL_Rect> getIntersects();
+	bool contains(SDL_Rect* _rect);
 };
 
 #endif  //  BANDCAMP_ROOM_H_

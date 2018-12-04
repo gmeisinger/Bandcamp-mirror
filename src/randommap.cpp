@@ -245,6 +245,11 @@ void RandomMap::placeDoors(SDL_Renderer* renderer) {
 				d->init(renderer);
 				objectList["door"+doorCount] = d;
 				doorCount++;
+				for(room : rooms) {
+					if(room->contains(d->getRect())) {
+						d->addRoom(room);
+					}
+				}
 			}
 		}
 	}
