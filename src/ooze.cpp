@@ -163,7 +163,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 
     std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()) {
-        std::cout << *it;
+        //std::cout << *it;
 		if(it->second->getInstanceName().find("proj") != -1) {
 			if (collision::checkCol(rect, *(it->second->getRect()))) {
 				std::cout << "Ooze hit" << std::endl;;
