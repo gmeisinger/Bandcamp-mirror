@@ -17,7 +17,7 @@ SDL_Texture* utils::loadTexture(SDL_Renderer* renderer, std::string fname) {
 		return nullptr;
 	}
 	//color key
-	SDL_SetColorKey(startSurf, SDL_FALSE, SDL_MapRGB(startSurf->format, 0, 0xFF, 0xFF));
+	//SDL_SetColorKey(startSurf, SDL_FALSE, SDL_MapRGB(startSurf->format, 0, 0xFF, 0xFF));
     //create texture from image
 	newTexture = SDL_CreateTextureFromSurface(renderer, startSurf);
 	if (newTexture == nullptr) {

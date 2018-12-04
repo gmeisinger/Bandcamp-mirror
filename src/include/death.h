@@ -7,7 +7,7 @@
 #include "animation.h"
 #include "spritesheet.h"
 #include "utils.h"
-#include "GSM.h"
+//#include "GSM.h"
 
 class Death : public Screen 
 {
@@ -16,6 +16,7 @@ class Death : public Screen
 		Animation anim;
 		SDL_Rect fRect;
 		int alpha;
+		int elapsed;
 	public:
 		Death();
 		void init(SDL_Renderer* renderer);
