@@ -12,6 +12,7 @@ class Animation
 		Uint32 frameTicks;
 		bool playing;
 		bool loop;
+		int frameLength;
 		
 	public:
 		bool playedOnce;
@@ -28,6 +29,7 @@ class Animation
 		int getCurFrame();
 		std::vector< SDL_Rect >* getFrames();
 		void setFrame(int _frame);
+		void setFrameLength(int len);
 };
 
 #endif  //  BANDCAMP_ANIMATION_H_
