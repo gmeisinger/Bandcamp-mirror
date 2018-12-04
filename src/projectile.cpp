@@ -5,13 +5,12 @@
 
 #include "include/projectile.h"
 
-constexpr int FIRED_SPEED = 4;
+constexpr int FIRED_SPEED = 6;
 
 Uint32 projTicks;
 static int totalInstance = 0;//How many instances of the object exist?
 
 Projectile::Projectile(char type, int playerX, int playerY) {
-	std::cout << "Entered Projectile constructor" << std::endl;
 	switch(type){
 		case 'n':
 			projRect = {playerX + 12, playerY + 8, 8, 32};
@@ -42,7 +41,6 @@ Projectile::Projectile(char type, int playerX, int playerY) {
 	playerXVel = 0;
 	playerYVel = 0;
 	correction = {0,0,0,0};
-	std::cout << "Exited Projectile constructor" << std::endl;
 }
 
 //Deconstructor
@@ -58,9 +56,7 @@ std::string Projectile::getInstanceName(){
 	return "proj-"+ss.str();
 }
 
-void Projectile::init(SDL_Renderer *renderer){
-	std::cout << "Entered Projectile init" << std::endl;
-	
+void Projectile::init(SDL_Renderer *renderer) {
 	//Set up the right Image to display
 	//Eventually these images might be global, rather than loaded every time it's spawned.
 	projImg = utils::loadTexture(renderer, "res/projectiles.png");
@@ -93,7 +89,6 @@ void Projectile::init(SDL_Renderer *renderer){
 	}
 	
 	rendererReference = renderer;
-	std::cout << "Exited Projectile init" << std::endl;
 }
 		
 void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
@@ -104,7 +99,6 @@ void Projectile::update(std::unordered_map<std::string, Object*> &objectList, st
 }
 
 SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
-	std::cout << "Entered Projectile draw" << std::endl;
 	if (cam.x >= -2 && cam.x <= 2 && cam.y >= -2 && cam.y <= 2 && cam.w == 0 && cam.h == 0) {
 		correction = cam;
 	} else {
@@ -112,12 +106,10 @@ SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
 		*drawDest = projDrawBox;
 		SDL_RenderCopy(renderer, projImg, &projImgRect, drawDest);
 	}
-	std::cout << "Exited Projectile draw" << std::endl;
 	return renderer;
 }
 
-void Projectile::updatePosition(Uint32 ticks){
-	std::cout << "Entered Projectile updatePosition" << std::endl;
+void Projectile::updatePosition(Uint32 ticks) {
 	projTicks += ticks;
 	if(projTicks > 2) {
 		switch(projType){
@@ -142,11 +134,9 @@ void Projectile::updatePosition(Uint32 ticks){
 		projDrawBox.y = projDrawBox.y - correction.y;
 		projTicks = 0;
 	}
-	std::cout << "Exited Projectile updatePosition" << std::endl;
 }
 
 void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
-	std::cout << "Entered Projectile checkProjOverlap" << std::endl;
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()) {
 		if(it->second->getInstanceName().find("ooze") != -1) {
@@ -167,17 +157,12 @@ void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &obje
 			projUsed = true;
 		}
 	}
-	std::cout << "Exited Projectile checkProjOverlap" << std::endl;
 }
 
 bool Projectile::isUsed() {
-	std::cout << "Entered Projectile isUsed" << std::endl;
-	std::cout << "Exited Projectile isUsed" << std::endl;
 	return projUsed;
 }
 
 SDL_Rect* Projectile::getRect() {
-	std::cout << "Entered Projectile getRect" << std::endl;
-	std::cout << "Exited Projectile getRect" << std::endl;
     return &projRect;
 }
