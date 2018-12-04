@@ -88,6 +88,7 @@ void RandomMap::init(SDL_Renderer* reference){
 
 // ADD COMMENTS 
 void RandomMap::update(Uint32 ticks){
+	std::cout << std::endl << "Entered RandomMap update" << std::endl;
 	if(pauseB)
 	{ //If you set the currentScreen in the Input method it will cause an array out of bounds error.
 		pauseB = false;
@@ -104,7 +105,9 @@ void RandomMap::update(Uint32 ticks){
 	while(it != objectList.end()){
 		it->second->update(objectListRef, tilemap.getMapRef(), ticks);
 		if(it->second->isUsed()) {
+			std::cout << "About to remove object from list (RandomMap)" << std::endl;
 			it = objectList.erase(it);
+			std::cout << "Succeeded in removing object from list (RandomMap)" << std::endl;
 			break;
 		}
 		it++;
@@ -158,6 +161,7 @@ void RandomMap::update(Uint32 ticks){
 		// }
 	}
 	updateCount = (updateCount+1)%UPDATE_MAX;
+	std::cout << "Exited RandomMap update" << std::endl << std::endl;
 }
 
 // ADD COMMENTS 
