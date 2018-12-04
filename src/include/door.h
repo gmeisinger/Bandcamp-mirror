@@ -29,6 +29,7 @@ class Door : public Object
 			2 - Open
 		*/
 		bool directionLR = false; //F - Up/Down T - L/R
+		std::vector<Room*> rooms;
 
 	public:
 		void input(const Uint8* keystate);
@@ -47,6 +48,8 @@ class Door : public Object
         Door();
 		~Door();
 		Door(int x, int y);
+		void addRoom(Room* _room);
+		SDL_Rect* getRect();
 };
 
 #endif  //  BANDCAMP_DOOR_H_
