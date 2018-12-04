@@ -19,6 +19,7 @@ Animation::Animation(std::vector<SDL_Rect> _frames) {
 	playing = false;
 	loop = true;
 	playedOnce = false;
+	frameLength = FRAME_LENGTH;
 }
 
 Animation::Animation(std::vector<SDL_Rect> _frames, bool _loop) {
@@ -28,6 +29,7 @@ Animation::Animation(std::vector<SDL_Rect> _frames, bool _loop) {
 	playing = false;
 	loop = _loop;
 	playedOnce = false;
+	frameLength = FRAME_LENGTH;
 }
 
 //One Frame "animation"
@@ -38,6 +40,7 @@ Animation::Animation(SDL_Rect * frame) {
 	playing = false;
 	loop = false;
 	playedOnce = false;
+	frameLength = FRAME_LENGTH;
 }
 
 // add description
@@ -67,7 +70,7 @@ void Animation::reset() {
 //	takes ticks since last updated
 void Animation::update(Uint32 ticks) {
 	frameTicks += ticks;
-	if(playing && frameTicks > FRAME_LENGTH) {
+	if(playing && frameTicks > frameLength) {
 		if(curFrame == (frames.size() -1)) {
 			playedOnce = true; //regardless of whether it loops or not, we can check if the animation has played once.
 			
@@ -99,4 +102,8 @@ std::vector< SDL_Rect >* Animation::getFrames(){
 //add description
 void Animation::setFrame(int _frame) {
 	curFrame = _frame;
+}
+
+void Animation::setFrameLength(int len) {
+	frameLength = len;
 }
