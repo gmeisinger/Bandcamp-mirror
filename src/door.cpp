@@ -202,3 +202,7 @@ bool Door::isUsed(){return false;}
 void Door::addRoom(Room* _room) {
 	rooms.push_back(_room);
 }
+
+int Door::getState() {
+	return state;
+}

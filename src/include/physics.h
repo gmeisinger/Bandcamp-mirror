@@ -19,6 +19,8 @@ class Room2
 		void lower_temperature();
 		void adv_lower_temperature();
 		void raise_temperature(int resource_value);
+		void changeOxy(int target);
+		void changeTemp(int target);
 	private:
 		int oxygen, temperature, pressure, num_breaches;
 		bool breached;

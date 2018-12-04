@@ -92,10 +92,10 @@ void Projectile::init(SDL_Renderer *renderer) {
 }
 		
 void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
-	std::cout << "Entered Projectile update" << std::endl;
+	//std::cout << "Entered Projectile update" << std::endl;
 	updatePosition(ticks);
 	checkProjOverlap(objectList, grid);
-	std::cout << "Exited Projectile update" << std::endl;
+	//std::cout << "Exited Projectile update" << std::endl;
 }
 
 SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
