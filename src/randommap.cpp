@@ -68,6 +68,8 @@ void RandomMap::init(SDL_Renderer* reference){
 	std::cout << "numRooms: " << rooms.size() << std::endl;
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
 	o = Ooze(&oozeRoom);
+
+
 	o.init(reference);
 	//Player and HUD in the Room
 	objectList["player"] = &p;

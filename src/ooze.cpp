@@ -18,7 +18,12 @@ hostility{0}
     target = player->getRect();
     curRoom = room;
     roomRect = room->getRectCopy();
-
+    //roomRect.h -= 2;
+    //roomRect.w -= 2;
+    //roomRect.x += 1;
+    //roomRect.y += 1;
+    std::cout << "og w: " << room->getRect()->w *tile_s << " (" << room->getRect()->w << "), og h: " << room->getRect()->h *tile_s << " (" << room->getRect()->h << ")"<< std::endl;
+    std::cout << "og x: " << room->getRect()->x *tile_s << ", og y: " << room->getRect()->y *tile_s<< std::endl;
 
     rect = {((roomRect.x + roomRect.w)/2) * tile_s, ((roomRect.y + roomRect.h)/2) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
@@ -216,11 +221,12 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
         losTarget = drawLine(grid, target);
         //std::cout << "target x was " << target->x << ", my x is " << rect.x << std::endl;
         if (!losTarget) { //only change 'target' when there isnt one
-
-            randRect = {((rand() % roomRect.h) + roomRect.y) * tile_s, ((rand() % roomRect.w) + roomRect.x ) * tile_s,  30, 30};
-            std::cout << "NEW random x: " << randRect.x << ", randy y: " << randRect.y << std::endl;
+            int shit = ((rand() % roomRect.w) + roomRect.x ) * tile_s;
+            int fuck = ((rand() % roomRect.h) + roomRect.y) * tile_s;
+            randRect = {shit, fuck, 30, 30};
+            std::cout << "NEW random x: " << randRect.x << " randy y: " << randRect.y << std::endl;
             std::cout << "my x : " << rect.x << ", my y : " << rect.y << std::endl;
-            std::cout << "room? w : " << roomRect.w << ", room h : " << roomRect.h<<  std::endl;
+            std::cout << "room? w : " << (roomRect.w ) * tile_s << " + " << roomRect.x * tile_s << " room h : " << (roomRect.h )* tile_s <<  " + " << (roomRect.y) * tile_s << std::endl;
 
             return &randRect;
         } else {
