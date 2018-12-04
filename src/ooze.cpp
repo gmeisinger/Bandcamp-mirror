@@ -17,8 +17,10 @@ hostility{0}
 {
     target = player->getRect();
     curRoom = room;
-    SDL_Rect *temp = curRoom->getRect();
-    rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
+    roomRect = room->getRectCopy();
+
+
+    rect = {((roomRect.x + roomRect.w)/2) * tile_s, ((roomRect.y + roomRect.h)/2) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	int overlapTicks = 0;
@@ -42,7 +44,11 @@ hostility{0}
 
     lastRoom = nullptr;
     initialized = false;
-    //srand(time(NULL));
+    
+    losTarget = false;
+    losPickup = false;
+    losPlayer = false;
+
 }
 
 // Copy Constructor
@@ -94,6 +100,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
+
     if(!initialized) {
         initRoom(grid, curRoom->getRect());
         initialized = true;
@@ -113,7 +120,8 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     //might move order of update calls
     bool stateChange = updateState(objectList, ticks);
 
-	bool overlap = checkOozeOverlap(objectList, ticks);
+	//bool overlap = checkOozeOverlap(objectList, ticks);
+    bool overlap = false;
 	if(!overlap){  
         if (iter > 15) {  // slow down rate of checking for new target
             // maybe do if stateChange?
@@ -178,6 +186,8 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
 */
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
     //iter++;
+    //std::cout << "my x : " << rect.x << ", my y : " << rect.y << std::endl;
+    //std::cout << "targ x : " << target->x << ", targ y : " << target->y << std::endl;
     if ( state == HANGRY ) {//&& iter > 15) {
         //iter = 0;
         std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
@@ -186,12 +196,12 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                 //std::cout << "there is a pickup :) " << std::endl;
                 Pickup* temp = (Pickup*)it->second;
                 
-                bool losPickup = drawLine(grid, temp->getRect());
+                losPickup = drawLine(grid, temp->getRect());
                 
                 if(losPickup)
                     return temp->getRect();
                 else {
-                    bool losPlayer = drawLine(grid, player->getRect());
+                    losPlayer = drawLine(grid, player->getRect());
                     if(losPlayer)
                         return player->getRect();
                     else
@@ -203,22 +213,22 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
     }else if ( state == FIGHTING ) {
         return player->getRect();
     }else if ( state == ROAMING ) {
-        if (target == nullptr) { //only change 'target' when there
+        losTarget = drawLine(grid, target);
+        //std::cout << "target x was " << target->x << ", my x is " << rect.x << std::endl;
+        if (!losTarget) { //only change 'target' when there isnt one
 
-            randRect = {rand()%this->curRoom->getRect()->w, rand()%this->curRoom->getRect()->h, 30, 30};
-            std::cout << "random x: " << randRect.x << ", curRoom h: " << this->curRoom->getRect()->h << std::endl;
-            /*randRect.x = (rand()%randRect.w)
-            target = {30,30};
-            curRoom->getRect()
-            
-            rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};*/
+            randRect = {((rand() % roomRect.h) + roomRect.y) * tile_s, ((rand() % roomRect.w) + roomRect.x ) * tile_s,  30, 30};
+            std::cout << "NEW random x: " << randRect.x << ", randy y: " << randRect.y << std::endl;
+            std::cout << "my x : " << rect.x << ", my y : " << rect.y << std::endl;
+            std::cout << "room? w : " << roomRect.w << ", room h : " << roomRect.h<<  std::endl;
+
             return &randRect;
-        } else if (drawLine(grid, target)) {
-            return target;
         } else {
-            return nullptr;
+            //bool losTarget = drawLine(grid, target); 
+            std::cout << "still going towards last" << std::endl;
+            return target;
+
         }
-        
     }
     return nullptr;
 }

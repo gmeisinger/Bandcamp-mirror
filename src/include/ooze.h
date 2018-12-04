@@ -71,11 +71,16 @@ private:
     SDL_Rect *lastRoom;
 
     Room* curRoom;
+    SDL_Rect roomRect;
     Tilemap* tilemap;
 
     bool initialized;
 
     int iter;
+
+    bool losTarget;
+    bool losPickup;
+    bool losPlayer;
     
 public:
 
