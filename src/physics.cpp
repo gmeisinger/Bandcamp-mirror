@@ -83,13 +83,11 @@ void Room2::changePres(int target) {
 }
 
 void Room2::changeOxyExternal() {
-	std::cout << "Old Oxy: " << oxygen << std::endl;
 	if (oxygen > 10) {
 		oxygen = (8.314f * oxygen) / 10;	//Uses the ideal gas constant to decide percent of oxygen that escaped
 	} else if (oxygen > 0) {
 		oxygen--;
 	}
-	std::cout << "New Oxy: " << oxygen << std::endl;
 }
 
 void Room2::changeTempExternal(int oldPres) {
