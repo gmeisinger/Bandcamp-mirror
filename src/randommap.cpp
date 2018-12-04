@@ -23,7 +23,7 @@ constexpr int CAM_HEIGHT = 600;
 int roomMax = 0;
 int doorMax = 0;
 int waitTicks = 0;
-//bool spawnOoze = false;
+bool spawnOoze = false;
 bool spawnPickup = true;
 bool changedHUD = false;
 int changedRoomNum = 0;
@@ -37,7 +37,7 @@ std::vector<Door*> doors;
 
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
-//Ooze o;
+Ooze o;
 
 RandomMap::RandomMap() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
@@ -79,15 +79,15 @@ void RandomMap::init(SDL_Renderer* reference){
 	//std::cout << "numRooms: " << rooms.size() << std::endl;
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
 	//std::cout << "HERE" << std::endl;
-	//o = Ooze(&oozeRoom, &tilemap);
-	//o.init(reference);
+	o = Ooze(&oozeRoom, &tilemap);
+	o.init(reference);
 	//Player and HUD in the Room
 	objectList["player"] = &p;
     player = &p;
 	objectList["hud"] = &h;
     hud_g = &h;
 	// Change to add ooze to list as initialized
-	//objectList["ooze"] = &o;
+	objectList["ooze"] = &o;
 
 	//add doors dynamically
 	placeDoors(reference);
@@ -106,7 +106,7 @@ void RandomMap::update(Uint32 ticks){
 	std::vector<std::vector<Tile*>> &grid = tilemap.getMapRef();
 
 	if (spawnPickup) movePickup(rendererReference, grid); //new way of deciding when to spawn pickup
-	//if (spawnOoze) cloneOoze(rendererReference);
+	if (spawnOoze) cloneOoze(rendererReference);
 
 	std::unordered_map<std::string, Object*>& objectListRef = objectList;
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
@@ -211,10 +211,10 @@ void RandomMap::update(Uint32 ticks){
 
 // based off of movePickup
 // TODO: finish this shit
-//void RandomMap::cloneOoze(SDL_Renderer* reference) {
-	//int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
-	//int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
-	//SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
+void RandomMap::cloneOoze(SDL_Renderer* reference) {
+	int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
+	int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
+	SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
 
 	
 	/*if(collision::checkCol(OozeBox, leftWall) 
@@ -224,12 +224,12 @@ void RandomMap::update(Uint32 ticks){
 	{
 		moveOoze(reference);
 	}*/
-	/*Room oozeRoom = *rooms[rand()%(rooms.size())];
+	Room oozeRoom = *rooms[rand()%(rooms.size())];
 	Ooze *newO = new Ooze(&oozeRoom, &tilemap);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made
-}*/
+}
 
 // ADD COMMENTS 
 void RandomMap::movePickup(SDL_Renderer* reference, std::vector<std::vector<Tile*>> &grid) {
@@ -266,9 +266,9 @@ void RandomMap::movePickup(SDL_Renderer* reference, std::vector<std::vector<Tile
 }
 
 // used to allow other objects to tell testroom to spawn a pickup
-/*void RandomMap::setSpawnOoze(bool set) {
+void RandomMap::setSpawnOoze(bool set) {
 	spawnOoze = set;
-}*/
+}
 
 // used to allow other objects to tell testroom to spawn a pickup
 void RandomMap::setSpawnPickup(bool set) {

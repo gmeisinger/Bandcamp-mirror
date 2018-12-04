@@ -168,10 +168,10 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> &object
 		std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
     	while(it != objectList.end()){
 	        if (!it->first.substr(0,4).compare("ooze")) {
-	        	/*Ooze* temp = (Ooze*)it->second;
+	        	Ooze* temp = (Ooze*)it->second;
 	            if (temp->foundFood(this)) {
 	            	used = true;
-	            }*/
+	            }
 	        }
         	it++;
     	}

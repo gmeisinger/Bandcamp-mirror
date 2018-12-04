@@ -9,7 +9,7 @@
 
 #include "screen.h"
 #include "object.h"
-//#include "ooze.h"
+#include "ooze.h"
 #include "pickup.h"
 #include "door.h"
 #include "GSM.h"
@@ -43,9 +43,9 @@ class RandomMap : public Screen
 		void placeDoors(SDL_Renderer* renderer);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
 		void movePickup(SDL_Renderer* reference, std::vector<std::vector<Tile*>> &grid);
-		//void cloneOoze(SDL_Renderer* reference);
+		void cloneOoze(SDL_Renderer* reference);
 		static void setSpawnPickup(bool set);
-		//static void setSpawnOoze(bool set);
+		static void setSpawnOoze(bool set);
 };
 
 #endif  //  BANDCAMP_RANDOMMAP_H_
