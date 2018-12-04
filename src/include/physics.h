@@ -1,6 +1,8 @@
 #ifndef BANDCAMP_PHYSICS_H_
 #define BANDCAMP_PHYSICS_H_
 
+#include <algorithm>
+
 #include "utils.h"
 
 class Room2

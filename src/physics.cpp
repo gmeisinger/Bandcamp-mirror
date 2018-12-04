@@ -87,7 +87,7 @@ void Room2::adv_lower_oxygen() {
 }
 
 void Room2::raise_oxygen(int resource_value) {
-	oxygen+=resource_value;
+	oxygen = std::min(oxygen+resource_value, 100);
 }
 
 void Room2::lower_temperature() {
@@ -102,10 +102,12 @@ void Room2::adv_lower_temperature() {
 }
 
 void Room2::raise_temperature(int resource_value) {
-	temperature+=resource_value;
+	temperature = std::min(temperature+resource_value, 100);
 }
 
 void Room2::changeOxy(int target) {
+	if (target <= 5) target = 0;
+	else if (target >= 95) target = 100;
 	if (oxygen < target) {
 		oxygen++;
 	} else if (oxygen > target) {
@@ -114,6 +116,8 @@ void Room2::changeOxy(int target) {
 }
 
 void Room2::changeTemp(int target) {
+	if (target <= 5) target = 0;
+	else if (target >= 95) target = 100;
 	if (temperature < target) {
 		temperature++;
 	} else if (temperature > target) {

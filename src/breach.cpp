@@ -86,7 +86,7 @@ void Breach::init(SDL_Renderer *renderer) {
 		
 void Breach::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	updatePosition();
-	if (totalInstance - bNumber > 3) bUsed = true;
+	if (totalInstance - bNumber > 4) bUsed = true;
 }
 
 SDL_Renderer* Breach::draw(SDL_Renderer *renderer, SDL_Rect cam) {
