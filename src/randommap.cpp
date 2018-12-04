@@ -14,6 +14,7 @@
 #include "include/circle.h"
 #include "include/collision.h"
 #include "include/pickup.h"
+#include "include/tilemap.h"
 
 constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
@@ -127,14 +128,34 @@ void RandomMap::update(Uint32 ticks){
 	}*/
 
 	if (updateCount == 0) {
-		h.currentTemp = std::max(0, h.currentTemp-5);
-		h.currentOxygen = std::max(0, h.currentOxygen-5);
-		if (h.currentTemp == 0) {
-			h.currentHealth = std::max(0, h.currentHealth-5);
-		}
-		if (h.currentOxygen == 0) {
-			h.currentHealth = std::max(0, h.currentHealth-5);
-		}
+		Room* ro = tilemap.getRoom(0);
+		//get rooms around the door
+		
+		//average the rooms by calling adv_init_room(pass all the values)
+		
+		//double check to make sure that ro values are updated
+		
+		//check if breach occured
+			//jump to breach class (pass through ro->physics)
+				//all of this will be in breach class
+				//lower_pressure() (which is based off how many breaches/time passed)
+				//adv_lower_temperature() from physics
+				//adv_lower_oxygen() from physics
+		
+		//physics update hud
+		h.currentTemp = ro->physics.give_temperature();
+		h.currentOxygen = ro->physics.give_oxygen();
+		
+		//pushback updated values
+		
+		
+		//old code-----------------------------------------------------------------------------------------------------
+		// if (h.currentTemp == 0) {
+			// h.currentHealth = std::max(0, h.currentHealth-5);
+		// }
+		// if (h.currentOxygen == 0) {
+			// h.currentHealth = std::max(0, h.currentHealth-5);
+		// }
 	}
 	updateCount = (updateCount+1)%UPDATE_MAX;
 }

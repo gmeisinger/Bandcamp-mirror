@@ -29,6 +29,7 @@ class Door : public Object
 			2 - Open
 		*/
 		bool directionLR = false; //F - Up/Down T - L/R
+		SDL_Rect* getRect();
 		std::vector<Room*> rooms;
 
 	public:

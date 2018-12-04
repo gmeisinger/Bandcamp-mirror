@@ -102,3 +102,5 @@ SDL_Renderer* Button::draw(SDL_Renderer *renderer, SDL_Rect cam) { //A rectangle
 	
 	return renderer;
 }
+
+SDL_Rect* Button::getRect(){return NULL;}

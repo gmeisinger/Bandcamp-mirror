@@ -4,6 +4,9 @@
 #include <SDL.h>
 #include <vector>
 
+#include "physics.h"
+#include "utils.h"
+
 class Room
 {
 private:
@@ -21,6 +24,7 @@ public:
 	void addIntersect(SDL_Rect rect);
 	std::vector<Room*> getNeighbors();
 	std::vector<SDL_Rect> getIntersects();
+	Room2 physics;
 	bool contains(SDL_Rect* _rect);
 };
 

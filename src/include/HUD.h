@@ -35,6 +35,7 @@ class HUD : public Object
 		SDL_Rect Temp;
 		SDL_Rect Oxygen;
 		std::string getInstanceName();
+		SDL_Rect* getRect();
 };
 
 #endif  //  BANDCAMP_HUD_H_
