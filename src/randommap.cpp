@@ -110,10 +110,28 @@ void RandomMap::update(Uint32 ticks){
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
 		it->second->update(objectListRef, tilemap.getMapRef(), ticks);
+		if (it->second->getInstanceName().find("breach") != -1) {
+			std::vector<Room*> breachRooms = {};
+			for(Room* room : rooms) {
+				if(room->contains(it->second->getRect())) {
+					breachRooms.push_back(room);
+				}
+			}
+			if (breachRooms.size() == 2) {
+				int oxyTarget = (breachRooms[0]->physics.give_oxygen() + breachRooms[1]->physics.give_oxygen()) / 2;
+				int tempTarget = (breachRooms[0]->physics.give_temperature() + breachRooms[1]->physics.give_temperature()) / 2;
+				breachRooms[0]->physics.changeOxy(oxyTarget);
+				breachRooms[0]->physics.changeTemp(tempTarget);
+				breachRooms[1]->physics.changeOxy(oxyTarget);
+				breachRooms[1]->physics.changeTemp(tempTarget);
+			} else if (breachRooms.size() == 1) {
+				breachRooms[0]->physics.changeOxy(0);
+				breachRooms[0]->physics.changeTemp(0);
+			}
+			breachRooms = {};
+		}
 		if(it->second->isUsed()) {
-			//std::cout << "About to remove object from list (RandomMap)" << std::endl;
 			it = objectList.erase(it);
-			//std::cout << "Succeeded in removing object from list (RandomMap)" << std::endl;
 			break;
 		}
 		it++;
