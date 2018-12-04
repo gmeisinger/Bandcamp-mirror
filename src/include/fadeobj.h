@@ -21,6 +21,7 @@ class FadeObj : public Object
 		int currentFade; //What alpha should it be at currently?
 		SDL_Rect fullScreen;
 		bool done; //Has it finished fading?
+		SDL_Rect* getRect();
 
 	public:
 		void input(const Uint8* keystate);

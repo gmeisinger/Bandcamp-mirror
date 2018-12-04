@@ -4,6 +4,7 @@ Room::Room() {
 	rect = {0,0,0,0};
 	neighbors = {};
 	intersect_rects = {};
+	physics.init_room();
 }
 
 //constructor takes a rect
@@ -11,6 +12,7 @@ Room::Room(SDL_Rect _rect) {
 	rect = _rect;
 	neighbors = {};
 	intersect_rects = {};
+	physics.rand_room();
 }
 
 //destructor
@@ -46,4 +48,11 @@ std::vector<Room*> Room::getNeighbors() {
 
 std::vector<SDL_Rect> Room::getIntersects() {
 	return intersect_rects;
+}
+
+bool Room::contains(SDL_Rect* _rect) {
+	if(SDL_HasIntersection(_rect, &rect)) {
+		return true;
+	}
+	else return false;
 }

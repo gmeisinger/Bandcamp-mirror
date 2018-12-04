@@ -122,3 +122,5 @@ SDL_Renderer* WarpTile::draw(SDL_Renderer *renderer, SDL_Rect cam){
 }
 
 bool WarpTile::isUsed(){return false;}
+
+SDL_Rect* WarpTile::getRect(){return NULL;}
