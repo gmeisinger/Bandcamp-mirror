@@ -103,7 +103,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
      
-    std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
+    //std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
 
     if(!initialized) {
         initRoom(grid);
@@ -255,6 +255,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                     if(losPickup) {
                         squeeze = false;
                         state = HANGRY;
+                        switchRoom();
                         return temp->getRect();
                     }  
                     else {
@@ -262,6 +263,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                         if(losPlayer) {
                             squeeze = false;
                             state = HANGRY;
+                            switchRoom();
                             return player->getRect();
                         }
                         //If we don't have a line of sight with the player or pickup, check the other room
@@ -659,6 +661,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     int c = 0;
     int l = 0;
     int t = 0;
+    std::cout << intersects.size() << std::endl;
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
@@ -679,15 +682,15 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         temp1 = tile->getDest();
 
         if(horWall) {
-        t = c;
-        if (temp1->y > rect.y) {
-            l = r+2;
-            r = r-1;
-        }
-        if (temp1->y < rect.y) {
-            l = r-2;
-            r = r+1;
-        }
+            t = c;
+            if (temp1->y > rect.y) {
+                l = r+2;
+                r = r-1;
+            }
+            if (temp1->y < rect.y) {
+                l = r-2;
+                r = r+1;
+            }
         }
         if(verWall) {
             l = r;
@@ -705,8 +708,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         temp1 = tile->getDest();
 
         bool los = drawLine(grid, temp1);
-        std::cout << los << std::endl;
-        //if(collision::checkCol(curRoom->getRectCopy(), *temp1) && lastRoom != map[r][c]) {
+        
         if(los && lastRoom != map[r][c]) {
             roomTiles.door = temp1;
             lastRoom = tile;
@@ -737,22 +739,25 @@ void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid) {
     || collision::checkColRight(rect, grid, 32) 
     ||collision::checkColTop(rect, grid, 32) 
     || collision::checkColBottom(rect, grid, 32)) && attempts < 30) {
-        std::cout << "Retry" << std::endl;
         rect.x += tile_s;
         rect.y += tile_s;
     }
 }
 
 void Ooze::switchRoom() {
+    if(collision::checkCol(roomRect, rect)) {
+        return;
+    }
     for(int i = 0; i < neighbors.size(); i++) {
         roomRect = neighbors[i]->getRectCopy();
-        if(collision::checkCol(roomRect, *roomTiles.endTile)) {
+        roomRect = {roomRect.x * TILE_SIZE, roomRect.y * TILE_SIZE, roomRect.w * TILE_SIZE, roomRect.h * TILE_SIZE};
+        std::cout << "RoomRect: X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.w << " H " << roomRect.h << std::endl;
+        std::cout << "Rect: X " << rect.x << " Y " << rect.y << " W " << rect.w << " H " << rect.h << std::endl;
+        
+        if(collision::checkCol(roomRect, rect)) {
             std::cout << "ERE" << std::endl;
             curRoom = neighbors[i];
             neighbors = curRoom->getNeighbors();
-            roomTiles.door = nullptr;
-            roomTiles.startTile = nullptr;
-            roomTiles.endTile = nullptr;
             intersects = curRoom->getIntersects();
             return;
         }
