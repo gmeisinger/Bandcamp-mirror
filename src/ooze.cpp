@@ -19,15 +19,17 @@ tilemap{t}
     target = player->getRect();
     curRoom = room;
     neighbors = curRoom->getNeighbors();
-    roomRect = curRoom->getRectCopy();
+    roomRect = *curRoom->getRect();
+    std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
+
     //roomRect.h -= 2;
     //roomRect.w -= 2;
     //roomRect.x += 1;
     //roomRect.y += 1;
-    std::cout << "og w: " << room->getRect()->w *tile_s << " (" << room->getRect()->w << "), og h: " << room->getRect()->h *tile_s << " (" << room->getRect()->h << ")"<< std::endl;
-    std::cout << "og x: " << room->getRect()->x *tile_s << ", og y: " << room->getRect()->y *tile_s<< std::endl;
+    //std::cout << "og w: " << room->getRect()->w *tile_s << " (" << room->getRect()->w << "), og h: " << room->getRect()->h *tile_s << " (" << room->getRect()->h << ")"<< std::endl;
+    //std::cout << "og x: " << room->getRect()->x *tile_s << ", og y: " << room->getRect()->y *tile_s<< std::endl;
 
-    rect = {((roomRect.x + roomRect.w)/2) * tile_s, ((roomRect.y + roomRect.h)/2) * tile_s, 30, 30};
+    rect = {(roomRect.x + (roomRect.w/2)) * tile_s, (roomRect.y + (roomRect.h/2)) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	int overlapTicks = 0;
@@ -258,6 +260,11 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
           //std::cout << "target x was " << target->x << ", my x is " << rect.x << std::endl;
           if (!losTarget) { //only change 'target' when there isnt one
               int shit = ((rand() % roomRect.w) + roomRect.x ) * tile_s;
+                /*if (roomRect.y > roomRect.h) {
+                    int fuck = ((rand() % roomRect.h) + roomRect.y) * tile_s;
+                } else {
+
+                }*/
               int fuck = ((rand() % roomRect.h) + roomRect.y) * tile_s;
               randRect = {shit, fuck, 30, 30};
               std::cout << "NEW random x: " << randRect.x << " randy y: " << randRect.y << std::endl;
