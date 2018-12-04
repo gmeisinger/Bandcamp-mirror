@@ -26,6 +26,7 @@ class Game {
 		bool init();
 		void run();
 		void close();
+		void change_track();
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
 		void draw();
