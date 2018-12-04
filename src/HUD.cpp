@@ -236,7 +236,8 @@ SDL_Renderer* HUD::draw(SDL_Renderer* gRenderer, SDL_Rect cam){
 	return gRenderer;
 }
 
-// 
 bool HUD::isUsed() {
 	return false;
 }
+
+SDL_Rect* HUD::getRect(){return NULL;}

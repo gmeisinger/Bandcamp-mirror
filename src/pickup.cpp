@@ -101,7 +101,6 @@ void Pickup::update(std::unordered_map<std::string, Object*> &objectList, std::v
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
 	if (used) RandomMap::setSpawnPickup(true);
-
 }
 
 /* Summary

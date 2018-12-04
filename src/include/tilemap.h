@@ -40,6 +40,7 @@ public:
 	void addObjects(std::unordered_map<std::string, Object*> *objectList);
 	//random map helpers
 	std::vector<Room*> getRooms();
+	Room* getRoom(int index);
 	//std::vector< std::vector < int > > &getGrid();
 	void genTestTransitionRoom();
 	void genMaze();

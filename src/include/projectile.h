@@ -7,6 +7,7 @@
 #include <unordered_map>
 #include <vector>
 
+#include "breach.h"
 #include "collision.h"
 #include "object.h"
 #include "randommap.h"
@@ -23,11 +24,13 @@ class Projectile : public Object
 	    bool right;
 		int playerXVel;
 		int playerYVel;
-        bool projUsed;
-        //Image Stuff
-        SDL_Texture* projImg;
-        SDL_Rect projImgRect;
-        SDL_Rect projDrawBox;	//Where the Image is drawn on screen
+		SDL_Renderer* rendererReference;
+		int projNumber;
+		bool projUsed;
+		SDL_Texture* projImg;
+		SDL_Rect projImgRect;
+		SDL_Rect correction;
+        SDL_Rect projDrawBox;
         Uint32 projTicks;
 
 	public:
@@ -39,8 +42,8 @@ class Projectile : public Object
 		Projectile(char type, int playerX, int playerY);
         ~Projectile();
 		Projectile();
-		void checkProjOverlap(std::vector<std::vector<Tile*>> &grid);
-		SDL_Rect* getProjRect();
+		void checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid);
+		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
 };

@@ -29,13 +29,13 @@ class Player : public Object
 		bool space;
         bool x;
 		bool projCooldown;
-		bool projActive;
 		char projsType;
 	    SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;
         Animation* anim;
 		SDL_Renderer* rendererReference;
-		std::unordered_map<std::string, Object*> projList;
+		//std::unordered_map<std::string, Object*> projList;
+		SDL_Rect correction;
 		
     public:
         Player(SDL_Rect _rect);
