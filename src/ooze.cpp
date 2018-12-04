@@ -1,6 +1,6 @@
 #include "include/ooze.h"
 #include "include/player.h"
-
+/*
 //initialize static member variables
 int Ooze::totalOoze = 0;
 
@@ -83,32 +83,32 @@ std::string Ooze::getInstanceName(){
 	return "ooze-"+ss.str();
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 void Ooze::input(const Uint8* keystate){}
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
     sheet.setClips(_cols, _rows, rect.w, rect.h);
 }
 
-//*********TO DO:
+*******TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
 	std::cout << "Entered Ooze update" << std::endl;
@@ -176,28 +176,28 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	std::cout << "Exiting Ooze update" << std::endl;
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 void Ooze::increaseHostility() {
 	if (hostility < 10)
 		hostility++;
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 void Ooze::decreaseHostility() {
 	if (hostility >  0)
 		hostility--;
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_Rect* dest = new SDL_Rect;
     *dest = rect;
@@ -333,10 +333,10 @@ bool Ooze::foundFood(Pickup* food) {
     return false;
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 int Ooze::getAte() {
     return ate;
 }
@@ -391,9 +391,9 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
         }
         case FLEEING: {
             // look for hiding places
-            /*if ( next to hiding spot ) {
+            if ( next to hiding spot ) {
                 state = HIDING;
-            } */
+            } 
             break;
         }
         case HIDING: {
@@ -436,10 +436,10 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList
 	return overlap;
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 void Ooze::updateAnimation(Uint32 ticks) {
 
     if(true) { //ticks/10%2 == 2
@@ -454,19 +454,19 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 void Ooze::updatePosition() {
     rect.x += x_vel;
     rect.y += y_vel;
 }
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 void Ooze::checkBounds(int max_width, int max_height, bool move) {
     if(move)
     {
@@ -507,10 +507,10 @@ void Ooze::checkBounds(int max_width, int max_height, bool move) {
 }
 
 
-/* Summary
+ Summary
  * Argument  
  *
-*/
+
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
@@ -807,11 +807,11 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     temp2 = endTile->getDest();
     roomTiles.startTile = temp1;
     roomTiles.endTile = temp2; 
-    /* delete temp1;
+     delete temp1;
     delete temp2;
     delete intersect;
     delete tile;
-    delete endTile; */
+    delete endTile; 
 }
 
 //Lets make sure our poor ooze isn't stuck in a wall
@@ -844,10 +844,10 @@ void Ooze::Mutate(){
 }
 
 
-/* Summary
+ Summary
  * Argument
  *
- */
+ 
 void Ooze::hurt(int damage) {
     stats.health -= damage;
     
@@ -855,10 +855,10 @@ void Ooze::hurt(int damage) {
         state = DYING;
     }
 }
-    /* Summary
+     Summary
      * Argument
      *
-     */
+     
 void Ooze::switchRoom() {
     if(collision::checkCol(roomRect, rect)) {
         return;
@@ -878,3 +878,4 @@ void Ooze::switchRoom() {
         }
     }
 }
+*/
