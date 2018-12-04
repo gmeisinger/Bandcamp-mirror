@@ -147,12 +147,12 @@ void RandomMap::update(Uint32 ticks){
 			//adv_lower_oxygen() from physics
 	
 	//physics update hud
-	if (collision::checkCol(*(p.getRect()), *(ro->getRect()))) {
+	if (collision::checkCol(*(p.getRect()), ro->getRectCopy())) {
 		h.currentTemp = ro->physics.give_temperature();
 		h.currentOxygen = ro->physics.give_oxygen();
 	} else {
-		h.currentTemp = ro->physics.give_temperature();
-		h.currentOxygen = ro->physics.give_oxygen();
+		h.currentTemp = tilemap.getRoom(0)->physics.give_temperature();
+		h.currentOxygen = tilemap.getRoom(0)->physics.give_oxygen();
 	}
 	
 	//pushback updated values
