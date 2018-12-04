@@ -252,8 +252,8 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
-
-	if (space && !projCooldown) {
+	
+  if (space && !projCooldown) {
 		Projectile* newProj = new Projectile(projsType, playerRect.x, playerRect.y);
 		newProj->init(rendererReference);
 		objectList[newProj->getInstanceName()] = newProj;
