@@ -243,8 +243,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                             return roomTiles.endTile;
                         }
                         else {
-                            if(collision::checkCol(rect, *roomTiles.startTile))
-                                squeezeItr++;
+                            squeezeItr++;
                             if(squeezeItr == 15) {
                                 squeeze = true;
                                 squeezeItr = 0;
@@ -607,11 +606,6 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 //This version of Bresenham's moves the player in as stright a line as possible to 
 //the player
 void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
-    if(target == nullptr) {
-        std::cout << "GAHH" << std::endl;
-        return;
-    }
-    
     int deltaX = target->x - rect.x;
     int deltaY = target->y - rect.y;
     int startX = rect.x;
@@ -673,9 +667,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     Tile* endTile;
     Tile* tile;
     Tile* doorTile;
-    Tile* EendTile;
-    Tile* Etile;
-    Tile* EdoorTile;
+    Tile* emergencyDoor;
     bool horWall = false;
     bool verWall = false; 
     int r = 0;
@@ -740,22 +732,16 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
             lastRoom = tile;
             doorTile->setVisited(true);
             break;
-        }    
-        else if(los) {
-            EendTile = map[l][t];
-            Etile = tile;
-            EdoorTile = doorTile;
-        }        
+        }          
     }    
     if(roomTiles.door == nullptr){
-        temp1 = EdoorTile->getDest();
+        tile = lastRoom;
+        temp1 = doorTile->getDest();
         roomTiles.door = temp1;
-        temp1 = Etile->getDest();
-        endTile = EendTile;
+        temp1 = tile->getDest();
         std::cout << "coo" << std::endl;
     }
-    else
-        endTile = map[l][t];
+    endTile = map[l][t];
     temp2 = endTile->getDest();
     roomTiles.startTile = temp1;
     roomTiles.endTile = temp2; 
