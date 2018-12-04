@@ -160,7 +160,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     //Check you haven't collided with object
     if(!squeeze)
         checkCollision(curX, curY, grid, true);
-
     std::unordered_map<std::string, Object*>::iterator it;
     for(it = objectList.begin(); it != objectList.end(); it++) {
 		if(it->second->getInstanceName().find("proj") != -1) {
