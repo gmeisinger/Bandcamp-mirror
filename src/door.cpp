@@ -193,6 +193,12 @@ SDL_Renderer* Door::draw(SDL_Renderer *renderer, SDL_Rect cam){
 	return renderer;
 }
 
+SDL_Rect* Door::getRect() {
+	return &doorRect;
+}
+
 bool Door::isUsed(){return false;}
 
-SDL_Rect* Door::getRect(){return NULL;}
+void Door::addRoom(Room* _room) {
+	rooms.push_back(_room);
+}

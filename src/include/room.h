@@ -25,6 +25,7 @@ public:
 	std::vector<Room*> getNeighbors();
 	std::vector<SDL_Rect> getIntersects();
 	Room2 physics;
+	bool contains(SDL_Rect* _rect);
 };
 
 #endif  //  BANDCAMP_ROOM_H_
