@@ -6,6 +6,7 @@ Tile::Tile(SDL_Rect _srcRect, SDL_Rect _destRect) {
 	blocking = false;
 	door = false;
 	active = true;
+	visited = false;
 }
 
 Tile::Tile() {
@@ -38,6 +39,14 @@ bool Tile::isDoor() {
 
 void Tile::setDoor(bool b) {
 	door = b;
+}
+
+bool Tile::isVisited() {
+	return visited;
+}
+
+void Tile::setVisited(bool v) {
+	visited = v;
 }
 
 void Tile::toggleBlocking() {
