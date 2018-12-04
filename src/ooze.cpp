@@ -116,8 +116,6 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     //first update. Runs very quickly too
  
     //std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
-
-
     if(!initialized) {
         initRoom(grid);
         initialized = true;
@@ -138,7 +136,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	bool overlap = checkOozeOverlap(objectList, ticks);
     bool los;
 	if(!overlap){    
-        if(iter % 5 == 0)
+        if(iter % 5 == 0) {
             target = pickTarget(objectList, grid);
             iter = 0;
         }
@@ -146,24 +144,22 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
             //check which direction the target is
             //Only move if we can see the player
             moveLine(grid, target);
-            
-        //updateVelocity(x_deltav,y_deltav);
         }
-//<<<<<<< cjb_los_fix
+        updatePosition();
     }    
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
     //checkBounds(screen_w, screen_h, true);
     //Check you haven't collided with object
-    if(!squeeze)
+    if(!squeeze) {
         checkCollision(curX, curY, grid, true);
-
+    }
     std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()) {
 		if(it->second->getInstanceName().find("proj") != -1) {
 			if (collision::checkCol(rect, *(it->second->getRect()))) {
-				std::cout << "Ooze hit" << std::endl;;
+				std::cout << "Ooze hit" << std::endl;
 				//Call function to damage/kill ooze
 				break;
 			}
@@ -251,8 +247,8 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                         }
                     }                    
                 }
+                it++;
             }
-            it++;
         }
         case FIGHTING: {
           return player->getRect();
@@ -273,8 +269,8 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
               //bool losTarget = drawLine(grid, target); 
               std::cout << "still going towards last" << std::endl;
               return target;
-
           }
+          return nullptr;
         }
         case ROOMEXIT: {
             std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
@@ -341,8 +337,9 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                             switchRoom();
                             return nullptr; 
                         }
-                        else 
+                        else {
                             return roomTiles.endTile;
+                        }
                     }                  
                 }
                 it++;
@@ -741,7 +738,7 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 
     int xDir = 0;
     int yDir = 0;
-    int dir;
+    int dir = 0;
 
 
     deltaX = abs(deltaX * 2);
@@ -775,7 +772,6 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     }
 
 
-
     if(deltaX > deltaY) {
         moveSlope = deltaY * 2 - deltaX;
         if(moveSlope >= 0) {
@@ -783,8 +779,9 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
             moveSlope -= deltaX;
             y_vel = yDir;
         }
-        else
+        else {
             y_vel = 0;
+        }
 
         startX += xDir;
         moveSlope += deltaY;
@@ -797,14 +794,14 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
             moveSlope -= deltaY;
             x_vel = xDir;
         }
-        else
+        else {
             x_vel = 0;
+        }
 
         startY += yDir;
         moveSlope += deltaX;
         y_vel = yDir;
     }   
-    
 }
 
 //If we don't see the player or a pickup, move to the next room
@@ -922,11 +919,12 @@ void Ooze::switchRoom() {
             return;
         }
     }
-
+}
+/*
 void Ooze::hurt(int damage) {
     stats.health -= damage;
     
     if ( stats.health <= 0 ) {
         state = DYING;
     }
-}
+}*/

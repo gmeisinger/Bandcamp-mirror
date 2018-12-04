@@ -31,7 +31,7 @@ class Projectile : public Object
 		SDL_Texture* projImg;
 		SDL_Rect projImgRect;
 		SDL_Rect correction;
-
+		SDL_Rect projDrawBox;
 
 
 

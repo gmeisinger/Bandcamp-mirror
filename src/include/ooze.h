@@ -79,7 +79,6 @@ private:
     SDL_Rect *target;
 
     Room* curRoom;
-    SDL_Rect roomRect;
     Tilemap* tilemap;
     Tile* lastRoom;
     std::vector<Room*> neighbors;
