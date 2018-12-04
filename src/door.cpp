@@ -80,6 +80,7 @@ void Door::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 }
 
 void Door::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
+	std::cout << "Entered Door update" << std::endl;
 	Player * p;
 
 	anim->update(ticks);
@@ -144,7 +145,7 @@ void Door::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 		
 		//grid. 
 	}
-	
+	std::cout << "Exiting Door update" << std::endl;
 }
 
 bool Door::checkCanToggle(Player*& playerObj){	

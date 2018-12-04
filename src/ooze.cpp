@@ -111,6 +111,8 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
 //*********TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
+	std::cout << "Entered Ooze update" << std::endl;
+	
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
@@ -171,7 +173,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 		}
 	}
     iter++;
-
+	std::cout << "Exiting Ooze update" << std::endl;
 }
 
 /* Summary
