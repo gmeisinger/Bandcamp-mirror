@@ -20,15 +20,18 @@
 constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
 
-int updateMax = 0;
+int roomMax = 0;
+int doorMax = 0;
 bool spawnOoze = false;
 bool spawnPickup = true;
+bool changedHUD = false;
 // Heads up display 
 HUD h;
 Player p;
 
 //Rooms, helps us determine where to spawn ooze and pickups
 std::vector<Room*> rooms;
+std::vector<Door*> doors;
 
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
@@ -36,7 +39,8 @@ Ooze o;
 
 RandomMap::RandomMap() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
-	updateCount = 0;
+	roomCount = 0;
+	doorCount = 0;
 	oldTemp = 100;
 	oldO2 = 100;
 	oldAte = 0;
@@ -67,6 +71,7 @@ void RandomMap::init(SDL_Renderer* reference){
 	tilemap.init();
 	tilemap.genRandomMap();
 	rooms = tilemap.getRooms();
+	doors = {};
 	
 	//Set the starting room for the ooze
 	std::cout << "numRooms: " << rooms.size() << std::endl;
@@ -131,8 +136,13 @@ void RandomMap::update(Uint32 ticks){
 		camera.y = grid.size() * tile_s;
 	}*/
 
-	updateMax = rooms.size();
-	Room* ro = tilemap.getRoom(updateCount);
+	roomMax = rooms.size();
+	Room* ro = tilemap.getRoom(roomCount);
+	if (!doors.empty()) {
+		doorMax = doors.size();
+		Door* dr = doors[doorCount];
+	}
+	if (changedHUD && roomCount == 0) changedHUD = false;
 	//get rooms around the door
 	
 	//average the rooms by calling adv_init_room(pass all the values)
@@ -147,13 +157,14 @@ void RandomMap::update(Uint32 ticks){
 			//adv_lower_oxygen() from physics
 	
 	//physics update hud
-	if (collision::checkCol(*(p.getRect()), ro->getRectCopy())) {
+	std::cout << "Starting check for room/player collision" << std::endl;
+	SDL_Rect _temp = *(ro->getRect());
+	if (!changedHUD && collision::checkCol(*(p.getRect()), {_temp.x*32, _temp.y*32, _temp.w*32, _temp.h*32})) {
 		h.currentTemp = ro->physics.give_temperature();
 		h.currentOxygen = ro->physics.give_oxygen();
-	} else {
-		h.currentTemp = tilemap.getRoom(0)->physics.give_temperature();
-		h.currentOxygen = tilemap.getRoom(0)->physics.give_oxygen();
+		changedHUD = true;
 	}
+	std::cout << "Made it through check for room/player collision" << std::endl;
 	
 	//pushback updated values
 	
@@ -165,7 +176,8 @@ void RandomMap::update(Uint32 ticks){
 	// if (h.currentOxygen == 0) {
 		// h.currentHealth = std::max(0, h.currentHealth-5);
 	// }
-	updateCount = (updateCount+1)%updateMax;
+	roomCount = (roomCount+1)%roomMax;
+	if (!(doorMax == 0)) doorCount = (doorCount+1)%doorMax;
 	std::cout << "Exited RandomMap update" << std::endl << std::endl;
 }
 
@@ -278,6 +290,7 @@ void RandomMap::placeDoors(SDL_Renderer* renderer) {
 				for(Room* room : rooms) {
 					if(room->contains(d->getRect())) {
 						d->addRoom(room);
+						doors.push_back(d);
 					}
 				}
 			}

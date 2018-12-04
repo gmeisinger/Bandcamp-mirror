@@ -22,7 +22,8 @@ class RandomMap : public Screen
 		std::unordered_map<std::string, Object*> objectList;
 		SDL_Renderer* rendererReference;
 		bool escape; //Have we pushed the escape key ?
-		int updateCount;
+		int roomCount;
+		int doorCount;
 		int oldTemp;
 		int oldO2;
 		int oldAte;
