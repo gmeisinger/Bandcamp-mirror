@@ -98,9 +98,11 @@ void Pickup::init(SDL_Renderer *renderer){
  *
 */
 void Pickup::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
+	std::cout << "Entered Pickup update" << std::endl;
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
 	if (used) RandomMap::setSpawnPickup(true);
+	std::cout << "Exiting Pickup update" << std::endl;
 }
 
 /* Summary

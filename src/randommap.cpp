@@ -16,10 +16,11 @@
 #include "include/pickup.h"
 #include "include/tilemap.h"
 
-constexpr int UPDATE_MAX = 100;
+//constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
 
+int updateMax = 0;
 bool spawnOoze = false;
 bool spawnPickup = true;
 // Heads up display 
@@ -35,7 +36,7 @@ Ooze o;
 
 RandomMap::RandomMap() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
-	updateCount = 1;
+	updateCount = 0;
 	oldTemp = 100;
 	oldO2 = 100;
 	oldAte = 0;
@@ -130,37 +131,41 @@ void RandomMap::update(Uint32 ticks){
 		camera.y = grid.size() * tile_s;
 	}*/
 
-	if (updateCount == 0) {
-		Room* ro = tilemap.getRoom(0);
-		//get rooms around the door
-		
-		//average the rooms by calling adv_init_room(pass all the values)
-		
-		//double check to make sure that ro values are updated
-		
-		//check if breach occured
-			//jump to breach class (pass through ro->physics)
-				//all of this will be in breach class
-				//lower_pressure() (which is based off how many breaches/time passed)
-				//adv_lower_temperature() from physics
-				//adv_lower_oxygen() from physics
-		
-		//physics update hud
+	updateMax = rooms.size();
+	Room* ro = tilemap.getRoom(updateCount);
+	//get rooms around the door
+	
+	//average the rooms by calling adv_init_room(pass all the values)
+	
+	//double check to make sure that ro values are updated
+	
+	//check if breach occured
+		//jump to breach class (pass through ro->physics)
+			//all of this will be in breach class
+			//lower_pressure() (which is based off how many breaches/time passed)
+			//adv_lower_temperature() from physics
+			//adv_lower_oxygen() from physics
+	
+	//physics update hud
+	if (collision::checkCol(*(p.getRect()), *(ro->getRect()))) {
 		h.currentTemp = ro->physics.give_temperature();
 		h.currentOxygen = ro->physics.give_oxygen();
-		
-		//pushback updated values
-		
-		
-		//old code-----------------------------------------------------------------------------------------------------
-		// if (h.currentTemp == 0) {
-			// h.currentHealth = std::max(0, h.currentHealth-5);
-		// }
-		// if (h.currentOxygen == 0) {
-			// h.currentHealth = std::max(0, h.currentHealth-5);
-		// }
+	} else {
+		h.currentTemp = ro->physics.give_temperature();
+		h.currentOxygen = ro->physics.give_oxygen();
 	}
-	updateCount = (updateCount+1)%UPDATE_MAX;
+	
+	//pushback updated values
+	
+	
+	//old code-----------------------------------------------------------------------------------------------------
+	// if (h.currentTemp == 0) {
+		// h.currentHealth = std::max(0, h.currentHealth-5);
+	// }
+	// if (h.currentOxygen == 0) {
+		// h.currentHealth = std::max(0, h.currentHealth-5);
+	// }
+	updateCount = (updateCount+1)%updateMax;
 	std::cout << "Exited RandomMap update" << std::endl << std::endl;
 }
 
