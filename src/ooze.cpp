@@ -12,7 +12,7 @@ Ooze::Ooze():state{HANGRY}, hostility{0} {}
 
 // Constructor
 Ooze::Ooze(Room* room, Tilemap* t):
-state{ROAMING}, ////////////
+state{HANGRY},
 hostility{0},
 tilemap{t}
 {
@@ -232,8 +232,12 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                     Pickup* temp = (Pickup*)it->second;
                     losPickup = drawLine(grid, temp->getRect());
                         
-                    if(losPickup)
+                    if(losPickup) {
+                        if (target!=temp->getRect()) {
+                            std::cout << "new pickup?" << std::endl;
+                        }
                         return temp->getRect();
+                    }
                     else {
                         losPlayer = drawLine(grid, player->getRect());
                         if(losPlayer)
@@ -812,7 +816,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     int c = 0;
     int l = 0;
     int t = 0;
-    std::cout << intersects.size() << std::endl;
+    std::cout << "intersect size: " << intersects.size() << std::endl;
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
