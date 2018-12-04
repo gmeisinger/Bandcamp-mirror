@@ -32,8 +32,6 @@ class Pickup : public Object
 	private:
 		SDL_Rect pickupRect;
 		SDL_Rect drawBox;
-		char pickupType;
-		int pickupValue;
 		Player *pickupPlayer;
 		HUD *hud;
 		bool up;			//Is the image floating up or down.
@@ -51,7 +49,9 @@ class Pickup : public Object
 		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
-		int getTotal() ;
+		int getTotal();
+		char pickupType;
+		int pickupValue;
 };
 
 #endif  //  BANDCAMP_PICKUP_H_

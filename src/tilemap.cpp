@@ -164,9 +164,9 @@ void Tilemap::genRandomMap() {
 std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> intmap) {
 
 	for(int r=0;r<intmap.size();r++) {
-		std::cout << std::endl;
+		//std::cout << std::endl;
 		for(int c=0;c<intmap[0].size();c++) {
-			std::cout << intmap[r][c];
+			//std::cout << intmap[r][c];
 			if(intmap[r][c] == 1) {
 				//floor tile
 				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});

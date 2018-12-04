@@ -109,8 +109,11 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 		case 11 ... 20:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
 			break;
-		case 0 ... 10:
+		case 1 ... 10:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
+			break;
+		case 0:
+			Oxygen = {0,0,0,0};
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Oxygen);
@@ -145,8 +148,11 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 		case 11 ... 20:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
 			break;
-		case 0 ... 10:
+		case 1 ... 10:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
+			break;
+		case 0:
+			Temp = {0,0,0,0};
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Temp);
@@ -181,8 +187,11 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 		case 10 ... 18:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
 			break;
-		case 0 ... 9:
+		case 1 ... 9:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
+			break;
+		case 0:
+			Health = {0,0,0,0};
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Health);

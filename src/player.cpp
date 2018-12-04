@@ -39,6 +39,7 @@ Player::Player(SDL_Rect _rect) {
 	left = false;
 	right = false;
 	space = false;
+    x = false;
 	projCooldown = false;
     overlapEnemy = false;
 	projsType = 's';
@@ -236,6 +237,7 @@ void Player::updateAnimation(Uint32 ticks) {
 }
 
 void Player::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
+	//std::cout << "Entered Player update" << std::endl;
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -252,8 +254,8 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
-
-	if (space && !projCooldown) {
+	
+  if ((space || x) && !projCooldown) {
 		Projectile* newProj = new Projectile(projsType, playerRect.x, playerRect.y);
 		newProj->init(rendererReference);
 		objectList[newProj->getInstanceName()] = newProj;
@@ -292,6 +294,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		}
 		it++;
 	}
+	//std::cout << "Exiting Player update" << std::endl;
 }
 
 /* Summary
@@ -299,11 +302,12 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
  *
 */
 void Player::input(const Uint8* keystate) {
-	up = keystate[SDL_SCANCODE_W];
-	left = keystate[SDL_SCANCODE_A];
-	down = keystate[SDL_SCANCODE_S];
-	right = keystate[SDL_SCANCODE_D];
+	up = keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP];
+	left = keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT];
+	down = keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN];
+	right = keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT];
 	space = keystate[SDL_SCANCODE_SPACE];
+    x = keystate[SDL_SCANCODE_X];
 	if (up) projsType = 'n';
 	else if (left) projsType = 'e';
 	else if (down) projsType = 's';

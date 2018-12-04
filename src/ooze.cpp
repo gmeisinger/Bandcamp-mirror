@@ -8,7 +8,7 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{HANGRY}, hostility{0} {}
+Ooze::Ooze():state{CLONING}, hostility{0} {}
 
 // Constructor
 Ooze::Ooze(Room* room, Tilemap* t):
@@ -18,8 +18,9 @@ tilemap{t}
 {
     target = player->getRect();
     curRoom = room;
-    SDL_Rect *temp = curRoom->getRect();
-    rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
+    neighbors = curRoom->getNeighbors();
+    roomRect = curRoom->getRectCopy();
+    rect = {((roomRect.x + roomRect.w)/2) * tile_s, ((roomRect.y + roomRect.h)/2) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	int overlapTicks = 0;
@@ -29,24 +30,24 @@ tilemap{t}
     x_vel = 1;
     y_vel = 1;
 
-    ate = 0;
+    ate = 1;
     
     // Genetic statistics
-    stats.health =      3 + utils::normDist_sd1();
-    stats.attack =      3 + utils::normDist_sd1();
-    stats.speed =       3 + utils::normDist_sd1();
-    stats.health_cost = 3 + utils::normDist_sd1();
-    stats.num_cost =    3 + utils::normDist_sd1();
-    std::cout << "health" << stats.health << "\n";
-    std::cout << "attack" << stats.attack << "\n";
-
+    stats.health =      3 ;
+    stats.attack =      50; //time delay between ticks damage
+    stats.speed =       3 ;
+    stats.health_cost = 3 ;
+    stats.num_cost =    3 ;
+    Mutate();
+    
     roomTiles.startTile = nullptr;
     roomTiles.endTile = nullptr;
-
+    
     lastRoom = nullptr;
     initialized = false;
     intersects = curRoom->getIntersects();
-
+    squeeze = false;
+    squeezeItr = 0;
     iter = 0;
 }
 
@@ -54,10 +55,23 @@ tilemap{t}
 //Ooze::Ooze(State st, int hostil) :state{st}, hostility{hostil} {}
 
 // Copy Constructor
-Ooze::Ooze(const Ooze& other)
-    :Ooze(other.curRoom, other.tilemap)
+Ooze::Ooze(const Ooze& other):
+    sheet{other.sheet},
+    anim{other.anim},
+tilemap{other.tilemap},
+target{other.target},
+    state{ROAMING}
 {
-//    this.
+    totalOoze++;
+    oozeNumber = totalOoze;
+    
+    curRoom = other.curRoom;
+    SDL_Rect *temp = curRoom->getRect();
+    rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
+    
+    stats = other.stats;
+    Mutate();
+    
 }
 
 //Destructor
@@ -69,23 +83,23 @@ std::string Ooze::getInstanceName(){
 	return "ooze-"+ss.str();
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::input(const Uint8* keystate){}
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
 */
@@ -94,17 +108,21 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet.setClips(_cols, _rows, rect.w, rect.h);
 }
 
-//*********TO DO:
+//*******TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
+	//std::cout << "Entered Ooze update" << std::endl;
+	
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
+    
+    ////std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
+
     if(!initialized) {
-        initRoom(grid, curRoom->getRect());
+        initRoom(grid);
         initialized = true;
     } 
-    
     //Get the position of the ooze before it moves
     int x_deltav = 0;
 	int y_deltav = 0;
@@ -117,78 +135,69 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     int pickupY;
 
     //might move order of update calls
-    bool stateChange = updateState(objectList, ticks);
-
+    //bool stateChange = updateState(objectList, ticks);
 	bool overlap = checkOozeOverlap(objectList, ticks);
-    bool los;
-	if(!overlap){    
-        //uncomment the line below to change the ooze to chasing the pickups
-        if(iter % 15 == 0)
+	if(!overlap){
+        if(iter % 5 == 0){
+            iter = 0;
             target = pickTarget(objectList, grid);
-
-        if (target) {
-            //check which direction the target is 
+//            p = static_cast<Player*>(it->second);
+            if (true) {
+            //check which direction the target is
             //Only move if we can see the player
-            moveLine(grid, target);
-            updatePosition();
+                moveLine(grid, target);
+            }
         //updateVelocity(x_deltav,y_deltav);
         }
+        //If we don't have a line of sight with the player or pickup, check the other room
         else {
-            moveRoom(grid);
-
-            if(rect.x == roomTiles.startTile->x && rect.y == roomTiles.startTile->y) 
-                moveLine(grid, roomTiles.endTile);
-            else
-                moveLine(grid, roomTiles.startTile);
-
-            updatePosition();
+            //moveRoom(grid);
         }
-    }    
+        updatePosition();
+    }
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
-    
     //checkBounds(screen_w, screen_h, true);
     //Check you haven't collided with object
-    checkCollision(curX, curY, grid, true);
-	
-	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
-	while(it != objectList.end()) {
+    if(!squeeze)
+        checkCollision(curX, curY, grid, true);
+    std::unordered_map<std::string, Object*>::iterator it;
+    for(it = objectList.begin(); it != objectList.end(); it++) {
 		if(it->second->getInstanceName().find("proj") != -1) {
 			if (collision::checkCol(rect, *(it->second->getRect()))) {
 				std::cout << "Ooze hit" << std::endl;;
-				//Call function to damage/kill ooze
+                hurt(1);
 				break;
 			}
 		}
-		it++;
 	}
-	
     iter++;
+	//std::cout << "Exiting Ooze update" << std::endl;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::increaseHostility() {
 	if (hostility < 10)
 		hostility++;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::decreaseHostility() {
 	if (hostility >  0)
 		hostility--;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_Rect* dest = new SDL_Rect;
     *dest = rect;
@@ -197,7 +206,6 @@ SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);\
    return renderer;
 }
-
 
 SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
     switch(this->state) {
@@ -209,7 +217,6 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
             while(it != objectList.end()){
                 if (!it->first.substr(0,6).compare("Pickup")) {
                     Pickup* temp = (Pickup*)it->second;
-                    
                     bool losPickup = drawLine(grid, temp->getRect());
                         
                     if(losPickup)
@@ -219,15 +226,94 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                         if(losPlayer)
                             return player->getRect();
                         //If we don't have a line of sight with the player or pickup, check the other room
-                        return nullptr;    
-                    }                    
+                        else {
+                            moveRoom(grid);
+                            state = ROOMEXIT;
+                            return roomTiles.startTile;   
+                        }
+                    }
+                }
+            it++;
+            }
+        }
+        case ROOMEXIT: {
+            std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+            while(it != objectList.end()){
+                if (!it->first.substr(0,6).compare("Pickup")) {
+                    Pickup* temp = (Pickup*)it->second;
+                    bool losPickup = drawLine(grid, temp->getRect());
+                        
+                    if(losPickup) {
+                        state = HANGRY;
+                        return temp->getRect();
+                    }  
+                    else {
+                        bool losPlayer = drawLine(grid, player->getRect());
+                        if(losPlayer) {
+                            state = HANGRY;
+                            return player->getRect();
+                        }
+                        //If we don't have a line of sight with the player or pickup, check the other room
+                        else if(drawLine(grid, roomTiles.endTile) || squeeze) {
+                            state = ROOMENTER;
+                            return roomTiles.endTile;
+                        }
+                        else {
+                            if(collision::checkCol(rect, *roomTiles.startTile))
+                                squeezeItr++;
+                            if(squeezeItr == 15) {
+                                squeeze = true;
+                                squeezeItr = 0;
+                            }
+                            return roomTiles.startTile; 
+                        }
+                    }                  
                 }
                 it++;
             }
+            return nullptr;
+        }
+        case ROOMENTER: {
+            std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+            while(it != objectList.end()){
+                if (!it->first.substr(0,6).compare("Pickup")) {
+                    Pickup* temp = (Pickup*)it->second;
+                    bool losPickup = drawLine(grid, temp->getRect());
+                        
+                    if(losPickup) {
+                        squeeze = false;
+                        state = HANGRY;
+                        switchRoom();
+                        return temp->getRect();
+                    }  
+                    else {
+                        bool losPlayer = drawLine(grid, player->getRect());
+                        if(losPlayer) {
+                            squeeze = false;
+                            state = HANGRY;
+                            switchRoom();
+                            return player->getRect();
+                        }
+                        //If we don't have a line of sight with the player or pickup, check the other room
+                        else if(collision::checkCol(rect, *roomTiles.endTile)) {
+                            state = HANGRY;
+                            squeeze = false;
+                            switchRoom();
+
+                            return nullptr;
+                        }
+                        else 
+                            return roomTiles.endTile;
+                    }                  
+                }
+                it++;
+            }
+            return nullptr;
         }
         default:
             return player->getRect();
     }
+    return nullptr;
 }
 
 // TODO: combine this with the overlap method below, which
@@ -238,9 +324,9 @@ bool Ooze::foundFood(Pickup* food) {
         bool overlap = collision::checkCol(rect, *fRect);
         if (overlap) {
             //food->use();
-            ate = ate + 1;
+            ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
-            //std::cout << s << std::endl;
+            state = EATING;
             return true;
         }
     }
@@ -250,7 +336,7 @@ bool Ooze::foundFood(Pickup* food) {
 /* Summary
  * Argument  
  *
-*/
+ */
 int Ooze::getAte() {
     return ate;
 }
@@ -262,17 +348,70 @@ OozeState Ooze::getState() {
 
 
 bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks) {
-
-    if (ate > 2) {
-        state = CLONING;
-        RandomMap::setSpawnOoze(true);
-        ate = 0;
-        return true;
-    } else {
-        state = HANGRY;
-        return true;
-    }
     
+    switch(this->state) {
+//            //std::cout << "roaming" << std::endl;
+        case ROAMING: {
+            updateVelocity(utils::uniformDist(), utils::uniformDist());
+            if(target){ //if(target == player);
+                state = HANGRY;
+                return true;
+            }
+            break;
+        }
+        case HANGRY: {
+//            foundFood(Pickup* food);
+            if(!target){
+                //std::cout << "ooze" << oozeNumber << ": \"Target Lost...\"" << std::endl;
+                state = ROAMING;
+            }
+            if (ate > 0) {                      // "Time to eat!"
+                state = CLONING;
+                RandomMap::setSpawnOoze(true);
+                ate = 0;
+                return true;
+            }
+            break;
+        }
+        case CLONING: {
+            //std::cout << "cloning" << std::endl;
+//            RandomMap::setSpawnOoze(true);
+            Ooze(*this);
+            state = ROAMING;
+            return true;
+            break;
+        }
+        case FIGHTING: {
+            
+            if ( stats.health < stats.health_cost || oozeNumber < stats.num_cost ) {
+                state = FLEEING;
+                return true;
+            }
+            break;
+        }
+        case FLEEING: {
+            // look for hiding places
+            /*if ( next to hiding spot ) {
+                state = HIDING;
+            } */
+            break;
+        }
+        case HIDING: {
+            
+            break;
+        }
+        case DYING: {
+            this->~Ooze();
+            break;
+        }
+            
+        case ROOMENTER: {
+            break;
+        }
+        case ROOMEXIT: {
+            break;
+        }
+    }
     return false;
 }
 
@@ -283,10 +422,9 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList
 	bool overlap = collision::checkCol(rect, *pRect);
     if (overlap) {
 		overlapTicks += ticks;
-		if (overlapTicks > 25) {
+		if (overlapTicks > stats.attack) {
 			hud_g->currentHealth = std::max(0, hud_g->currentHealth-damage);
 			std::string s = "HIT: "+getInstanceName();
-			//std::cout << s << std::endl;
 			overlapTicks = 0;
 		}
 	} else {
@@ -298,7 +436,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList
 	return overlap;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
 */
@@ -307,7 +445,7 @@ void Ooze::updateAnimation(Uint32 ticks) {
     if(true) { //ticks/10%2 == 2
         setAnimation("wandering");
         anim->play();
-        //std::cout << "ooze animating";
+        ////std::cout << "ooze animating";
     }
     else {
         anim->reset();
@@ -316,7 +454,7 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
 */
@@ -325,10 +463,10 @@ void Ooze::updatePosition() {
     rect.y += y_vel;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::checkBounds(int max_width, int max_height, bool move) {
     if(move)
     {
@@ -372,7 +510,7 @@ void Ooze::checkBounds(int max_width, int max_height, bool move) {
 /* Summary
  * Argument  
  *
-*/
+ */
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
@@ -472,8 +610,8 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     int endY = target->y;
     colRect = {startX, startY, rect.w, rect.h};
     int slope = 0;
-    int xDir;
-    int yDir;
+    int xDir = 0;
+    int yDir = 0;
     bool sight = false;
 
     if (target->y > rect.y) 
@@ -546,8 +684,8 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     int endX = target->x;
     int endY = target->y;
     int moveSlope = 0;
-    int xDir;
-    int yDir;
+    int xDir = 0;
+    int yDir = 0;
 
     deltaX = abs(deltaX * 2);
     deltaY = abs(deltaY * 2);
@@ -595,67 +733,148 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     SDL_Rect* temp1;
     SDL_Rect* temp2;
-    SDL_Rect intersect;
+    SDL_Rect* intersect;
     std::vector<std::vector<Tile*>> map = tilemap->getMap();
     Tile* endTile;
     Tile* tile;
-    bool horWall;
-    bool verWall;
+    bool horWall = false;
+    bool verWall = false; 
+    int r = 0;
+    int c = 0;
+    int l = 0;
+    int t = 0;
+    //std::cout << "intersect size: " << intersects.size() << std::endl;
     for(int i = 0; i < intersects.size(); i++) {
-        intersect = intersects[i];
-        
-        int r,c = 0;
-        int l,t = 0;
-        if(intersect.w > intersect.h && intersect.w > 2) {
+        intersect = &intersects[i];
+       
+        if(intersect->w > intersect->h && intersect->w > 2 && !horWall) {
             //horizontal wall
-            r = intersect.y;
-            c = intersect.x + (intersect.w/2);
+            r = intersect->y;
+            c = intersect->x + (intersect->w/2);
             horWall = true;
+            verWall = false;
         }
-        else if(intersect.w < intersect.h && intersect.h > 2) {
-            r = intersect.y + (intersect.h/2);
-            c = intersect.x;
+        else{
+            r = intersect->y + (intersect->h/2);
+            c = intersect->x;
             verWall = true;
+            horWall = false;
         }
         tile = map[r][c];
         temp1 = tile->getDest();
+
+        if(horWall) {
+            t = c;
+            if (temp1->y > rect.y) {
+                l = r+2;
+                r = r-1;
+            }
+            if (temp1->y < rect.y) {
+                l = r-2;
+                r = r+1;
+            }
+        }
+        if(verWall) {
+            l = r;
+            if (temp1->x > rect.x) {
+                t = c+2;
+                c = c-1;
+            }
+            if (temp1->x < rect.x) {
+                t = c-2;
+                c = c+1;
+            }
+        }
         
-        if (temp1->y > rect.y) {
-            r = r+1;
-            l = r-2;
-        }
-        if (temp1->y < rect.y) {
-            r = r-1;
-            l = r+2;
-        }
-        if (temp1->x > rect.x) {
-            c = c+1;
-            t = c-2;
-        }
-        if (temp1->x < rect.x) {
-            c = c-1;
-            t = c+2;
-        }
-
         tile = map[r][c];
-        endTile = map[l][t];
         temp1 = tile->getDest();
-        temp2 = endTile->getDest();
 
-        roomTiles.startTile = temp1;
-        roomTiles.endTile = temp2;
-    } 
+        bool los = drawLine(grid, temp1);
+        
+        if(los && lastRoom != map[r][c]) {
+            roomTiles.door = temp1;
+            lastRoom = tile;
+            break;
+        }            
+    }    
+    if(roomTiles.door == nullptr){
+        tile = lastRoom;
+        temp1 = tile->getDest();
+        roomTiles.door = temp1;
+        //std::cout << "coo" << std::endl;
+    }
+    endTile = map[l][t];
+    temp2 = endTile->getDest();
+    roomTiles.startTile = temp1;
+    roomTiles.endTile = temp2; 
+    /*delete temp1;
+    delete temp2;
+    delete intersect;
+    delete tile;
+    delete endTile; */
 }
 
 //Lets make sure our poor ooze isn't stuck in a wall
-void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t) {
+void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid) {
     int attempts = 0;
     while((collision::checkColLeft(rect, grid, 32) 
     || collision::checkColRight(rect, grid, 32) 
     ||collision::checkColTop(rect, grid, 32) 
     || collision::checkColBottom(rect, grid, 32)) && attempts < 30) {
-        std::cout << "Retry" << std::endl;
         rect.x += tile_s;
         rect.y += tile_s;
+    }
+}
+
+void Ooze::Mutate(){
+    // Genetic statistics
+    stats.health =      std::max(1, stats.health      + utils::normDist());
+    stats.attack =      std::max(1, stats.attack      + utils::normDist()); //time delay between ticks damage
+    stats.speed =       std::max(1, stats.speed       + utils::normDist());
+    stats.health_cost = std::max(1, stats.health_cost + utils::normDist());
+    stats.num_cost =    std::max(1, stats.num_cost    + utils::normDist());
+    
+    //std::cout << "Ooze "  << oozeNumber  << ":"
+    //<< " HP " << stats.health
+    //<< " ATK " << stats.attack
+    //<< " SPD " << stats.speed
+    //<< " HC " << stats.health_cost
+    //<< " NC " << stats.num_cost
+    //<< "\n";
+}
+
+
+/* Summary
+ * Argument
+ *
+ */
+void Ooze::hurt(int damage) {
+    stats.health -= damage;
+    
+    if ( stats.health <= 0 ) {
+        state = DYING;
+    }
+}
+    /* Summary
+     * Argument
+     *
+     */
+void Ooze::switchRoom() {
+    if(collision::checkCol(roomRect, rect)) {
+        return;
+    }
+    for(int i = 0; i < neighbors.size(); i++) {
+        roomRect = neighbors[i]->getRectCopy();
+        roomRect = {roomRect.x * TILE_SIZE, roomRect.y * TILE_SIZE, roomRect.w * TILE_SIZE, roomRect.h * TILE_SIZE};
+        //std::cout << "RoomRect: X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.w << " H " << roomRect.h << std::endl;
+        //std::cout << "Rect: X " << rect.x << " Y " << rect.y << " W " << rect.w << " H " << rect.h << std::endl;
+        
+        if(collision::checkCol(roomRect, rect)) {
+            //std::cout << "ERE" << std::endl;
+            curRoom = neighbors[i];
+            neighbors = curRoom->getNeighbors();
+            intersects = curRoom->getIntersects();
+            return;
+        }
     }
 }

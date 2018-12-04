@@ -86,6 +86,7 @@ void TestTransition_1::placeDoors(SDL_Renderer* renderer) {
 
 // ADD COMMENTS 
 void TestTransition_1::update(Uint32 ticks){
+	//std::cout << std::endl << "Entered TestTransition_1 update" << std::endl;
 	std::unordered_map<std::string, Object*>& objectListRef = objectList;
 	if(objectList.count("FadeObj")>0){ //only update the fade when you are fading
 		fading = true;
@@ -116,7 +117,10 @@ void TestTransition_1::update(Uint32 ticks){
 		while(it != objectList.end()){
 			it->second->update(objectListRef, tilemap.getMapRef(), ticks);
 			if(it->second->isUsed()) {
+				//std::cout << "About to remove object from list (TestTransition_1)" << std::endl;
 				it = objectList.erase(it);
+				//std::cout << "Succeeded in removing object from list (TestTransition_1)" << std::endl;
+				break;
 			}
 			it++;
 		}
@@ -136,6 +140,7 @@ void TestTransition_1::update(Uint32 ticks){
 		}
 		updateCount = (updateCount+1)%UPDATE_MAX;
 	}
+	//std::cout << "Exited TestTransition_1 update" << std::endl << std::endl;
 }
 
 // ADD COMMENTS 
@@ -146,12 +151,12 @@ void TestTransition_1::input(const Uint8* keystate){
 	{
 		//When you come back into the room after a pause, you will most likely still be holding down
 		//the enter key. This prevents you from going straight back into the pause menu.
-		if(enterHeld && keystate[SDL_SCANCODE_RETURN])
+		if(enterHeld && (keystate[SDL_SCANCODE_RETURN] || keystate[SDL_SCANCODE_ESCAPE]))
 			pauseB = false;
 		else
 		{
 			enterHeld = false;
-			pauseB = keystate[SDL_SCANCODE_RETURN];
+			pauseB = keystate[SDL_SCANCODE_RETURN] || keystate[SDL_SCANCODE_ESCAPE];
 			
 			std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 			while(it != objectList.end()){

@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
@@ -30,7 +31,9 @@ enum OozeState { // is public
         FIGHTING,
         FLEEING,
         HIDING,
-        DYING
+        DYING,
+        ROOMEXIT,
+        ROOMENTER
 };
 
 class Ooze : public Object {
@@ -43,16 +46,19 @@ class Ooze : public Object {
         int health_cost;
         int num_cost;
     };
+    void Mutate();
     
     struct RoomTiles{
         SDL_Rect* startTile;
         SDL_Rect* endTile;
+        SDL_Rect* door;
     };
 
 private:
     SDL_Rect rect; // includes x_pos, y_pos, width, height
     //Used to check line of sight
     SDL_Rect colRect;
+    SDL_Rect roomRect;
 
     int x_vel;
     int y_vel;
@@ -72,12 +78,15 @@ private:
     std::unordered_map<std::string, Animation> anims;
     int ate;
     SDL_Rect *target;
-    SDL_Rect *lastRoom;
 
     Room* curRoom;
     Tilemap* tilemap;
-
+    Tile* lastRoom;
+    std::vector<Room*> neighbors;
+    
     bool initialized;
+    bool squeeze;
+    int squeezeItr;
     std::vector<SDL_Rect> intersects;
     int iter;
     
@@ -88,7 +97,7 @@ public:
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
-    int damage = 5;
+    int damage = 1; // keep this at 1
     // Constructors & destructor
     Ooze(); // Default constructor
     Ooze(Room* room, Tilemap* t);
@@ -108,7 +117,7 @@ public:
     bool foundFood(Pickup* pickUp);
     int getAte();
     OozeState getState();
-    void initRoom(std::vector<std::vector<Tile*>> &grid, SDL_Rect* t);
+    void initRoom(std::vector<std::vector<Tile*>> &grid);
 
     // Updates
     bool updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks);
@@ -132,7 +141,7 @@ public:
     bool drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target);
     void moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target);
     void moveRoom(std::vector<std::vector<Tile*>> &grid);
-    
+    void switchRoom();
     // Math
     void increaseHostility();
     void decreaseHostility();
@@ -149,6 +158,7 @@ public:
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
     //void updateAnimation(Uint32 ticks);
+    void hurt(int damage);
 };
 
 #endif  //  OOZE_H_
