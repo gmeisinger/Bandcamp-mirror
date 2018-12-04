@@ -8,11 +8,11 @@ constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
 
 // Default Constructor
-Ooze::Ooze():state{HANGRY}, hostility{0} {}
+Ooze::Ooze():state{CLONING}, hostility{0} {}
 
 // Constructor
 Ooze::Ooze(Room* room):
-    state{HANGRY},
+    state{CLONING},
     hostility{0}
 {
     target = player->getRect();
@@ -49,7 +49,8 @@ Ooze::Ooze(Room* room):
 Ooze::Ooze(const Ooze& other):
     sheet{other.sheet},
     anim{other.anim},
-    target{other.target}
+target{other.target},
+    state{ROAMING}
 {
     totalOoze++;
     oozeNumber = totalOoze;
@@ -243,12 +244,23 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
     
     switch(this->state) {
         case ROAMING: {
-//            std::cout << "roaming" << std::endl;
-            state = HANGRY;
+            updateVelocity(utils::uniformDist(), utils::uniformDist());
+            
+            if(target){ //if(target == player);
+                state = HANGRY;
+                return true;
+            }
+            std::cout << "roaming" << std::endl;
+
             break;
         }
         case HANGRY: {
 //            std::cout << "hangry" << std::endl;
+//            foundFood(Pickup* food);
+            if(!target){
+                std::cout << "ooze" << oozeNumber << ": \"Target Lost...\"" << std::endl;
+                state = ROAMING;
+            }
             if (false) { // switch to when over food
                 state = EATING;
                 return true;
