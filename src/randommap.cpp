@@ -128,7 +128,7 @@ void RandomMap::update(Uint32 ticks){
 	}*/
 
 	if (updateCount == 0) {
-		Room ro = tilemap.getRoom(0);
+		Room* ro = tilemap.getRoom(0);
 		h.currentTemp = ro->physics.give_temperature();
 		h.currentOxygen = ro->physics.give_oxygen();
 		// if (h.currentTemp == 0) {

@@ -13,7 +13,6 @@ private:
 	SDL_Rect rect;
 	std::vector<Room*> neighbors;
 	std::vector<SDL_Rect> intersect_rects;
-	Room2 physics;
 public:
 	Room();
 	Room(SDL_Rect _rect);
@@ -25,6 +24,7 @@ public:
 	void addIntersect(SDL_Rect rect);
 	std::vector<Room*> getNeighbors();
 	std::vector<SDL_Rect> getIntersects();
+	Room2 physics;
 };
 
 #endif  //  BANDCAMP_ROOM_H_
