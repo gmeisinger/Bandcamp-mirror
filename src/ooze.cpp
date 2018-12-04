@@ -114,7 +114,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
-     
+    
     //std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
 
     if(!initialized) {
@@ -139,8 +139,8 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
         if(iter % 5 == 0){
             iter = 0;
             target = pickTarget(objectList, grid);
-
-            if (target) {
+//            p = static_cast<Player*>(it->second);
+            if (true) {
             //check which direction the target is
             //Only move if we can see the player
                 moveLine(grid, target);
@@ -152,7 +152,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
             //moveRoom(grid);
         }
         updatePosition();
-    }    
+    }
     //foundFood(getPickup(objectList));
     //update animation
     updateAnimation(ticks);
@@ -161,20 +161,18 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     if(!squeeze)
         checkCollision(curX, curY, grid, true);
 
-    std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
-	while(it != objectList.end()) {
-        std::cout << *it;
+    std::unordered_map<std::string, Object*>::iterator it;
+    for(it = objectList.begin(); it != objectList.end(); it++) {
 		if(it->second->getInstanceName().find("proj") != -1) {
 			if (collision::checkCol(rect, *(it->second->getRect()))) {
 				std::cout << "Ooze hit" << std::endl;;
-//                hurt(1);
+                hurt(1);
 				break;
 			}
 		}
-		it++;
 	}
-	
     iter++;
+
 }
 
 /* Summary
@@ -234,8 +232,8 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                         }
                     }
                 }
-            }
             it++;
+            }
         }
         case ROOMEXIT: {
             std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
@@ -300,7 +298,8 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                             state = HANGRY;
                             squeeze = false;
                             switchRoom();
-                            return nullptr; 
+
+                            return nullptr;
                         }
                         else 
                             return roomTiles.endTile;
@@ -326,7 +325,6 @@ bool Ooze::foundFood(Pickup* food) {
             //food->use();
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
-            //std::cout << s << std::endl;
             state = EATING;
             return true;
         }
@@ -426,7 +424,6 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList
 		if (overlapTicks > stats.attack) {
 			hud_g->currentHealth = std::max(0, hud_g->currentHealth-damage);
 			std::string s = "HIT: "+getInstanceName();
-			//std::cout << s << std::endl;
 			overlapTicks = 0;
 		}
 	} else {
@@ -745,7 +742,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     int c = 0;
     int l = 0;
     int t = 0;
-    std::cout << intersects.size() << std::endl;
+    std::cout << "intersect size: " << intersects.size() << std::endl;
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
