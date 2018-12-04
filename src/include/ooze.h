@@ -25,7 +25,7 @@ class Pickup;
 enum OozeState { // is public
         HANGRY, //temp state
         ROAMING,
-        EATING,
+        DODGING,
         CLONING,
         FIGHTING,
         FLEEING,
@@ -57,7 +57,8 @@ private:
     //Used to check line of sight
     SDL_Rect colRect;
     SDL_Rect roomRect;
-
+    SDL_Rect randRect; //sorry I just love rectangles
+    
     int x_vel;
     int y_vel;
     int x_deltav;
@@ -78,6 +79,7 @@ private:
     SDL_Rect *target;
 
     Room* curRoom;
+    SDL_Rect roomRect;
     Tilemap* tilemap;
     Tile* lastRoom;
     std::vector<Room*> neighbors;
@@ -87,6 +89,10 @@ private:
     int squeezeItr;
     std::vector<SDL_Rect> intersects;
     int iter;
+
+    bool losTarget;
+    bool losPickup;
+    bool losPlayer;
     
 public:
 
@@ -95,7 +101,7 @@ public:
     // Variables
     int oozeNumber;         // This ooze's ID #
     static int totalOoze; //How many instances of the object exist? (initializes to 0)
-    int damage = 5;
+    int damage = 1; // keep this at 1
     // Constructors & destructor
     Ooze(); // Default constructor
     Ooze(Room* room, Tilemap* t);
@@ -156,6 +162,7 @@ public:
     Animation* getAnimation(std::string tag);
     void setAnimation(std::string tag);
     //void updateAnimation(Uint32 ticks);
+    void hurt(int damage);
 };
 
 #endif  //  OOZE_H_

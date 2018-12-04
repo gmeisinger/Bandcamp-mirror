@@ -17,20 +17,28 @@ class Projectile : public Object
 {
 	private:
 		char projType;
-		SDL_Rect projRect;
-		SDL_Rect projDrawBox;
+		SDL_Rect projRect; //The Collision Box
 		bool up;
 	    bool down;
 	    bool left;
 	    bool right;
 		int playerXVel;
 		int playerYVel;
+
 		SDL_Renderer* rendererReference;
 		int projNumber;
 		bool projUsed;
 		SDL_Texture* projImg;
 		SDL_Rect projImgRect;
 		SDL_Rect correction;
+
+
+
+
+
+    //SDL_Rect projDrawBox;	//Where the Image is drawn on screen //not sure if still needed
+    //Uint32 projTicks; //not sure if still needed
+
 
 	public:
 		void input(const Uint8* keystate);
@@ -41,6 +49,7 @@ class Projectile : public Object
 		Projectile(char type, int playerX, int playerY);
         ~Projectile();
 		Projectile();
+
 		void checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid);
 		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);

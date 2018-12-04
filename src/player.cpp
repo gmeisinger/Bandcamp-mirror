@@ -40,6 +40,7 @@ Player::Player(SDL_Rect _rect) {
 	right = false;
 	space = false;
 	projCooldown = false;
+	projActive = false;
     overlapEnemy = false;
 	projsType = 's';
 	//std::unordered_map<std::string, Object*> projList;
@@ -252,14 +253,17 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
+
 	
   if (space && !projCooldown) {
 		Projectile* newProj = new Projectile(projsType, playerRect.x, playerRect.y);
+
 		newProj->init(rendererReference);
 		objectList[newProj->getInstanceName()] = newProj;
 		projCooldown = true;
+		projActive = true;
 	} else if (projCooldown) {
-		if (cooldownTicks >= 50) {
+		if (cooldownTicks >= 75) {
 			cooldownTicks = 0;
 			projCooldown = false;
 		} else {
@@ -285,6 +289,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
     //Check you haven't collided with object
     checkCollision(curX, curY, grid);
 	
+
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()) {
 		if (it->second->getInstanceName().find("proj") != -1 || it->second->getInstanceName().find("breach") != -1) {
@@ -386,4 +391,11 @@ void Player::checkEnemy(int _xdv, int _ydv){
         x_vel -= x_vel/2;
         y_vel -= y_vel/2;
     }
+}
+
+/* getter method to be used by the ooze for its behavior
+ * Returns: bool 
+*/
+bool Player::getProjActive() {
+    return projActive;
 }
