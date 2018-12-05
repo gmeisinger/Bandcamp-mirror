@@ -22,7 +22,7 @@ tilemap{t}
     curRoom = room;
     neighbors = curRoom->getNeighbors();
     roomRect = curRoom->getRectCopy();
-    rect = {((roomRect.x + roomRect.w)/2) * tile_s, ((roomRect.y + roomRect.h)/2) * tile_s, 30, 30};
+    rect = {(roomRect.x + (roomRect.w/2)) * tile_s, (roomRect.y + (roomRect.h/2)) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	int overlapTicks = 0;
@@ -71,9 +71,11 @@ target{other.target},
     oozeNumber = totalOoze;
     
     curRoom = other.curRoom;
+    neighbors = curRoom->getNeighbors();
+    roomRect = curRoom->getRectCopy();
     SDL_Rect *temp = curRoom->getRect();
-    rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
-    
+    rect = other.rect;
+
     stats = other.stats;
     Mutate();
     r = g = b = CHANNEL_MAX;
@@ -149,9 +151,10 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
         if(iter % 15 == 0) {
             target = pickTarget(objectList, grid);
 //            p = static_cast<Player*>(it->second);
-            if (true) {
+            if (target) {
             //check which direction the target is
             //Only move if we can see the player
+                
                 moveLine(grid, target);
             }
         //updateVelocity(x_deltav,y_deltav);
@@ -339,8 +342,8 @@ bool Ooze::foundFood(Pickup* food) {
             //food->use();
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
-            if(ate > 2) {
-                RandomMap::setSpawnOoze(true);
+            if(ate > 0) {
+              //  RandomMap::setSpawnOoze(true);
                 Ooze(*this);
                 ate = 0;
             }
@@ -698,6 +701,7 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 //This version of Bresenham's moves the player in as stright a line as possible to 
 //the player
 void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
+    std::cout << "target check" << target << std::endl;
     if(target == nullptr) return;
     int deltaX = target->x - rect.x;
     int deltaY = target->y - rect.y;
@@ -986,18 +990,18 @@ void Ooze::switchRoom() {
 void Ooze::updateColor(){
     switch(this->state) {
         case FIGHTING: { //Turn Red
-            if(r == 0) return;
-            else r--;
+            if(r < 2) return;
+            else r-=2;
             break;
         }
         case HANGRY: {
-            if(g == 0) return;
-            else g--;
+            if(g < 2) return;
+            else g-=2;
             break;
         }
         case FLEEING: {
-            if(b == 0) return;
-            else b--;
+            if(b < 2) return;
+            else b-=2;
             break;
         }
         default: {
