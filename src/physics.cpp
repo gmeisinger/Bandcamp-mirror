@@ -1,14 +1,8 @@
 #include "include/physics.h"
 
-//really important to note that this is a physic simulation, NOT real life. If we do REAL physics, whenever a breach is in a pressurized zone, 
-//it rapidly depressurizes and equalizes. That's no fun because we'll instantly die. So we'll have to figure out how to make this interesting
-//but still a physics simulation...
-
 int previous_pressure;
 
-void Room2::init_room() //this will always be used for the first room
-{
-	//we'll use "percent" values (0-100) to keep things simple
+void Room2::init_room() {
 	oxygen = 100;
 	temperature = 100;
 	pressure = 100;
@@ -17,9 +11,8 @@ void Room2::init_room() //this will always be used for the first room
 	num_breaches = 0;
 }
 
-void Room2::rand_room() //this will be every room but the first, creating random values between 100 and 25(?) for each attribute
-{
-	oxygen = (rand()%100)+25; //this will go from a range of 25 to 125
+void Room2::rand_room() {
+	oxygen = (rand()%100)+25;
 	if(oxygen>100)
 		oxygen = 100;
 	temperature = (rand()%100)+25;
@@ -28,19 +21,10 @@ void Room2::rand_room() //this will be every room but the first, creating random
 	pressure = 100;
 	bool breached = false;
 	num_breaches = 0;
-	std::cout << "Room was created with:" <<std::endl;
-	std::cout << "oxygen: " << oxygen <<std::endl;
-	std::cout << "temperature:" << temperature << std::endl;
-	std::cout << "pressure:" << pressure << std::endl;
 }
 
-void Room2::adv_init_room(int o, int t, int p, int o2, int t2, int p2) 	//this will need to be "randomized"
-/* Summary
- * Argument  
- *
-*/
-{
-	oxygen = (o+o2)/2;						//for now, takes the previous room's values and this one ("100") and averages them
+void Room2::adv_init_room(int o, int t, int p, int o2, int t2, int p2) {
+	oxygen = (o+o2)/2;
 	temperature = (t+t2)/2;
 	pressure = (p+p2)/2;
 	previous_pressure = pressure;
@@ -48,124 +32,70 @@ void Room2::adv_init_room(int o, int t, int p, int o2, int t2, int p2) 	//this w
 	num_breaches = 0;
 }
 
-int Room2::give_oxygen()
-{
+int Room2::give_oxygen() {
 	return oxygen;
 }
 
-int Room2::give_temperature()
-// get temp value 
-{
+int Room2::give_temperature() {
 	return temperature;
 }
 
-void Room2::lower_pressure() //depending on how many breaches in the room
-/* Summary
- * Argument  
- *
-*/
-{
-	previous_pressure = pressure;
-	// switch(num_of_breaches)				//lets try to figure out a better way for this, but for now this is what we have
-	// {
-		// case(0):
-			// pressure = 100;
-			// break;
-		// case(1):
-			// pressure = 95;
-			// break;
-		// case(2):
-			// pressure = 90;
-			// break;
-		// case(3):
-			// pressure = 80;
-			// break;
-		// case(4):
-			// pressure = 60;
-			// break;
-		// case(5):
-			// pressure = 20;
-			// break;
-		// case(6):
-			// pressure = 0;
-			// break;
-	// }
-	if(breached)
-	{
-		//int i;
-		for(int i=0; i<=num_breaches; i++)
-			pressure-=5;
-		if(pressure<=0)
-			pressure = 0;
+int Room2::give_pressure() {
+	return pressure;
+}
+
+void Room2::raise_oxygen(int resource_value) {
+	oxygen = std::min(oxygen+resource_value, 100);
+}
+
+void Room2::raise_temperature(int resource_value) {
+	temperature = std::min(temperature+resource_value, 100);
+}
+
+void Room2::changeOxy(int target) {
+	if (target <= 5) target = 0;
+	else if (target >= 95) target = 100;
+	if (oxygen < target) {
+		oxygen++;
+	} else if (oxygen > target) {
+		oxygen--;
 	}
 }
 
-void Room2::lower_oxygen()
-/* Summary
- * Argument  
- *
-*/
-{
-	//lowers oxygen by a set amount, for now 5?
-	oxygen-=5;
-}
-
-void Room2::adv_lower_oxygen() //something porportional with pressure
-/* Summary
- * Argument  
- *
-*/
-{
-	//PV=nRT
-	double P = (double)pressure;
-	double V = 8.314472; 			//since we are assuming this can be whatever we want, which we'll set to match the gas constant R (for percentage values)
-	double n; 						//what we are looking for
-	double R = 8.314472; 			//this is the Ideal Gas Law's constant
-	double T = (double)temperature;
-	
-	//rearranging formula to n = (PV)/(RT)
-	n = (P*V)/(R*T);
-	
-	//now that we have moles, we need to translate it to a percentage value
-	if(n>=1)
-	{
-		oxygen = 100;
+void Room2::changeTemp(int target) {
+	if (target <= 5) target = 0;
+	else if (target >= 95) target = 100;
+	if (temperature < target) {
+		temperature++;
+	} else if (temperature > target) {
+		temperature--;
 	}
-	else
-	{
-		oxygen = 100*(int)n;
+}
+
+void Room2::changePres(int target) {
+	if (target <= 5) target = 0;
+	else if (target >= 95) target = 100;
+	if (pressure < target) {
+		pressure++;
+	} else if (pressure > target) {
+		pressure--;
 	}
-	std::cout << "oxygen level: " << oxygen << std::endl;
 }
 
-void Room2::raise_oxygen(int resource_value)
-/* Summary
- * Argument  
- *
-*/
-{
-	//raises oxygen by the value of the resource that was picked up (set by procgen team)
-	oxygen+=resource_value;
+void Room2::changeOxyExternal() {
+	if (oxygen > 10) {
+		oxygen = (8.314f * oxygen) / 10;	//Uses the ideal gas constant to decide percent of oxygen that escaped
+	} else if (oxygen > 0) {
+		oxygen--;
+	}
 }
 
-void Room2::lower_temperature()
-//
-{
-	//lowers temperature by a set amount, for now 5?
-	temperature-=5;
-}
-
-void Room2::adv_lower_temperature() //k=T1/P1 T2=k*P2
-// 
-{
-	int k = temperature/previous_pressure;
-	int temp = k*pressure;
-	temperature = temp;
-	std::cout << "temperature level: " << temperature << std::endl;
-}
-
-void Room2::raise_temperature(int resource_value)
-{
-	//raises temperature by the value of the resource that was picked up (set by procgen team)
-	temperature+=resource_value;
+void Room2::changeTempExternal(int oldPres) {
+	if (pressure > 0) {
+		pressure--;
+		temperature = (temperature * pressure) / oldPres; //Based off P1/T1=P2/T2
+		
+	} else if (temperature > 0) {
+		temperature--;
+	}
 }

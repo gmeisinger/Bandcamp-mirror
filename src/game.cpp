@@ -97,7 +97,7 @@ void Game::update(Uint32 ticks) {
 // Updates image displayed to user 
 void Game::draw() {
 	//Clear the Screen
-	SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
+	//SDL_SetRenderDrawColor(gRenderer, 0x00, 0x00, 0x00, 0xFF);
 	SDL_RenderClear(gRenderer);
 	
 	//Draw the current Screen
@@ -126,7 +126,8 @@ void Game::run() {
 	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
         std::cout << "ERROR" << Mix_GetError() << std::endl;	
     //set a default for now ;)
-    bgm = Mix_LoadMUS("music/New Territory/Time 4 Exploration.wav");
+    bgm = Mix_LoadMUS("music/Leftfield Worm.wav");
+
 	if(music_debug)
 		std::cout << "Loaidng Background music Successful" << std::endl;	
 	fire = Mix_LoadWAV("music/Soundfx/pew.wav");
@@ -160,57 +161,7 @@ void Game::run() {
                         break;
                     case SDLK_n: // load a new track by pressing n
                         Mix_HaltMusic();
-                        switch(track_counter)
-                        {
-                        	case 0: 
-                        		bgm = Mix_LoadMUS("music/CS1666 Game Music 6 120bpm C Minor.wav");
-	                        	Mix_PlayMusic(bgm, -1);                        		
-                        		track_counter = 1;
-                        		if(music_debug)
-                    				std::cout << "Track selection - case 0" << std::endl;
-                        		break;
-                        	case 1:
-                        		bgm = Mix_LoadMUS("music/CS1666 Game Music 2a 128bpm Cm.wav");
-	                        	Mix_PlayMusic(bgm, -1);
-                        		track_counter = 2;
-                        		if(music_debug)
-                    				std::cout << "Track selection - case 1" << std::endl;                        		
-                        		break;
-                        	case 2:
-                        		bgm = Mix_LoadMUS("music/CS1666 Game Music 2b 128bpm Cm.wav");
-	                        	Mix_PlayMusic(bgm, -1);                        	
-                        		track_counter = 3;
-                        		if(music_debug)
-                    				std::cout << "Track selection - case 2" << std::endl;             
-                        		break;
-                        	case 3: 
-                        		bgm = Mix_LoadMUS("music/CS1666 Game Music 3 90bpm Cm.wav");
-	                        	Mix_PlayMusic(bgm, -1);                        	
-                        		track_counter = 4;
-                        		if(music_debug)
-                    				std::cout << "Track selection - case 3" << std::endl;                        		
-                        		break;
-                        	case 4:
-                        		bgm = Mix_LoadMUS("music/New Territory/Strong Enemy.wav");
-	                        	Mix_PlayMusic(bgm, -1);                        		
-                        		track_counter = 5;
-                        		if(music_debug)
-                    				std::cout << "Track selection - case 4" << std::endl;                        		
-                        		break;
-                        	case 5:
-                        		bgm = Mix_LoadMUS("music/CS1666 Game Music 5 120bpm Cm.wav");
-	                        	Mix_PlayMusic(bgm, -1);
-	                        	track_counter = 0;
-                        		if(music_debug)
-                    				std::cout << "Track selection - case 5" << std::endl;	                        	
-                        		break;
-                        	default: //title; something went wrong
-	                        	bgm = Mix_LoadMUS("music/New Territory/Theme.wav");
-	                        	Mix_PlayMusic(bgm, -1);                        		
-                        		std::cout << "Track selection ERROR" << std::endl;
-                        		break;
-                        }//end switch(track_counter) 
-
+                        change_track();
                         break;
                 }//end switch(e.key.keysym.sym)
 
@@ -241,6 +192,72 @@ void Game::run() {
 	// Tear down and end.  Returns to main
 	close();
 }//end Game::run
+
+// changes the track that is currently being played
+// press n to change current song
+void Game::change_track()
+{
+	switch(track_counter)
+    {
+    	case 0: 
+    		bgm = Mix_LoadMUS("music/CS1666 Game Music 6 120bpm C Minor.wav");
+        	Mix_PlayMusic(bgm, -1);                        		
+    		track_counter = 1;
+    		if(music_debug)
+				std::cout << "Track selection - case 0" << std::endl;
+    		break;
+    	case 1:
+    		bgm = Mix_LoadMUS("music/CS1666 Game Music 2a 128bpm Cm.wav");
+        	Mix_PlayMusic(bgm, -1);
+    		track_counter = 2;
+    		if(music_debug)
+				std::cout << "Track selection - case 1" << std::endl;                        		
+    		break;
+    	case 2:
+    		bgm = Mix_LoadMUS("music/CS1666 Game Music 2b 128bpm Cm.wav");
+        	Mix_PlayMusic(bgm, -1);                        	
+    		track_counter = 3;
+    		if(music_debug)
+				std::cout << "Track selection - case 2" << std::endl;             
+    		break;
+    	case 3: 
+    		bgm = Mix_LoadMUS("music/CS1666 Game Music 3 90bpm Cm.wav");
+        	Mix_PlayMusic(bgm, -1);                        	
+    		track_counter = 4;
+    		if(music_debug)
+				std::cout << "Track selection - case 3" << std::endl;                        		
+    		break;
+    	case 4:
+    		bgm = Mix_LoadMUS("music/New Territory/Time 4 Exploration.wav");
+        	Mix_PlayMusic(bgm, -1);                        		
+    		track_counter = 5;
+    		if(music_debug)
+				std::cout << "Track selection - Time 4 Exploration" << std::endl;                        		
+
+    		break;
+    	case 5:
+    		bgm = Mix_LoadMUS("music/CS1666 Game Music 5 120bpm Cm.wav");
+        	Mix_PlayMusic(bgm, -1);
+        	track_counter = 6;
+    		if(music_debug)
+				std::cout << "Track selection - case 5" << std::endl;	                        	
+    		break;
+    	case 6:
+    		bgm = Mix_LoadMUS("music/Throbbing Beat.wav");
+        	Mix_PlayMusic(bgm, -1);
+        	track_counter = 0;
+    		if(music_debug)
+				std::cout << "Track selection - Throbbing Beat" << std::endl;	                        	
+    		break;    		
+
+    	default: //title; something went wrong
+        	bgm = Mix_LoadMUS("music/New Territory/Theme.wav");
+        	Mix_PlayMusic(bgm, -1);                        		
+    		std::cout << "Track selection ERROR" << std::endl;
+    		break;
+    }//end switch(track_counter)	
+
+}//end Game:change_track
 
 // free memory and quit
 // Returns main after completion

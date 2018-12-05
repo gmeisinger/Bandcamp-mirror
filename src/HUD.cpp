@@ -5,6 +5,7 @@
 
 #include "include/HUD.h"
 #include "include/utils.h"
+#include "include/GSM.h"
 
 // Global Variables
 bool init_h;
@@ -63,7 +64,14 @@ void HUD::init(SDL_Renderer* _renderer)
  *
  *
 */
-void HUD::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){}
+void HUD::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
+	if(currentHealth == 0) {
+		GSM::currentScreen = 4;
+		currentHealth = 90;
+		currentTemp = 100;
+		currentOxygen = 100;
+	}
+}
 
 /* 
  * Keystate - which keys are pressed 
@@ -109,8 +117,11 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 		case 11 ... 20:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
 			break;
-		case 0 ... 10:
+		case 1 ... 10:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
+			break;
+		case 0:
+			Oxygen = {0,0,0,0};
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Oxygen);
@@ -145,8 +156,11 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 		case 11 ... 20:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
 			break;
-		case 0 ... 10:
+		case 1 ... 10:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
+			break;
+		case 0:
+			Temp = {0,0,0,0};
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Temp);
@@ -181,8 +195,11 @@ SDL_Renderer* HUD::change_levels(SDL_Renderer* gRenderer, int oxygen_level, int 
 		case 10 ... 18:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x44, 0x05, 0xFF);
 			break;
-		case 0 ... 9:
+		case 1 ... 9:
 			SDL_SetRenderDrawColor(renderer_h, 0xFF, 0x1C, 0x05, 0xFF);
+			break;
+		case 0:
+			Health = {0,0,0,0};
 			break;
 	}
 	SDL_RenderFillRect(renderer_h, &Health);

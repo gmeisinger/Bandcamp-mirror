@@ -164,9 +164,9 @@ void Tilemap::genRandomMap() {
 std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> intmap) {
 
 	for(int r=0;r<intmap.size();r++) {
-		std::cout << std::endl;
+		//std::cout << std::endl;
 		for(int c=0;c<intmap[0].size();c++) {
-			std::cout << intmap[r][c];
+			//std::cout << intmap[r][c];
 			if(intmap[r][c] == 1) {
 				//floor tile
 				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
@@ -192,6 +192,36 @@ std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> 
 		}
 	}
 	return map;
+}
+
+std::vector<Tile*> Tilemap::getDoors() {
+	std::vector<Tile*> doors;
+	Tile* doorTile;
+	SDL_Rect* intersect;
+	bool horWall = false;
+	int r = 0;
+	int c = 0;
+	for(int i = 0; i < rooms.size(); i++) {
+		std::vector<SDL_Rect> intersects = rooms[i]->getIntersects();
+		for(int i = 0; i < intersects.size(); i++) {
+			intersect = &intersects[i];
+		
+			if(intersect->w > intersect->h && intersect->w > 2) {
+				//horizontal wall
+				r = intersect->y;
+				c = intersect->x + (intersect->w/2);
+				horWall = true;
+			}
+			else{
+				r = intersect->y + (intersect->h/2);
+				c = intersect->x;
+			}
+			doorTile = map[r][c];
+			doorTile->setHorWall(horWall);
+			doors.push_back(doorTile);
+		}
+	}
+	return doors;
 }
 
 void addObjects(std::unordered_map<std::string, Object*> *objectList) {

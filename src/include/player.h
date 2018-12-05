@@ -27,6 +27,7 @@ class Player : public Object
 	    bool left;
 	    bool right;
 		bool space;
+        bool x;
 		bool projCooldown;
 		bool projActive;
 		char projsType;

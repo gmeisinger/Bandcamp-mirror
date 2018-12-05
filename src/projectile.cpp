@@ -5,10 +5,8 @@
 
 #include "include/projectile.h"
 
+constexpr int FIRED_SPEED = 6;
 
-constexpr int FIRED_SPEED = 4;
-
-Uint32 projTicks;
 static int totalInstance = 0;//How many instances of the object exist?
 
 
@@ -46,12 +44,9 @@ Projectile::Projectile(char type, int playerX, int playerY) {
 }
 
 //Deconstructor
-Projectile::~Projectile() {
-}
+Projectile::~Projectile() {}
 
-Projectile::Projectile(){
-	
-}
+Projectile::Projectile() {}
 
 void Projectile::input(const Uint8* keystate) {}
 
@@ -61,9 +56,7 @@ std::string Projectile::getInstanceName(){
 	return "proj-"+ss.str();
 }
 
-void Projectile::init(SDL_Renderer *renderer){
-	//std::cout << getInstanceName() << " initiated" << std::endl;
-	
+void Projectile::init(SDL_Renderer *renderer) {
 	//Set up the right Image to display
 	//Eventually these images might be global, rather than loaded every time it's spawned.
 	projImg = utils::loadTexture(renderer, "res/projectiles.png");
@@ -99,9 +92,11 @@ void Projectile::init(SDL_Renderer *renderer){
 }
 		
 void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
+	//std::cout << "Entered Projectile update" << std::endl;
 	updatePosition(ticks);
 
 	checkProjOverlap(objectList, grid);
+	//std::cout << "Exited Projectile update" << std::endl;
 }
 
 SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
@@ -115,7 +110,7 @@ SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
 	return renderer;
 }
 
-void Projectile::updatePosition(Uint32 ticks){
+void Projectile::updatePosition(Uint32 ticks) {
 	projTicks += ticks;
 	if(projTicks > 2) {
 		switch(projType){
@@ -143,27 +138,13 @@ void Projectile::updatePosition(Uint32 ticks){
 }
 
 void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
-	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
-	while(it != objectList.end()) {
-		if(it->second->getInstanceName().find("ooze") != -1) {
-			if (collision::checkCol(projRect, *(it->second->getRect()))) {
-				projUsed = true;
-				player->setProjActive(false);
-				break;
-			}
-		}
-		it++;
-	}
-	
-	if (!projUsed) {
-		if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) ||
-		   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
-			Breach* newBreach = new Breach(projType, projRect, projDrawBox);
-			newBreach->init(rendererReference);
-			objectList[newBreach->getInstanceName()] = newBreach;
-			projUsed = true;
-			player->setProjActive(false);
-		}
+	if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) ||
+	   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
+		Breach* newBreach = new Breach(projType, projRect, projDrawBox);
+		newBreach->init(rendererReference);
+		objectList[newBreach->getInstanceName()] = newBreach;
+		projUsed = true;
+		player->setProjActive(false);
 	}
 }
 

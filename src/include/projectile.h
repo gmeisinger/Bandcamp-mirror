@@ -27,19 +27,12 @@ class Projectile : public Object
 
 		SDL_Renderer* rendererReference;
 		int projNumber;
-		bool projUsed;
 		SDL_Texture* projImg;
 		SDL_Rect projImgRect;
 		SDL_Rect correction;
-		SDL_Rect projDrawBox;
-
-
-
-
-    //SDL_Rect projDrawBox;	//Where the Image is drawn on screen //not sure if still needed
-    //Uint32 projTicks; //not sure if still needed
-
-
+    SDL_Rect projDrawBox;
+    Uint32 projTicks;
+        
 	public:
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
@@ -54,6 +47,7 @@ class Projectile : public Object
 		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
+		bool projUsed;
 };
 
 #endif  //  BANDCAMP_PROJECTILE_H_

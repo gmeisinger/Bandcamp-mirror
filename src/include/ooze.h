@@ -5,6 +5,7 @@
 #include <unordered_map>
 #include <vector>
 #include <cmath>
+#include <algorithm>
 #include "object.h"
 #include "spritesheet.h"
 #include "animation.h"
@@ -19,6 +20,7 @@
 #include "generator.h"
 #include "tilemap.h"
 #include "room.h"
+#include "projectile.h"
 
 class Pickup;
 
@@ -45,6 +47,7 @@ class Ooze : public Object {
         int health_cost;
         int num_cost;
     };
+    void Mutate();
     
     struct RoomTiles{
         SDL_Rect* startTile;
@@ -87,8 +90,9 @@ private:
     bool squeeze;
     int squeezeItr;
     std::vector<SDL_Rect> intersects;
+    std::vector<Tile*> doors;
     int iter;
-
+	  bool used;
     bool losTarget;
     bool losPickup;
     bool losPlayer;

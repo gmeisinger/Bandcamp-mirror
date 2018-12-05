@@ -36,7 +36,7 @@ Pickup::Pickup(SDL_Rect _rect, char type, int value, Player *player, HUD *h) {
 	instanceNumber = totalInstance;
 	
 	std::string s = "SPAWNED: "+getInstanceName();
-	//std::cout << s << std::endl;
+	////std::cout << s << std::endl;
 	used = false;
 }
 
@@ -98,9 +98,11 @@ void Pickup::init(SDL_Renderer *renderer){
  *
 */
 void Pickup::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
+	//std::cout << "Entered Pickup update" << std::endl;
 	updatePosition(ticks);
 	checkPickupOverlap(objectList);
 	if (used) RandomMap::setSpawnPickup(true);
+	//std::cout << "Exiting Pickup update" << std::endl;
 }
 
 /* Summary
@@ -159,23 +161,8 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> &object
 				   pickupPlayer->getY() < pickupRect.y + pickupRect.h &&
 				   pickupPlayer->getY() + pickupPlayer->getHeight() > pickupRect.y;
 
-	if (overlap){//(xOverlap && yOverlap) {
-		if (pickupType == 'e') {
-			hud->currentTemp = std::min(100, hud->currentTemp+pickupValue);
-			//std::cout << "TEMP UP!" << std::endl;
-		} else if (pickupType == 'o') {
-			hud->currentOxygen = std::min(100, hud->currentOxygen+pickupValue);
-			//std::cout << "O2 UP!" << std::endl;
-		} else {
-			//left just in case we want some other types of pickups later
-		}
-		
-		//This only works because there is only one instance of this object. We will eventually have to 
-		//make an ID system to Identify specific objects.
-		//GOAL
+	if (overlap) {
 		used = true;
-		//objectList->erase(getInstanceName());
-		//delete this;
 	} else {
 		// Check for collisions with any ooze. Calling foundFood also updates the ooze
 		std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
@@ -191,12 +178,10 @@ void Pickup::checkPickupOverlap(std::unordered_map<std::string, Object*> &object
 	}
 }
 
-// 
 bool Pickup::isUsed() {
 	return used;
 }
 
-//
 int Pickup::getTotal() {
 	return totalInstance;
 }
