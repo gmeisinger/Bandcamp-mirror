@@ -126,7 +126,8 @@ void Game::run() {
 	if(Mix_OpenAudio(44100, MIX_DEFAULT_FORMAT, 2, 2048) < 0)
         std::cout << "ERROR" << Mix_GetError() << std::endl;	
     //set a default for now ;)
-    bgm = Mix_LoadMUS("music/Throbbing Beat.wav");
+    bgm = Mix_LoadMUS("music/Leftfield Worm.wav");
+
 	if(music_debug)
 		std::cout << "Loaidng Background music Successful" << std::endl;	
 	fire = Mix_LoadWAV("music/Soundfx/pew.wav");
@@ -231,15 +232,24 @@ void Game::change_track()
         	Mix_PlayMusic(bgm, -1);                        		
     		track_counter = 5;
     		if(music_debug)
-				std::cout << "Track selection - case 4" << std::endl;                        		
+				std::cout << "Track selection - Time 4 Exploration" << std::endl;                        		
+
     		break;
     	case 5:
     		bgm = Mix_LoadMUS("music/CS1666 Game Music 5 120bpm Cm.wav");
         	Mix_PlayMusic(bgm, -1);
-        	track_counter = 0;
+        	track_counter = 6;
     		if(music_debug)
 				std::cout << "Track selection - case 5" << std::endl;	                        	
     		break;
+    	case 6:
+    		bgm = Mix_LoadMUS("music/Throbbing Beat.wav");
+        	Mix_PlayMusic(bgm, -1);
+        	track_counter = 0;
+    		if(music_debug)
+				std::cout << "Track selection - Throbbing Beat" << std::endl;	                        	
+    		break;    		
+
     	default: //title; something went wrong
         	bgm = Mix_LoadMUS("music/New Territory/Theme.wav");
         	Mix_PlayMusic(bgm, -1);                        		

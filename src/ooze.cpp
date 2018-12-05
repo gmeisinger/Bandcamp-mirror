@@ -83,23 +83,23 @@ std::string Ooze::getInstanceName(){
 	return "ooze-"+ss.str();
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::input(const Uint8* keystate){}
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::init(SDL_Renderer* gRenderer) {
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
 */
@@ -108,16 +108,16 @@ void Ooze::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet.setClips(_cols, _rows, rect.w, rect.h);
 }
 
-//*********TO DO:
+//*******TO DO:
 //update motion here
 void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
-	std::cout << "Entered Ooze update" << std::endl;
+	//std::cout << "Entered Ooze update" << std::endl;
 	
 	//Checks to make sure our ooze isn't stuck in a wall
     //Must be declared here because we need the grid, but should only run on the
     //first update. Runs very quickly too
     
-    //std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
+    ////std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
 
     if(!initialized) {
         initRoom(grid);
@@ -165,39 +165,41 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     std::unordered_map<std::string, Object*>::iterator it;
     for(it = objectList.begin(); it != objectList.end(); it++) {
 		if(it->second->getInstanceName().find("proj") != -1) {
-			if (collision::checkCol(rect, *(it->second->getRect()))) {
+			Projectile* temp = (Projectile*)it->second;
+			if (collision::checkCol(rect, *(temp->getRect()))) {
 				std::cout << "Ooze hit" << std::endl;;
                 hurt(1);
+				temp->projUsed = true;
 				break;
 			}
 		}
 	}
     iter++;
-	std::cout << "Exiting Ooze update" << std::endl;
+	//std::cout << "Exiting Ooze update" << std::endl;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::increaseHostility() {
 	if (hostility < 10)
 		hostility++;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::decreaseHostility() {
 	if (hostility >  0)
 		hostility--;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 SDL_Renderer* Ooze::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     SDL_Rect* dest = new SDL_Rect;
     *dest = rect;
@@ -336,7 +338,7 @@ bool Ooze::foundFood(Pickup* food) {
 /* Summary
  * Argument  
  *
-*/
+ */
 int Ooze::getAte() {
     return ate;
 }
@@ -350,7 +352,7 @@ OozeState Ooze::getState() {
 bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks) {
     
     switch(this->state) {
-//            std::cout << "roaming" << std::endl;
+//            //std::cout << "roaming" << std::endl;
         case ROAMING: {
             updateVelocity(utils::uniformDist(), utils::uniformDist());
             if(target){ //if(target == player);
@@ -362,7 +364,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
         case HANGRY: {
 //            foundFood(Pickup* food);
             if(!target){
-                std::cout << "ooze" << oozeNumber << ": \"Target Lost...\"" << std::endl;
+                //std::cout << "ooze" << oozeNumber << ": \"Target Lost...\"" << std::endl;
                 state = ROAMING;
             }
             if (ate > 0) {                      // "Time to eat!"
@@ -374,7 +376,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case CLONING: {
-            std::cout << "cloning" << std::endl;
+            //std::cout << "cloning" << std::endl;
 //            RandomMap::setSpawnOoze(true);
             Ooze(*this);
             state = ROAMING;
@@ -436,7 +438,7 @@ bool Ooze::checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList
 	return overlap;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
 */
@@ -445,7 +447,7 @@ void Ooze::updateAnimation(Uint32 ticks) {
     if(true) { //ticks/10%2 == 2
         setAnimation("wandering");
         anim->play();
-        //std::cout << "ooze animating";
+        ////std::cout << "ooze animating";
     }
     else {
         anim->reset();
@@ -454,7 +456,7 @@ void Ooze::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
 */
@@ -463,10 +465,10 @@ void Ooze::updatePosition() {
     rect.y += y_vel;
 }
 
-/* Summary
+ /*Summary
  * Argument  
  *
-*/
+ */
 void Ooze::checkBounds(int max_width, int max_height, bool move) {
     if(move)
     {
@@ -510,7 +512,7 @@ void Ooze::checkBounds(int max_width, int max_height, bool move) {
 /* Summary
  * Argument  
  *
-*/
+ */
 bool Ooze::isUsed() { return false; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
@@ -744,7 +746,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     int c = 0;
     int l = 0;
     int t = 0;
-    std::cout << "intersect size: " << intersects.size() << std::endl;
+    //std::cout << "intersect size: " << intersects.size() << std::endl;
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
@@ -802,13 +804,13 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         tile = lastRoom;
         temp1 = tile->getDest();
         roomTiles.door = temp1;
-        std::cout << "coo" << std::endl;
+        //std::cout << "coo" << std::endl;
     }
     endTile = map[l][t];
     temp2 = endTile->getDest();
     roomTiles.startTile = temp1;
     roomTiles.endTile = temp2; 
-    /* delete temp1;
+    /*delete temp1;
     delete temp2;
     delete intersect;
     delete tile;
@@ -835,13 +837,13 @@ void Ooze::Mutate(){
     stats.health_cost = std::max(1, stats.health_cost + utils::normDist());
     stats.num_cost =    std::max(1, stats.num_cost    + utils::normDist());
     
-    std::cout << "Ooze "  << oozeNumber  << ":"
-    << " HP " << stats.health
-    << " ATK " << stats.attack
-    << " SPD " << stats.speed
-    << " HC " << stats.health_cost
-    << " NC " << stats.num_cost
-    << "\n";
+    //std::cout << "Ooze "  << oozeNumber  << ":"
+    //<< " HP " << stats.health
+    //<< " ATK " << stats.attack
+    //<< " SPD " << stats.speed
+    //<< " HC " << stats.health_cost
+    //<< " NC " << stats.num_cost
+    //<< "\n";
 }
 
 
@@ -867,11 +869,11 @@ void Ooze::switchRoom() {
     for(int i = 0; i < neighbors.size(); i++) {
         roomRect = neighbors[i]->getRectCopy();
         roomRect = {roomRect.x * TILE_SIZE, roomRect.y * TILE_SIZE, roomRect.w * TILE_SIZE, roomRect.h * TILE_SIZE};
-        std::cout << "RoomRect: X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.w << " H " << roomRect.h << std::endl;
-        std::cout << "Rect: X " << rect.x << " Y " << rect.y << " W " << rect.w << " H " << rect.h << std::endl;
+        //std::cout << "RoomRect: X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.w << " H " << roomRect.h << std::endl;
+        //std::cout << "Rect: X " << rect.x << " Y " << rect.y << " W " << rect.w << " H " << rect.h << std::endl;
         
         if(collision::checkCol(roomRect, rect)) {
-            std::cout << "ERE" << std::endl;
+            //std::cout << "ERE" << std::endl;
             curRoom = neighbors[i];
             neighbors = curRoom->getNeighbors();
             intersects = curRoom->getIntersects();

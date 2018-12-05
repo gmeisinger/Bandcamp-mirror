@@ -92,10 +92,10 @@ void Projectile::init(SDL_Renderer *renderer) {
 }
 		
 void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
-	std::cout << "Entered Projectile update" << std::endl;
+	//std::cout << "Entered Projectile update" << std::endl;
 	updatePosition(ticks);
 	checkProjOverlap(objectList, grid);
-	std::cout << "Exited Projectile update" << std::endl;
+	//std::cout << "Exited Projectile update" << std::endl;
 }
 
 SDL_Renderer* Projectile::draw(SDL_Renderer *renderer, SDL_Rect cam) {
@@ -137,25 +137,12 @@ void Projectile::updatePosition(Uint32 ticks) {
 }
 
 void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
-	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
-	while(it != objectList.end()) {
-		if(it->second->getInstanceName().find("ooze") != -1) {
-			if (collision::checkCol(projRect, *(it->second->getRect()))) {
-				projUsed = true;
-				break;
-			}
-		}
-		it++;
-	}
-	
-	if (!projUsed) {
-		if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) ||
-		   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
-			Breach* newBreach = new Breach(projType, projRect, projDrawBox);
-			newBreach->init(rendererReference);
-			objectList[newBreach->getInstanceName()] = newBreach;
-			projUsed = true;
-		}
+	if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) ||
+	   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
+		Breach* newBreach = new Breach(projType, projRect, projDrawBox);
+		newBreach->init(rendererReference);
+		objectList[newBreach->getInstanceName()] = newBreach;
+		projUsed = true;
 	}
 }
 

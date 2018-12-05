@@ -26,7 +26,6 @@ class Projectile : public Object
 		int playerYVel;
 		SDL_Renderer* rendererReference;
 		int projNumber;
-		bool projUsed;
 		SDL_Texture* projImg;
 		SDL_Rect projImgRect;
 		SDL_Rect correction;
@@ -46,6 +45,7 @@ class Projectile : public Object
 		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);
 		bool isUsed();
+		bool projUsed;
 };
 
 #endif  //  BANDCAMP_PROJECTILE_H_
