@@ -37,7 +37,7 @@ RandomMap::RandomMap() : Screen(){
 // ADD COMMENTS 
 void RandomMap::init(SDL_Renderer* reference){
 	rendererReference = reference;
-	SDL_Rect player_box = {TILE_SIZE + 1, TILE_SIZE + 1, TILE_SIZE, TILE_SIZE};
+	SDL_Rect player_box = {TILE_SIZE + 1, TILE_SIZE + 1, 30, 30};
 
 	p = Player(player_box);
 	SDL_Rect ooze_box = {SCREEN_WIDTH/2, 3*SCREEN_HEIGHT/8, 30, 30};
@@ -51,7 +51,7 @@ void RandomMap::init(SDL_Renderer* reference){
 	p.init(reference);
 	o.init(reference);
 	tilemap.init();
-	tilemap.setMap(tilemap.genRandomMap());
+	tilemap.setMap(tilemap.genMaze());
 
 	
 	//Player and HUD in the Room
@@ -211,7 +211,7 @@ SDL_Renderer* RandomMap::draw(SDL_Renderer *renderer){
 	}
 
 	//draw the darkness
-	SDL_RenderCopy(renderer, dark, NULL, NULL);
+	//SDL_RenderCopy(renderer, dark, NULL, NULL);
 
 	return renderer;
 }

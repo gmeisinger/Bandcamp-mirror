@@ -72,7 +72,7 @@ void Player::init(SDL_Renderer* gRenderer){
 */
 void Player::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet = SpriteSheet(_sheet);
-    sheet.setClips(_cols, _rows, playerRect.w, playerRect.h);
+    sheet.setClips(_cols, _rows, TILE_SIZE, TILE_SIZE);//playerRect.w, playerRect.h);
 }
 
 /* Summary
@@ -109,7 +109,7 @@ void Player::setAnimation(std::string tag) {
 
 //returns width of Player
 int Player::getWidth() {
-    return playerRect.w;
+	return playerRect.w;
 }
 
 //returns height of Player
@@ -278,6 +278,8 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     *dest = playerRect;
     dest->x -= cam.x;
     dest->y -= cam.y;
+	dest->w = TILE_SIZE;
+	dest->h = TILE_SIZE;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
    return renderer;
 }

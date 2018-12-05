@@ -146,6 +146,8 @@ bool Door::checkCanToggle(Player*& playerObj){
 	//Also check direction of the player later
 	SDL_Rect * playerRect = playerObj->getRect();
 	
+	//std::cout << 
+	
 	if(!directionLR && (playerRect->y <= doorRect.y+TILE_SIZE && playerRect->y >= doorRect.y-TILE_SIZE*2) && (playerRect->x <= doorRect.x+TILE_SIZE && playerRect->x >= doorRect.x))
 		return true;
 	else if(directionLR && (playerRect->x <= doorRect.x+TILE_SIZE*2 && playerRect->x >= doorRect.x-TILE_SIZE*2) && (playerRect->y >= doorRect.y-TILE_SIZE && playerRect->y <= doorRect.y))

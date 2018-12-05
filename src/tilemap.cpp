@@ -160,9 +160,9 @@ void Tilemap::genTestTransitionRoom2(){
 	map[height*3/4][14] = 1; //Space for the Warp Tile.
 }
 
-void Tilemap::genMaze(){
+std::vector<std::vector<int>> Tilemap::genMaze(){
 	MGA * mga = new MGA((rand() % 20)+20, (rand() % 20)+20);
-	map = mga->getMaze();
+	return mga->getMaze();
 }
 
 

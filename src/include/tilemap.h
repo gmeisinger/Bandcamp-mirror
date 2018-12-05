@@ -42,7 +42,7 @@ public:
 	//std::vector< std::vector < int > > &getGrid();
 	void genTestTransitionRoom();
 	void genTestTransitionRoom2();
-	void genMaze();
+	std::vector<std::vector<int>> genMaze();
 };
 
 #endif  //  BANDCAMP_TILEMAP_H_
