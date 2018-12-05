@@ -373,8 +373,8 @@ void PauseMenu::generateArtifactsList()
 {
 	int adjssize = 11;
 	int nounssize = 12;
-	std::string adjs[adjssize] = {"blue", "rusted", "crusty", "spongey", "pathetic", "cursed", "unisex", "sad", "spicy", "broken", "saucy"};
-	std::string nouns[nounssize] = {"bag", "machine part", "broom", "bat", "dice", "image", "abacus", "mistake", "sauce", "salmon", "meat", "sock"};
+	std::string adjs[11] = {"blue", "rusted", "crusty", "spongey", "pathetic", "cursed", "unisex", "sad", "spicy", "broken", "saucy"};
+	std::string nouns[12] = {"bag", "machine part", "broom", "bat", "dice", "image", "abacus", "mistake", "sauce", "salmon", "meat", "sock"};
 	Artifact_Descriptor a;
 	
 	
