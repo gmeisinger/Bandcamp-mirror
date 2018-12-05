@@ -20,7 +20,7 @@ tilemap{t}
     curRoom = room;
     neighbors = curRoom->getNeighbors();
     roomRect = curRoom->getRectCopy();
-    rect = {((roomRect.x + roomRect.w)/2) * tile_s, ((roomRect.y + roomRect.h)/2) * tile_s, 30, 30};
+    rect = {(roomRect.x + (roomRect.w/2)) * tile_s, (roomRect.y + (roomRect.h/2)) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	int overlapTicks = 0;
@@ -69,7 +69,7 @@ target{other.target},
     
     curRoom = other.curRoom;
     SDL_Rect *temp = curRoom->getRect();
-    rect = {((temp->x + temp->w)/2) * tile_s, ((temp->y + temp->h)/2) * tile_s, 30, 30};
+    rect = {(temp->x + (temp->w/2)) * tile_s, (temp->y + (temp->h/2)) * tile_s, 30, 30};
     
     stats = other.stats;
     Mutate();
@@ -163,8 +163,10 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     //update animation
     updateAnimation(ticks);
 
-    if(!squeeze)
+    if(!squeeze) {
         checkCollision(curX, curY, grid, true);
+    }
+
     std::unordered_map<std::string, Object*>::iterator it;
     for(it = objectList.begin(); it != objectList.end(); it++) {
 		if(it->second->getInstanceName().find("proj") != -1) {
@@ -173,6 +175,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 				std::cout << "Ooze hit" << std::endl;;
                 hurt(1);
 				temp->projUsed = true;
+                player->setProjActive(false);
 				break;
 			}
 		}
@@ -335,6 +338,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
         }
 		case DYING:
 			used = true;
+            return nullptr;
         default:
             return player->getRect();
     }
@@ -449,7 +453,6 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
         }
 
         case DODGING: {
-            std::cout << player->getProjActive() << std::endl;
             if (!player->getProjActive()) {
                 state = HANGRY; 
                 return true;
@@ -463,7 +466,9 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case DYING: {
+            std::cout << " dying :( " << std::endl;
             this->~Ooze();
+            std::cout << " dying :( super bad " << std::endl;
             break;
         }
             
