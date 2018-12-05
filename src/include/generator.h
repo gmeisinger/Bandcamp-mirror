@@ -37,6 +37,8 @@ public:
 	void cutDoor(SDL_Rect intersect);
 	void finalize();
 	void setRoomNeighbors(Room* r);
+	void addChests();
+	std::vector<Room*> getRooms();
 };
 
 #endif  //  BANDCAMP_GENERATOR_H_

@@ -76,11 +76,11 @@ void WarpTile::init(SDL_Renderer* gRenderer){
 	reference = gRenderer; //For initing the FadeObj
 }
 
-void WarpTile::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
+void WarpTile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	Player * p;
 
-	auto it = objectList->find("player");
-	if (it != objectList->end())
+	auto it = objectList.find("player");
+	if (it != objectList.end())
 		p = static_cast<Player*>(it->second);
 	
 	if(collision(p)){
@@ -92,7 +92,7 @@ void WarpTile::update(std::unordered_map<std::string, Object*> *objectList, std:
 			if(fade){
 				FadeObj* f = new FadeObj(destScreen);
 				f->init(reference);
-				objectList->insert({"FadeObj", f}); //Fade out the screen
+				objectList.insert({"FadeObj", f}); //Fade out the screen
 			}
 			else
 				GSM::currentScreen = destScreen;
@@ -122,3 +122,5 @@ SDL_Renderer* WarpTile::draw(SDL_Renderer *renderer, SDL_Rect cam){
 }
 
 bool WarpTile::isUsed(){return false;}
+
+SDL_Rect* WarpTile::getRect(){return NULL;}

@@ -81,69 +81,70 @@ bool collision::checkCol(Circle circ1, Circle circ2) {
 }
 
 //Collision detection for a rect and the walls of a tilemap
-bool collision::checkColTop(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
+Tile* collision::checkColTop(SDL_Rect rect, std::vector<std::vector<Tile*>> &grid, int tilesize) {
     //which tiles are we in?
     int normLeftX = rect.x/tilesize;
     int normY = rect.y/tilesize;
     int normRightX = (rect.x + rect.w)/tilesize;
     
-    int tileL = grid[normY][normLeftX];
-    int tileR = grid[normY][normRightX];
-    if(tileL == 1 && tileR == 1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    Tile* tileL = grid[normY][normLeftX];
+    Tile* tileR = grid[normY][normRightX];
+    if(tileL->isBlocking())
+		return tileL;
+	else if(tileR->isBlocking())
+        return tileR;
+    else
+        return NULL;
 }
 
 // add description
-bool collision::checkColBottom(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
+Tile* collision::checkColBottom(SDL_Rect rect, std::vector<std::vector<Tile*>> &grid, int tilesize) {
     //which tiles are we in?
     int normLeftX = rect.x/tilesize;
     int normY = (rect.y + rect.h)/tilesize;
     int normRightX = (rect.x + rect.w)/tilesize;
     
-    int tileL = grid[normY][normLeftX];
-    int tileR = grid[normY][normRightX];
-    if(tileL == 1 && tileR == 1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    Tile* tileL = grid[normY][normLeftX];
+    Tile* tileR = grid[normY][normRightX];
+    if(tileL->isBlocking())
+		return tileL;
+	else if(tileR->isBlocking())
+        return tileR;
+    else
+        return NULL;
 }
 
 //Collision detection for a rect and the walls of a tilemap
-bool collision::checkColLeft(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
+Tile* collision::checkColLeft(SDL_Rect rect, std::vector<std::vector<Tile*>> &grid, int tilesize) {
+
     //which tiles are we in?
     int normX = rect.x/tilesize;
     int normTopY = rect.y/tilesize;
     int normBottomY = (rect.y + rect.h)/tilesize;
     
-    int tileT = grid[normTopY][normX];
-    int tileB = grid[normBottomY][normX];
-    if(tileT == 1 && tileB == 1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    Tile* tileT = grid[normTopY][normX];
+    Tile* tileB = grid[normBottomY][normX];
+    if(tileT->isBlocking())
+		return tileT;
+	else if(tileB->isBlocking())
+        return tileB;
+    else
+        return NULL;
 }
 
 // add description
-bool collision::checkColRight(SDL_Rect rect, std::vector<std::vector<int>> &grid, int tilesize) {
+Tile* collision::checkColRight(SDL_Rect rect, std::vector<std::vector<Tile*>> &grid, int tilesize) {
     //which tiles are we in?
     int normX = (rect.x + rect.w)/tilesize;
     int normTopY = rect.y/tilesize;
     int normBottomY = (rect.y + rect.h)/tilesize;
     
-    int tileT = grid[normTopY][normX];
-    int tileB = grid[normBottomY][normX];
-    if(tileT == 1 && tileB == 1) {
-        return false;
-    }
-    else {
-        return true;
-    }
+    Tile* tileT = grid[normTopY][normX];
+    Tile* tileB = grid[normBottomY][normX];
+    if(tileT->isBlocking())
+		return tileT;
+	else if(tileB->isBlocking())
+        return tileB;
+    else
+        return NULL;
 }

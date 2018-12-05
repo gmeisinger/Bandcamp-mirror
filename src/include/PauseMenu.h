@@ -7,6 +7,8 @@
 #include <algorithm>
 #include <string>
 
+#include "global.h"
+#include "utils.h"
 #include "screen.h"
 #include "spritesheet.h"
 #include "artifact.h"
@@ -14,7 +16,6 @@
 extern std::vector<Artifact*> artifactList; //The list of unique artifacts in the game.
 extern int inventory[9][5];
 extern int uniqueArtifactNumber; //How many unique artifacts are in the game?
-
 
 class PauseMenu : public Screen 
 { 

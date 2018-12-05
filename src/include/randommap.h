@@ -14,6 +14,7 @@
 #include "door.h"
 #include "GSM.h"
 #include "tilemap.h" 
+#include "global.h"
 
 class RandomMap : public Screen 
 { 
@@ -21,7 +22,8 @@ class RandomMap : public Screen
 		std::unordered_map<std::string, Object*> objectList;
 		SDL_Renderer* rendererReference;
 		bool escape; //Have we pushed the escape key ?
-		int updateCount;
+		int roomCount;
+		int doorCount;
 		int oldTemp;
 		int oldO2;
 		int oldAte;
@@ -39,9 +41,13 @@ class RandomMap : public Screen
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
 		void placeDoors(SDL_Renderer* renderer);
+		void placeChests(SDL_Renderer* renderer);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
-		void movePickup(SDL_Renderer* reference);
+		void movePickup(SDL_Renderer* reference, std::vector<std::vector<Tile*>> &grid);
+		void cloneOoze(SDL_Renderer* reference);
 		static void setSpawnPickup(bool set);
+		static void setSpawnOoze(bool set);
 };
 
 #endif  //  BANDCAMP_RANDOMMAP_H_
+

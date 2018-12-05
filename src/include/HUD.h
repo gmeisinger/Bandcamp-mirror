@@ -11,6 +11,7 @@
 
 #include "utils.h"
 #include "object.h"
+#include "global.h"
 
 //initialize the HUD
 class HUD : public Object
@@ -19,7 +20,7 @@ class HUD : public Object
 		HUD();
 		~HUD();
 		void init(SDL_Renderer* _renderer);
-		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks);
 		void input(const Uint8* keystate);
 		SDL_Renderer* change_levels(SDL_Renderer* _renderer, int oxygen_level, int temperature_level, int health_level); // int power_level) can add for power 
 		SDL_Renderer* draw(SDL_Renderer* gRenderer, SDL_Rect cam);
@@ -34,6 +35,7 @@ class HUD : public Object
 		SDL_Rect Temp;
 		SDL_Rect Oxygen;
 		std::string getInstanceName();
+		SDL_Rect* getRect();
 };
 
 #endif  //  BANDCAMP_HUD_H_

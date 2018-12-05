@@ -10,9 +10,9 @@
 
 class GSM;
 
-extern int SCREEN_WIDTH;
-extern int SCREEN_HEIGHT;
-extern int TILE_SIZE;
+//extern int SCREEN_WIDTH;
+//extern int SCREEN_HEIGHT;
+//extern int TILE_SIZE;
 
 class Game {
 	private:
@@ -25,6 +25,7 @@ class Game {
 		//~Game();
 		bool init();
 		void run();
+		void change_track();
 		void close();
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);

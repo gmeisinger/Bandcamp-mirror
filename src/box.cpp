@@ -28,7 +28,7 @@ Box::Box(int x, int y) {
 	x_pos = x;
 	y_pos = y;
 	boxRect = {x*TILE_SIZE, y*TILE_SIZE, TILE_SIZE, TILE_SIZE};
-	artifactImgRect = {x*TILE_SIZE, y*TILE_SIZE+5, TILE_SIZE, TILE_SIZE};
+	artifactImgRect = {x*TILE_SIZE, y*TILE_SIZE+3, TILE_SIZE, TILE_SIZE};
 	totalInstance++; //Increase instance Number
 	instanceNumber = totalInstance;
 }
@@ -64,6 +64,7 @@ void Box::init(SDL_Renderer* gRenderer){
 	addAnimation("damaged", Animation(sheet.get(0,1)));
 	addAnimation("open", Animation(sheet.get(0,2)));
 	addAnimation("opening", Animation(sheet.getRow(1)));
+	addAnimation("broken", Animation(sheet.get(0,1)));
 	setAnimation("closed");	//The box starts off closed
 
 	artifactImg = artifactList.at(instanceNumber % uniqueArtifactNumber)->getImage();
@@ -74,7 +75,7 @@ void Box::setSpriteSheet(SDL_Texture* _sheet, int _cols, int _rows) {
     sheet.setClips(_cols, _rows, 32, 32);	
 }
 
-void Box::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks){
+void Box::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	Player * p;
 
 	anim->update(ticks);
@@ -82,23 +83,28 @@ void Box::update(std::unordered_map<std::string, Object*> *objectList, std::vect
 	switch(state){
 		
 		case 0: //Closed
-		{
-			grid[y_pos][x_pos] = 1; //Position To Box?
-			
-			if(toggleButton == 1) //If it's the first frame of the button push.
+		{	
+			if(bulletCollision(objectList))
 			{
-				//Find the player in the object queue
-				auto it = objectList->find("player");
-				if (it != objectList->end())
-					p = static_cast<Player*>(it->second);
+				state = 6; //Broken
+				setAnimation("broken");
+				anim->play();
+			}
+			else
+			{
+				if(toggleButton == 1){ //If it's the first frame of the button push.
+					//Find the player in the object queue
+					auto it = objectList.find("player");
+					if (it != objectList.end())
+						p = static_cast<Player*>(it->second);
 
-				if(checkCanOpen(p)){
-					setAnimation("opening");
-					anim->play();
-					state = 1; //Opening
+					if(checkCanOpen(p)){
+						setAnimation("opening");
+						anim->play();
+						state = 1; //Opening
+					}
 				}
 			}
-		
 		}
 		break;
 		
@@ -121,8 +127,8 @@ void Box::update(std::unordered_map<std::string, Object*> *objectList, std::vect
 				
 				if(inventory[8][4] == -1) //Add to the inventory
 				{
-					for(int x1 = 0; x1 < 9; x1++){
-						for(int y1 = 0; y1 < 5; y1++){
+					for(int y1 = 0; y1 < 5; y1++){
+						for(int x1 = 0; x1 < 9; x1++){
 							if(inventory[x1][y1] == -1)
 							{	
 								inventory[x1][y1] = instanceNumber % uniqueArtifactNumber;
@@ -157,6 +163,7 @@ void Box::update(std::unordered_map<std::string, Object*> *objectList, std::vect
 		}
 		break;
 		
+		case 6: //Broken
 		case 5: //Done
 		{}
 		break;
@@ -196,18 +203,36 @@ SDL_Renderer* Box::draw(SDL_Renderer *renderer, SDL_Rect cam){
     *dest = boxRect;
     dest->x -= cam.x;
     dest->y -= cam.y;
-    SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
-	if(state == 3 || state == 4)
-	{
+	SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
+	if(state == 3 || state == 4){
 		SDL_Rect* dest1 = new SDL_Rect;
 		*dest1 = artifactImgRect;
 		dest1->x -= cam.x;
 		dest1->y -= cam.y;
+		SDL_SetTextureColorMod(artifactList.at(instanceNumber % uniqueArtifactNumber)->getImage(), artifactList.at(instanceNumber % uniqueArtifactNumber)->getR(), artifactList.at(instanceNumber % uniqueArtifactNumber)->getG(), artifactList.at(instanceNumber % uniqueArtifactNumber)->getB());
 		SDL_RenderCopy(renderer, artifactImg, NULL, dest1);
 		SDL_RenderCopy(renderer, sheet.getTexture(), sheet.get(0,3), dest);
 	}
 	SDL_SetRenderDrawBlendMode(renderer, SDL_BLENDMODE_NONE);
 	return renderer;
 }
+
+bool Box::bulletCollision(std::unordered_map<std::string, Object*> &objectList){
+	std::unordered_map<std::string, Object*>::iterator it;
+	for(it = objectList.begin(); it != objectList.end(); it++) {
+		if(it->second->getInstanceName().find("proj") != -1) {
+			Projectile* temp = (Projectile*)it->second;
+			if (collision::checkCol(boxRect, *(temp->getRect()))) {
+				temp->projUsed = true; //Delete bullet
+				return true;
+			}
+		}
+	}
+	
+	return false;
+}
+
+
+SDL_Rect* Box::getRect(){return &boxRect;}
 
 bool Box::isUsed(){return false;}

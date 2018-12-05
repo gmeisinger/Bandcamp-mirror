@@ -5,16 +5,19 @@
 */
 
 #include <random>
+#include <string.h>
+
 #include "include/spritesheet.h"
+#include "include/GSM.h"
 #include "include/PauseMenu.h"
-#include "include/game.h"
+#include "include/Artifact_Descriptor.h"
 
 std::vector<SDL_Texture*> menuGraphics;
 std::vector<SDL_Texture*> rareArtifactImgs;
 SDL_Texture* rareArtifact;
 SDL_Texture* currentArtifactImg;
 int currentR, currentG, currentB;
-std::string currentArtifactText; // The string that should be drawn to the screen.
+std::string currentArtifactText, currentDescription, currentOwner; // The string that should be drawn to the screen.
 int menuState;
 SDL_Rect menuImg, aMenuImg, aMenuAImg, aMenuCursorImg, menuImg2, cursor;
 bool startHeld, gen_d;
@@ -88,7 +91,7 @@ void PauseMenu::init(SDL_Renderer* reference){
 	*/
 	
 	//Font
-	setSpriteSheet(utils::loadTexture(rendererReference, "res/font.png"), 26, 1);
+	setSpriteSheet(utils::loadTexture(rendererReference, "res/font.png"), 30, 1);
 	
 	cursor = {SCREEN_WIDTH/2-208, SCREEN_HEIGHT/2, 28, 28}; //Reset the cursor position
 	startHeld = true;
@@ -110,7 +113,6 @@ void PauseMenu::update(Uint32 ticks){
 		case 0: //Artifact Menu
 			if(keyHeld[6] == 1) //Enter Pressed
 				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
-			
 			if (keyHeld[3] == 1 && currentX < inventorySizeX-1) //Right
 			{
 				aMenuCursorImg.x += 42;
@@ -136,70 +138,21 @@ void PauseMenu::update(Uint32 ticks){
 			if(inventory[currentX][currentY] != -1)
 			{
 				currentArtifactText = artifactList.at(inventory[currentX][currentY])->getName();
+				currentOwner = artifactList.at(inventory[currentX][currentY])->getOwner();
+				currentDescription = artifactList.at(inventory[currentX][currentY])->getDescription();
 				currentArtifactImg = artifactList.at(inventory[currentX][currentY])->getImage();
 				currentR = artifactList.at(inventory[currentX][currentY])->getR();
 				currentG = artifactList.at(inventory[currentX][currentY])->getG();
 				currentB = artifactList.at(inventory[currentX][currentY])->getB();			
 			}
 			else
+			{
 				currentArtifactText = "";
-		
+				currentDescription = "";
+				currentOwner = "";
+			}
+			
 			break;
-		
-		
-		/*	else if (keyHeld[3] == 1 || keyHeld[2] == 1){ //Right or Left Pressed (This is a hack solution)
-				if(cursor.x == SCREEN_WIDTH/2-208)
-					cursor.x = SCREEN_WIDTH/2;
-				else
-					cursor.x = SCREEN_WIDTH/2-208;
-			}
-			else if(keyHeld[4] == 1){ //Confirm Pressed
-				cursor.x = SCREEN_WIDTH/2 - 218;
-				cursor.y = SCREEN_HEIGHT/2 + 2;
-				menuState = 1; //GOTO the second window.
-			}
-		break;
-		
-		case 1: //Second Window
-			if(keyHeld[6] == 1) //Enter Pressed
-				GSM::currentScreen = -2; //Unpause <- Its an arbitrary number.
-			else if (keyHeld[3] == 1){ //Right Pressed
-				if(cursor.x == SCREEN_WIDTH/2 - 218){
-					cursor.x = SCREEN_WIDTH/2 + 90;
-					cursor.y = SCREEN_HEIGHT/2+ 20;
-				}
-				else if(cursor.x == SCREEN_WIDTH/2 + 90){
-					cursor.x = SCREEN_WIDTH/2 - 97;
-					cursor.y = SCREEN_HEIGHT/2 + 49;
-				}
-				else{
-					cursor.x = SCREEN_WIDTH/2 - 218;
-					cursor.y = SCREEN_HEIGHT/2 + 2;
-				}
-					
-			}
-			else if(keyHeld[2] == 1){  //Left Pressed
-				if(cursor.x == SCREEN_WIDTH/2 - 218){
-					cursor.x = SCREEN_WIDTH/2 - 97;
-					cursor.y = SCREEN_HEIGHT/2 + 49;
-					
-					
-				}
-				else if(cursor.x == SCREEN_WIDTH/2 + 90){
-					cursor.x = SCREEN_WIDTH/2 - 218;
-					cursor.y = SCREEN_HEIGHT/2 + 2;
-				}
-				else{
-					cursor.x = SCREEN_WIDTH/2 + 90;
-					cursor.y = SCREEN_HEIGHT/2 + 20;
-				}
-			}
-			else if(keyHeld[5] == 1){ //Back Pressed
-				cursor.x = SCREEN_WIDTH/2-208;
-				cursor.y = SCREEN_HEIGHT/2;
-				menuState = 0; //GOTO the initial window.
-			}
-		break;*/
 	}
 }
 
@@ -218,7 +171,7 @@ void PauseMenu::input(const Uint8* keystate){
 		6 - Return - Start Button
 	*/
 	
-	if(keystate[SDL_SCANCODE_W])
+	if(keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP])
 	{
 		if(keyHeld[0] >= 1)
 			keyHeld[0] = 2;
@@ -228,7 +181,7 @@ void PauseMenu::input(const Uint8* keystate){
 	else
 		keyHeld[0] = 0;
 	
-	if(keystate[SDL_SCANCODE_S])
+	if(keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN])
 	{
 		if(keyHeld[1] >= 1)
 			keyHeld[1] = 2;
@@ -238,7 +191,7 @@ void PauseMenu::input(const Uint8* keystate){
 	else
 		keyHeld[1] = 0;
 	
-	if(keystate[SDL_SCANCODE_A])
+	if(keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT])
 	{
 		if(keyHeld[2] >= 1)
 			keyHeld[2] = 2;
@@ -248,7 +201,7 @@ void PauseMenu::input(const Uint8* keystate){
 	else
 		keyHeld[2] = 0;
 	
-	if(keystate[SDL_SCANCODE_D])
+	if(keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT])
 	{
 		if(keyHeld[3] >= 1)
 			keyHeld[3] = 2;
@@ -278,7 +231,7 @@ void PauseMenu::input(const Uint8* keystate){
 	else
 		keyHeld[5] = 0;
 	
-	if(keystate[SDL_SCANCODE_RETURN])
+	if(keystate[SDL_SCANCODE_RETURN] || keystate[SDL_SCANCODE_ESCAPE])
 	{
 		//When you come back into the room after a pause, you will most likely still be holding down
 		//the enter key. This prevents you from going straight back into the pause menu.
@@ -296,7 +249,10 @@ void PauseMenu::input(const Uint8* keystate){
 		}
 	}
 	else
+	{
 		keyHeld[6] = 0;
+		startHeld = false;
+	}
 }
 
 /* Summary
@@ -308,7 +264,9 @@ SDL_Renderer* PauseMenu::draw(SDL_Renderer *renderer){
 		case 0: //Initial Window
 			SDL_RenderCopy(renderer, menuGraphics.at(0), NULL, &aMenuImg); //The artifactMenu
 			drawText(renderer, int(aMenuImg.w*.37)+aMenuImg.x, int(aMenuImg.h*.093)+aMenuImg.y, 20, 2, "artifact menu");
-			drawText(renderer, 106, 306, 17, 1, currentArtifactText);
+			drawText(renderer, 95, 306, 19, 1, currentArtifactText);
+			drawText(renderer, 95, 330, 19, 1, currentOwner);
+			drawText(renderer, 95, 380, 19, 1, currentDescription);
 			SDL_Rect img = {315, 213, 40, 40};
 			
 			for(int y1 = 0; y1 < inventorySizeY; y1++){
@@ -334,17 +292,6 @@ SDL_Renderer* PauseMenu::draw(SDL_Renderer *renderer){
 			
 			SDL_RenderCopy(renderer, menuGraphics.at(1), NULL, &aMenuCursorImg); //artifactMenu Cursor
 		break;
-		
-		/*
-			SDL_RenderCopy(renderer, menuGraphics.at(0), NULL, &menuImg); //The menu Window
-			SDL_RenderCopy(renderer, menuGraphics.at(2), NULL, &cursor);
-		break;
-		
-		case 1:
-			SDL_RenderCopy(renderer, menuGraphics.at(0), NULL, &menuImg); //The menu Window behind 
-			SDL_RenderCopy(renderer, menuGraphics.at(1), NULL, &menuImg2); //The 2nd Window
-			SDL_RenderCopy(renderer, menuGraphics.at(2), NULL, &cursor);
-		break;*/
 	}
 	
 	return renderer;
@@ -371,25 +318,54 @@ SDL_Renderer* PauseMenu::drawText(SDL_Renderer *renderer, int x, int y, int x_le
 	
 	int letter; //Index of letters
 	
-	for(int a = 0; a < text.length(); a++)
+	char * pch;
+	int currRow = 0, total = 0;
+	pch = strtok(const_cast<char*>(text.c_str()), " ");
+	while(pch != NULL)
 	{
-		//Wrap the text
-		if(dest->x + letter_w > x+x_letterBound*letter_w)
+		if(currRow + strlen(pch) > x_letterBound)
 		{
+			currRow = 0;
 			dest->y += letter_h;
 			dest->x = x;
 		}
 		
-		//Lowercase a-z
-		letter = int(text.at(a))-97;
+		currRow += strlen(pch)+1;
 		
-		//Nothing for spaces
-		if(letter >= 0)
-			SDL_RenderCopy(renderer, sheet.getTexture(), sheet.get(0, letter), dest);
+		for(int a = 0; a < strlen(pch); a++)
+		{
+			//Wrap the text
+			if(dest->x + letter_w > x+x_letterBound*letter_w)
+			{
+				dest->y += letter_h;
+				dest->x = x;
+				currRow = 0;
+			}
+			
+			//Lowercase a-z
+			if(text.at(total) == '.')
+				letter = 26;
+			else if (text.at(total) == ',')
+				letter = 27;
+			else if (text.at(total) == '\'')
+				letter = 28;
+			else if (text.at(total) == ';')
+				letter = 29;
+			else
+				letter = int(text.at(total))-97;
+			
+			if(letter >= 0)
+				SDL_RenderCopy(renderer, sheet.getTexture(), sheet.get(0, letter), dest);
+			
+			total++;
+			dest->x += letter_w;
+		}
 		
+		//Space
+		total++;
 		dest->x += letter_w;
 		
-
+		pch = strtok(NULL, " ");
 	}
 }
 
@@ -399,6 +375,8 @@ void PauseMenu::generateArtifactsList()
 	int nounssize = 12;
 	std::string adjs[adjssize] = {"blue", "rusted", "crusty", "spongey", "pathetic", "cursed", "unisex", "sad", "spicy", "broken", "saucy"};
 	std::string nouns[nounssize] = {"bag", "machine part", "broom", "bat", "dice", "image", "abacus", "mistake", "sauce", "salmon", "meat", "sock"};
+	Artifact_Descriptor a;
+	
 	
 	std::random_device rd;  //Will be used to obtain a seed for the random number engine
 	std::mt19937 gen(rd()); //Standard mersenne_twister_engine seeded with rd()
@@ -416,10 +394,11 @@ void PauseMenu::generateArtifactsList()
 		int g = colorDis(gen);
 		int b = colorDis(gen);
 		int imgIndex = aImgDis(gen);
+		std::string owner = a.get_first_descriptor();
+		std::string description = a.get_second_descriptor();
 		
-		artifactList.push_back(new Artifact(title, rareArtifactImgs.at(imgIndex), r, g, b));
+		artifactList.push_back(new Artifact(title, owner, description, rareArtifactImgs.at(imgIndex), r, g, b));
 	}
 	
 	
 }
-

@@ -52,7 +52,10 @@ void Menu::init(SDL_Renderer* renderer) {
  *
 */
 void Menu::update(Uint32 ticks) { //If the button was clicked, we need to change the game screen!
-	if(clicked == 2) GSM::currentScreen = 1;
+	if(clicked == 2) {
+		clicked = 0;
+		GSM::currentScreen = 1;
+	}
 	
 	//test_button->update(object_list, ticks);
 }
