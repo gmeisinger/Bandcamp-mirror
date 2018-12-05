@@ -516,7 +516,7 @@ void Ooze::checkBounds(int max_width, int max_height, bool move) {
  * Argument  
  *
  */
-bool Ooze::isUsed() { return false; }
+bool Ooze::isUsed() { return used; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
 
