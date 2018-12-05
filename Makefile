@@ -25,14 +25,14 @@ OBJ = $(patsubst src/%.cpp, obj/%.o, $(SRC))
  
 ifeq ($(OS), Windows_NT)
 	DETECTED_OS = $(OS) -ggdb
-	CC = g++ -g -std=c++11
+	CC = g++ -std=c++11
 	CFLAGS = -c -IC:/mingwdev/include/SDL2
 	INCLUDE = -IC:/mingwdev/include/SDL2
 	LFLAGS = -LC:/mingwdev/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf -lSDL2_mixer -o $(OUT)
 	LFLAGScr = -LC:/mingwdev/lib -lmingw32 -lSDL2main -lSDL2 -lSDL2_image -lSDL2_ttf
 else ifeq ($(shell uname -s), Darwin)
 	DETECTED_OS := $(shell uname -s)
-	CC = g++ -g -std=c++11
+	CC = g++ -std=c++11
 	CFLAGS = -c -I/Library/Frameworks/SDL2.framework/Headers  -I/Library/Frameworks/SDL2_image.framework/Headers -I/Library/Frameworks/SDL2_ttf.framework/Headers -I/Library/Frameworks/SDL2_mixer.framework/Headers -F/Library/Frameworks/
 	INCLUDE = -I/Library/Frameworks/SDL2.framework/Headers -I/Library/Frameworks/SDL2_image.framework/Headers -I/Library/Frameworks/SDL2_ttf.framework/Headers -I/Library/Frameworks/SDL2_mixer.framework/Headers -F/Library/Frameworks/
 	LFLAGS = -framework SDL2 -framework SDL2_image -framework SDL2_ttf -framework SDL2_mixer -o $(OUT) 
