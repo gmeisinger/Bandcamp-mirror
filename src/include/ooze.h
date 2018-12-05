@@ -84,7 +84,9 @@ private:
 
     Room* curRoom;
     Tilemap* tilemap;
-    Tile* lastRoom;
+    Tile* lastStart;
+    Tile* lastDoor;
+    Tile* lastEnd;
     std::vector<Room*> neighbors;
     
     bool initialized;
