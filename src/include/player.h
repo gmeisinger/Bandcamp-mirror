@@ -29,6 +29,7 @@ class Player : public Object
 		bool space;
         bool x;
 		bool projCooldown;
+		bool projActive;
 		char projsType;
 	    SpriteSheet sheet;
         std::unordered_map<std::string, Animation> anims;
@@ -65,6 +66,7 @@ class Player : public Object
         bool isUsed();
         void setEnemy(bool _overlap);
         void checkEnemy(int _xdv, int _ydv);
+        bool getProjActive();
 };
 
 #endif  //  BANDCAMP_PLAYER_H_

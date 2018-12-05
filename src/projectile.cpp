@@ -5,10 +5,10 @@
 
 #include "include/projectile.h"
 
-
 constexpr int FIRED_SPEED = 6;
 
 static int totalInstance = 0;//How many instances of the object exist?
+
 
 Projectile::Projectile(char type, int playerX, int playerY) {
 	switch(type){
@@ -94,6 +94,7 @@ void Projectile::init(SDL_Renderer *renderer) {
 void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	//std::cout << "Entered Projectile update" << std::endl;
 	updatePosition(ticks);
+
 	checkProjOverlap(objectList, grid);
 	//std::cout << "Exited Projectile update" << std::endl;
 }

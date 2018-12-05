@@ -81,6 +81,7 @@ void RandomMap::init(SDL_Renderer* reference){
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
 	//std::cout << "HERE" << std::endl;
 	o = Ooze(&oozeRoom, &tilemap);
+
 	o.init(reference);
 	//Player and HUD in the Room
 	objectList["player"] = &p;
@@ -213,7 +214,6 @@ void RandomMap::update(Uint32 ticks){
 // ADD COMMENTS 
 
 // based off of movePickup
-// TODO: finish this shit
 void RandomMap::cloneOoze(SDL_Renderer* reference) {
 	int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
 	int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));

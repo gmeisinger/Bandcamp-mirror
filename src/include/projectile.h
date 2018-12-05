@@ -24,14 +24,15 @@ class Projectile : public Object
 	    bool right;
 		int playerXVel;
 		int playerYVel;
+
 		SDL_Renderer* rendererReference;
 		int projNumber;
 		SDL_Texture* projImg;
 		SDL_Rect projImgRect;
 		SDL_Rect correction;
-        SDL_Rect projDrawBox;
-        Uint32 projTicks;
-
+    SDL_Rect projDrawBox;
+    Uint32 projTicks;
+        
 	public:
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
@@ -41,6 +42,7 @@ class Projectile : public Object
 		Projectile(char type, int playerX, int playerY);
         ~Projectile();
 		Projectile();
+
 		void checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid);
 		SDL_Rect* getRect();
 		void updatePosition(Uint32 ticks);

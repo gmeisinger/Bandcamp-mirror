@@ -27,7 +27,7 @@ class Pickup;
 enum OozeState { // is public
         HANGRY, //temp state
         ROAMING,
-        EATING,
+        DODGING,
         CLONING,
         FIGHTING,
         FLEEING,
@@ -60,7 +60,8 @@ private:
     //Used to check line of sight
     SDL_Rect colRect;
     SDL_Rect roomRect;
-
+    SDL_Rect randRect; //sorry I just love rectangles
+    
     int x_vel;
     int y_vel;
     int x_deltav;
@@ -89,8 +90,12 @@ private:
     bool squeeze;
     int squeezeItr;
     std::vector<SDL_Rect> intersects;
+    std::vector<Tile*> doors;
     int iter;
-	bool used;
+	  bool used;
+    bool losTarget;
+    bool losPickup;
+    bool losPlayer;
     
 public:
 
