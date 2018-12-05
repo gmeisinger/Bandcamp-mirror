@@ -197,6 +197,8 @@ void RandomMap::update(Uint32 ticks){
 		h.currentTemp = ro->physics.give_temperature();
 		h.currentOxygen = ro->physics.give_oxygen();
 		if (waitTicks == 0) {
+			if (h.currentTemp <= 5) h.currentTemp = 0;
+			if (h.currentOxygen <= 5) h.currentOxygen = 0;
 			if (h.currentTemp == 0) h.currentHealth = std::max(h.currentHealth-1, 0);
 			if (h.currentOxygen == 0) h.currentHealth = std::max(h.currentHealth-2, 0);
 			if (h.currentTemp == 100 && h.currentOxygen == 100) h.currentHealth = std::min(h.currentHealth+1, 90);
