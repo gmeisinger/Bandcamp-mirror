@@ -204,28 +204,28 @@ void Game::change_track()
         	Mix_PlayMusic(bgm, -1);                        		
     		track_counter = 1;
     		if(music_debug)
-				std::cout << "Track selection - case 0" << std::endl;
+				std::cout << "Track selection - New Territory" << std::endl;
     		break;
     	case 1:
     		bgm = Mix_LoadMUS("music/CS1666 Game Music 2a 128bpm Cm.wav");
         	Mix_PlayMusic(bgm, -1);
     		track_counter = 2;
     		if(music_debug)
-				std::cout << "Track selection - case 1" << std::endl;                        		
+				std::cout << "Track selection - Crystalize" << std::endl;                        		
     		break;
     	case 2:
     		bgm = Mix_LoadMUS("music/CS1666 Game Music 2b 128bpm Cm.wav");
         	Mix_PlayMusic(bgm, -1);                        	
     		track_counter = 3;
     		if(music_debug)
-				std::cout << "Track selection - case 2" << std::endl;             
+				std::cout << "Track selection - Space Palace" << std::endl;             
     		break;
     	case 3: 
     		bgm = Mix_LoadMUS("music/CS1666 Game Music 3 90bpm Cm.wav");
         	Mix_PlayMusic(bgm, -1);                        	
     		track_counter = 4;
     		if(music_debug)
-				std::cout << "Track selection - case 3" << std::endl;                        		
+				std::cout << "Track selection - Subterrianian Liar" << std::endl;                        		
     		break;
     	case 4:
     		bgm = Mix_LoadMUS("music/New Territory/Time 4 Exploration.wav");
@@ -240,16 +240,22 @@ void Game::change_track()
         	Mix_PlayMusic(bgm, -1);
         	track_counter = 6;
     		if(music_debug)
-				std::cout << "Track selection - case 5" << std::endl;	                        	
+				std::cout << "Track selection - Space Jam Vibes" << std::endl;	                        	
     		break;
     	case 6:
     		bgm = Mix_LoadMUS("music/Throbbing Beat.wav");
         	Mix_PlayMusic(bgm, -1);
-        	track_counter = 0;
+        	track_counter = 7;
     		if(music_debug)
 				std::cout << "Track selection - Throbbing Beat" << std::endl;	                        	
     		break;    		
-
+    	case 7:
+    		bgm = Mix_LoadMUS("music/Leftfield Worm.wav");
+        	Mix_PlayMusic(bgm, -1);
+        	track_counter = 0;
+    		if(music_debug)
+				std::cout << "Track selection - Leftfield Worm" << std::endl;	                        	
+    		break;
     	default: //title; something went wrong
         	bgm = Mix_LoadMUS("music/New Territory/Theme.wav");
         	Mix_PlayMusic(bgm, -1);                        		
