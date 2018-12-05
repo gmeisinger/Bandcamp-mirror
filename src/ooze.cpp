@@ -32,7 +32,7 @@ tilemap{t}
     x_vel = 1;
     y_vel = 1;
 
-    ate = 1;
+    ate = 0;
     
     // Genetic statistics
     stats.health =      3 ;
@@ -85,6 +85,9 @@ target{other.target},
     SDL_Rect *temp = curRoom->getRect();
     rect = other.rect;
     stats = other.stats;
+    x_vel = other.x_vel;
+    y_vel = other.y_vel;
+    ate = 0;
     std::cout << "copy" << std::endl;
     Mutate();
     r = g = b = CHANNEL_MAX;
@@ -144,8 +147,8 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
         initialized = true;
     } 
     //Get the position of the ooze before it moves
-    int x_deltav = 0;
-	int y_deltav = 0;
+    //int x_deltav = 0;
+	//int y_deltav = 0;
 
     //Needed for collision detection
     int curX = rect.x;
