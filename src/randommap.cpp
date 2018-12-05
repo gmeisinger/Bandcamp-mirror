@@ -49,6 +49,7 @@ RandomMap::RandomMap() : Screen(){
 
 // ADD COMMENTS 
 void RandomMap::init(SDL_Renderer* reference){
+	objectList.clear();
 	rendererReference = reference;
 	SDL_Rect player_box = {TILE_SIZE + 1, TILE_SIZE + 1, TILE_SIZE, TILE_SIZE};
 

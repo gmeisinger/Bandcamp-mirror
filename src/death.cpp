@@ -35,6 +35,7 @@ void Death::update(Uint32 ticks) {
 	SDL_SetTextureAlphaMod(ss.getTexture(), alpha);
 	if(anim.playedOnce) {
 		if(alpha == 0) {
+			
 			GSM::currentScreen = 0;
 		}
 	}
