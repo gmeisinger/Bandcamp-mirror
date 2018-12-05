@@ -22,7 +22,7 @@ tilemap{t}
     curRoom = room;
     neighbors = curRoom->getNeighbors();
     roomRect = curRoom->getRectCopy();
-    rect = {((roomRect.w/2)) * tile_s, ((roomRect.h/2)) * tile_s, 30, 30};
+    rect = {(roomRect.x + (roomRect.w/2)) * tile_s, (roomRect.y + (roomRect.h/2)) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	int overlapTicks = 0;
