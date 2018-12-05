@@ -259,6 +259,7 @@ void RandomMap::cloneOoze(SDL_Renderer* reference) {
 
 // based off of movePickup
 void RandomMap::cloneOoze(SDL_Renderer* reference) {
+	/*
    std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
    while(it != objectList.end()){
        if (it->second->getInstanceName().find("Ooze") != -1) {
@@ -268,8 +269,9 @@ void RandomMap::cloneOoze(SDL_Renderer* reference) {
            break;
        }
        it++;
-   }
-spawnOoze = false; //don't need a new pickup; one was just made
+   }*/
+	std::cout << "randommap trying to clone" << std::endl;
+	spawnOoze = false; //don't need a new pickup; one was just made
 }
 
 // ADD COMMENTS 

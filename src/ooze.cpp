@@ -32,7 +32,7 @@ tilemap{t}
     x_vel = 1;
     y_vel = 1;
 
-    ate = 1;
+    ate = 0;
     
     // Genetic statistics
     stats.health =      3 ;
@@ -86,6 +86,7 @@ target{other.target},
     stats = other.stats;
     x_vel = other.x_vel;
     y_vel = other.y_vel;
+    ate = 0;
     std::cout << "copy" << std::endl;
     Mutate();
     r = g = b = CHANNEL_MAX;
