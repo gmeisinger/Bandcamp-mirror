@@ -49,6 +49,7 @@ tilemap{t}
     squeeze = false;
     squeezeItr = 0;
     iter = 0;
+	used = false;
 }
 
 //Other constructor?
@@ -312,6 +313,8 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
             }
             return nullptr;
         }
+		case DYING:
+			used = true;
         default:
             return player->getRect();
     }
@@ -403,7 +406,8 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case DYING: {
-            this->~Ooze();
+			std::cout << "State: DYING" << std::endl;
+            used = true;
             break;
         }
             
@@ -513,7 +517,7 @@ void Ooze::checkBounds(int max_width, int max_height, bool move) {
  * Argument  
  *
  */
-bool Ooze::isUsed() { return false; }
+bool Ooze::isUsed() { return used; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
 
@@ -852,7 +856,7 @@ void Ooze::Mutate(){
  */
 void Ooze::hurt(int damage) {
     stats.health -= damage;
-    
+    std::cout << "Ooze health left: " << stats.health << std::endl;
     if ( stats.health <= 0 ) {
         state = DYING;
     }
