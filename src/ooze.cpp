@@ -845,7 +845,6 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         bool los = drawLine(grid, temp1);
         std::cout << los << std::endl;
         if(los && !doorTile->isVisited()) {
-            std::cout << "Here1" << std::endl;
             roomTiles.door = temp1;
             endTile = map[l][t];
             if(lastDoor != nullptr)
@@ -858,7 +857,6 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
             break;
         }       
         else if(lastDoor == nullptr && lastStart == nullptr && lastEnd == nullptr) {
-            std::cout << "Here2" << std::endl;
             lastEnd = map[reverseR][reverseC];
             lastStart = map[reverseL][reverseT];
             lastDoor = doorTile;
@@ -872,88 +870,9 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         tile = lastStart;
         lastStart = lastEnd;
         lastEnd = tile;
-        std::cout << "coo" << std::endl;
     }
     roomTiles.startTile = temp1;
     roomTiles.endTile = temp2; 
-    /* delete temp1;
-    delete temp2;
-    delete intersect;
-    delete tile;
-    delete endTile; */
-/*
-    SDL_Rect* temp1;
-    SDL_Rect* temp2;
-    SDL_Rect* intersect;
-    std::vector<std::vector<Tile*>> map = tilemap->getMap();
-    Tile* endTile;
-    Tile* tile;
-    Tile* doorTile;
-    bool horWall = false;
-    bool verWall = false; 
-    int r = 0;
-    int c = 0;
-    int l = 0;
-    int t = 0;
-    roomTiles.startTile = nullptr;
-    roomTiles.endTile = nullptr;
-    roomTiles.door = nullptr;
-    std::cout << intersects.size() << std::endl;
-    for(int i = 0; i < doors.size(); i++) {
-        
-        temp1 = doors[i]->getDest();
-        
-        if(doors[i]->isHorWall()) {
-            t = c;
-            if (temp1->y > rect.y) {
-                l = r+2;
-                r = r-1;
-            }
-            if (temp1->y < rect.y) {
-                l = r-2;
-                r = r+1;
-            }
-        }
-        if(!doors[i]->isHorWall()) {
-            l = r;
-            if (temp1->x > rect.x) {
-                t = c+2;
-                c = c-1;
-            }
-            if (temp1->x < rect.x) {
-                t = c-2;
-                c = c+1;
-            }
-        }    
-        tile = map[r][c];
-        temp1 = tile->getDest();
-        std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
-
-        bool los = drawLine(grid, temp1);
-        
-        if(los && !doors[i]->isVisited()) {
-            roomTiles.door = temp1;
-            lastRoom = tile;
-            doors[i]->setVisited(true);
-            break;
-        }            
-    }    
-    if(roomTiles.door == nullptr){
-        tile = lastRoom;
-        temp1 = doorTile->getDest();
-        roomTiles.door = temp1;
-        temp1 = tile->getDest();
-        std::cout << "coo" << std::endl;
-    }
-    endTile = map[l][t];
-    temp2 = endTile->getDest();
-    roomTiles.startTile = temp1;
-    roomTiles.endTile = temp2; 
-    delete temp1;
-    delete temp2;
-    delete intersect;
-    delete tile;
-    delete endTile; */
 
 }
 
@@ -1006,17 +925,11 @@ void Ooze::hurt(int damage) {
      *
      */
 void Ooze::switchRoom() {
-    roomRect = {roomRect.x * TILE_SIZE, roomRect.y * TILE_SIZE, roomRect.w * TILE_SIZE, roomRect.h * TILE_SIZE};
-    if(collision::checkCol(roomRect, rect)) {
+    if(curRoom->contains(&rect)) {
         return;
     }
     for(int i = 0; i < neighbors.size(); i++) {
-        roomRect = neighbors[i]->getRectCopy();
-        roomRect = {roomRect.x * TILE_SIZE, roomRect.y * TILE_SIZE, roomRect.w * TILE_SIZE, roomRect.h * TILE_SIZE};
-        //std::cout << "RoomRect: X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.w << " H " << roomRect.h << std::endl;
-        //std::cout << "Rect: X " << rect.x << " Y " << rect.y << " W " << rect.w << " H " << rect.h << std::endl;
-        
-        if(collision::checkCol(roomRect, rect)) {
+        if(neighbors[i]->contains(&rect)) {
             curRoom = neighbors[i];
             neighbors = curRoom->getNeighbors();
             intersects = curRoom->getIntersects();
