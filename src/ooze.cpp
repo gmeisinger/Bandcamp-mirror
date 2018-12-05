@@ -6,6 +6,8 @@ int Ooze::totalOoze = 0;
 
 constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
+constexpr int CHANNEL_MAX = 255;
+
 
 // Default Constructor
 Ooze::Ooze():state{CLONING}, hostility{0} {}
@@ -51,6 +53,7 @@ tilemap{t}
     squeezeItr = 0;
     iter = 0;
 	used = false;
+    r = g = b = CHANNEL_MAX;
 }
 
 //Other constructor?
@@ -73,7 +76,7 @@ target{other.target},
     
     stats = other.stats;
     Mutate();
-    
+    r = g = b = CHANNEL_MAX;
 }
 
 //Destructor
@@ -180,6 +183,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	}
     iter++;
 	//std::cout << "Exiting Ooze update" << std::endl;
+    updateColor();
 }
 
  /*Summary
@@ -422,6 +426,10 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case ROOMEXIT: {
+            break;
+        }
+        default: {
+            std::cout << "updateState: default case" << std::endl;
             break;
         }
     }
@@ -900,7 +908,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     temp2 = endTile->getDest();
     roomTiles.startTile = temp1;
     roomTiles.endTile = temp2; 
-    /*delete temp1;
+    delete temp1;
     delete temp2;
     delete intersect;
     delete tile;
@@ -918,6 +926,7 @@ void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid) {
         rect.x += tile_s;
         rect.y += tile_s;
     }
+    return;
 }
 
 void Ooze::Mutate(){
@@ -935,6 +944,7 @@ void Ooze::Mutate(){
     << " HC " << stats.health_cost
     << " NC " << stats.num_cost
     << "\n";
+    return;
 }
 
 
@@ -948,6 +958,7 @@ void Ooze::hurt(int damage) {
     if ( stats.health <= 0 ) {
         state = DYING;
     }
+    return;
 }
     /* Summary
      * Argument
@@ -972,11 +983,32 @@ void Ooze::switchRoom() {
     }
 }
 
-void Ooze::changeColor(int r, int g, int b){
-    
-//    SDL_SetTextureColorMod(art->getImage(), art->getR(), art->getG(), art->getB());
-//    SDL_RenderCopy(renderer, artifactList.at(inventory[x1][y1])->getImage(), NULL, &img);
-    // art->getR(), art->getG(), art->getB());
+void Ooze::updateColor(){
+    switch(this->state) {
+        case FIGHTING: { //Turn Red
+            if(r == 0) return;
+            else r--;
+            break;
+        }
+        case HANGRY: {
+            if(g == 0) return;
+            else g--;
+            break;
+        }
+        case FLEEING: {
+            if(b == 0) return;
+            else b--;
+            break;
+        }
+        default: {
+            if (r == g && g == b && b == CHANNEL_MAX) return;
+            if(r < CHANNEL_MAX) r++;
+            if(g < CHANNEL_MAX) g++;
+            if(b < CHANNEL_MAX) b++;
+        }
+    }
+                std::cout << "r " << (int)r << " g " << (int)g << " b " << (int)b  << std::endl;
     SDL_SetTextureColorMod(sheet.getTexture(), r, g, b);
     SDL_RenderCopy(renderer, sheet.getTexture(), NULL, getRect());
+    return;
 }

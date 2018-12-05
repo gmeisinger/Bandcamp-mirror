@@ -95,7 +95,8 @@ private:
     int iter;
 	bool used;
     SDL_Renderer* renderer;
-    void changeColor(int r, int g, int b);
+    unsigned char r, g, b; // color channels
+    void updateColor();
     bool losTarget;
     bool losPickup;
     bool losPlayer;
