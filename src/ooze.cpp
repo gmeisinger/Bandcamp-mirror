@@ -47,6 +47,7 @@ tilemap{t}
     lastRoom = nullptr;
     initialized = false;
     intersects = curRoom->getIntersects();
+    doors = tilemap->getDoors();
     squeeze = false;
     squeezeItr = 0;
     iter = 0;
@@ -332,16 +333,10 @@ OozeState Ooze::getState() {
 bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks) {
 
     if (ate > 2) {
-        state = CLONING;
         RandomMap::setSpawnOoze(true);
         ate = 0;
         return true;
-    } else if(state != ROOMENTER || state != ROOMEXIT){
-        state = HANGRY;
-        return true;
     }
-    
-    return false;
 }
 
 //Checks if the player overlapped with the ooze and acts accordingly
@@ -749,6 +744,83 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     delete intersect;
     delete tile;
     delete endTile; */
+/*
+    SDL_Rect* temp1;
+    SDL_Rect* temp2;
+    SDL_Rect* intersect;
+    std::vector<std::vector<Tile*>> map = tilemap->getMap();
+    Tile* endTile;
+    Tile* tile;
+    Tile* doorTile;
+    bool horWall = false;
+    bool verWall = false; 
+    int r = 0;
+    int c = 0;
+    int l = 0;
+    int t = 0;
+    roomTiles.startTile = nullptr;
+    roomTiles.endTile = nullptr;
+    roomTiles.door = nullptr;
+    std::cout << intersects.size() << std::endl;
+    for(int i = 0; i < doors.size(); i++) {
+std::cout << "FUCK" << std::endl;
+        
+        temp1 = doors[i]->getDest();
+std::cout << "YOU" << std::endl;
+        
+        if(doors[i]->isHorWall()) {
+            t = c;
+            if (temp1->y > rect.y) {
+                l = r+2;
+                r = r-1;
+            }
+            if (temp1->y < rect.y) {
+                l = r-2;
+                r = r+1;
+            }
+        }
+        if(!doors[i]->isHorWall()) {
+            l = r;
+            if (temp1->x > rect.x) {
+                t = c+2;
+                c = c-1;
+            }
+            if (temp1->x < rect.x) {
+                t = c-2;
+                c = c+1;
+            }
+        }
+  std::cout << "DUMB" << std::endl;      
+        tile = map[r][c];
+        temp1 = tile->getDest();
+        std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
+
+        bool los = drawLine(grid, temp1);
+        
+        if(los && !doors[i]->isVisited()) {
+            roomTiles.door = temp1;
+            lastRoom = tile;
+            doors[i]->setVisited(true);
+            break;
+        }            
+    }    
+    if(roomTiles.door == nullptr){
+        tile = lastRoom;
+        temp1 = doorTile->getDest();
+        roomTiles.door = temp1;
+        temp1 = tile->getDest();
+        std::cout << "coo" << std::endl;
+    }
+    endTile = map[l][t];
+    temp2 = endTile->getDest();
+    roomTiles.startTile = temp1;
+    roomTiles.endTile = temp2; 
+    /* delete temp1;
+    delete temp2;
+    delete intersect;
+    delete tile;
+    delete endTile; */
+
 }
 
 //Lets make sure our poor ooze isn't stuck in a wall

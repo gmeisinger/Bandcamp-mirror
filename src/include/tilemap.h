@@ -44,6 +44,7 @@ public:
 	//std::vector< std::vector < int > > &getGrid();
 	void genTestTransitionRoom();
 	void genMaze();
+	std::vector<Tile*> getDoors();
 };
 
 #endif  //  BANDCAMP_TILEMAP_H_

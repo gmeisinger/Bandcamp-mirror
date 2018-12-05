@@ -88,6 +88,7 @@ private:
     bool squeeze;
     int squeezeItr;
     std::vector<SDL_Rect> intersects;
+    std::vector<Tile*> doors;
     int iter;
 
     bool losTarget;
