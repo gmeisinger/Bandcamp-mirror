@@ -51,6 +51,10 @@ tilemap{t}
     squeezeItr = 0;
     iter = 0;
 	used = false;
+
+    losPickup = false;
+    losPlayer = false;
+    losTarget = false;
 }
 
 //Other constructor?
@@ -72,6 +76,7 @@ target{other.target},
     rect = {(temp->x + (temp->w/2)) * tile_s, (temp->y + (temp->h/2)) * tile_s, 30, 30};
     
     stats = other.stats;
+    std::cout << "copy" << std::endl;
     Mutate();
     
 }
@@ -227,12 +232,12 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
             while(it != objectList.end()){
                 if (!it->first.substr(0,6).compare("Pickup")) {
                     Pickup* temp = (Pickup*)it->second;
-                    bool losPickup = drawLine(grid, temp->getRect());
+                    losPickup = drawLine(grid, temp->getRect());
                         
                     if(losPickup)
                         return temp->getRect();
                     else {
-                        bool losPlayer = drawLine(grid, player->getRect());
+                        losPlayer = drawLine(grid, player->getRect());
                         if(losPlayer)
                             return player->getRect();
                         //If we don't have a line of sight with the player or pickup, check the other room
@@ -358,9 +363,9 @@ bool Ooze::foundFood(Pickup* food) {
             //food->use();
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
-            if(ate > 2) {
+            if(ate > 0) {
                 RandomMap::setSpawnOoze(true);
-                Ooze(*this);
+                //state = CLONING;
                 ate = 0;
             }
             return true;
@@ -385,7 +390,6 @@ OozeState Ooze::getState() {
     return state;
 }
 
-
 /* updateState method. Used to update the state of the Ooze.
  * Argument: unordered_map<string, Object*> &objectList, Uint32 ticks
  * Returns: bool
@@ -394,11 +398,11 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
     
     switch(this->state) {
         case ROAMING: {
-            updateVelocity(utils::uniformDist(), utils::uniformDist());
-            if(target){ //if(target == player);
-                state = HANGRY;
-                return true;
-            }
+            //updateVelocity(utils::uniformDist(), utils::uniformDist());
+            //if(target){ //if(target == player);
+              //  state = HANGRY;
+                //return true;
+            //}
             break;
         }
         case HANGRY: {
@@ -406,12 +410,12 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             if (player->getProjActive() && target == player->getRect()) {
                 state = DODGING;
                 return true;
-            }
+            }/*
             if (ate > 0) { // clone after one pickup fo00d
                 ate = 0;
-                //state = EATING;
+                state = CLONING;
                 return true;
-            }
+            }*/
             break;
         }/*
             if(!target){
@@ -427,10 +431,12 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }*/
         case CLONING: {
-            //std::cout << "cloning" << std::endl;
-//            RandomMap::setSpawnOoze(true);
-            Ooze(*this);
-            state = ROAMING;
+            std::cout << "cloning" << std::endl;
+            //RandomMap::setSpawnOoze(true);
+            //Ooze *newOoze = this;
+            //objectList[newOoze->getInstanceName()] = newOoze;
+            //newOoze->init(reference);
+            //state = ROAMING;
             return true;
             break;
         }
@@ -466,9 +472,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case DYING: {
-            std::cout << " dying :( " << std::endl;
-            this->~Ooze();
-            std::cout << " dying :( super bad " << std::endl;
+            //this->~Ooze();
             break;
         }
             
@@ -811,10 +815,6 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
         moveSlope += deltaX;
         y_vel = yDir;
     }   
-
-    if (state == DODGING) {
-        std::cout << "x vel: " << x_vel << " y vel " << y_vel << std::endl;
-    }
 }
 
 //If we don't see the player or a pickup, move to the next room

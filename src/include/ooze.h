@@ -92,7 +92,7 @@ private:
     std::vector<SDL_Rect> intersects;
     std::vector<Tile*> doors;
     int iter;
-	  bool used;
+	bool used;
     bool losTarget;
     bool losPickup;
     bool losPlayer;

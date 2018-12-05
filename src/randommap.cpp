@@ -89,7 +89,7 @@ void RandomMap::init(SDL_Renderer* reference){
 	objectList["hud"] = &h;
     hud_g = &h;
 	// Change to add ooze to list as initialized
-	objectList["ooze"] = &o;
+	objectList[o.getInstanceName()] = &o;
 
 	//add doors dynamically
 	placeDoors(reference);
@@ -213,6 +213,7 @@ void RandomMap::update(Uint32 ticks){
 
 // ADD COMMENTS 
 
+/*
 // based off of movePickup
 void RandomMap::cloneOoze(SDL_Renderer* reference) {
 	int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
@@ -226,12 +227,27 @@ void RandomMap::cloneOoze(SDL_Renderer* reference) {
 		|| collision::checkCol(OozeBox, centerPillar))
 	{
 		moveOoze(reference);
-	}*/
+	}
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
 	Ooze *newO = new Ooze(&oozeRoom, &tilemap);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made
+}*/
+
+// based off of movePickup
+void RandomMap::cloneOoze(SDL_Renderer* reference) {
+   std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+   while(it != objectList.end()){
+       if (it->second->getInstanceName().find("Ooze") != -1) {
+           Ooze *newO = new Ooze(*static_cast<Ooze*>(it->second));
+           objectList[newO->getInstanceName()] = newO;
+//            newO->init(reference);
+           break;
+       }
+       it++;
+   }
+spawnOoze = false; //don't need a new pickup; one was just made
 }
 
 // ADD COMMENTS 
