@@ -1007,7 +1007,7 @@ void Ooze::updateColor(){
             if(b < CHANNEL_MAX) b++;
         }
     }
-                std::cout << "r " << (int)r << " g " << (int)g << " b " << (int)b  << std::endl;
+//  std::cout << "r " << (int)r << " g " << (int)g << " b " << (int)b  << std::endl;
     SDL_SetTextureColorMod(sheet.getTexture(), r, g, b);
     SDL_RenderCopy(renderer, sheet.getTexture(), NULL, getRect());
     return;
