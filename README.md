@@ -1,6 +1,18 @@
 # Team Bandcamp
 CS 1666 - Group game design project 
 
+## HOW TO PLAY
+Click executable "bandcamp" appropriate to computer with "res" and "music" on the same level (as it is in the file currently).
+
+## Controls:
+Move: WASD / Arrow Keys
+Interact: Z
+Shoot: X / Space
+Inventory: ESC / Enter
+Pause Music: P
+New Music Track: N
+
+
 ## Our Game
 The year is 2025, a coalition of Earths great powers have come together to fund Man's furthest exploration into space to date.  It is believed that on the distant Galilean moon Europa, orbiting Jupiter, there may be liquid water underneath the dense frozen surface.  Earth scientists are eager to find out if there may be any bacterium or any signs of life in this liquid water.  Your mission is to take the 8 month journey to Europa, safely land on the planets surface, search for any evidence of life and safely return to report any of your findings.  If this mission is successful, Earth may fund another mission several years from now, but if you don't find anything or fail to return to report your findings, if may be the end of this exploratory endeavor.  
 

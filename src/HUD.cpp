@@ -50,8 +50,8 @@ void HUD::init(SDL_Renderer* _renderer)
 	//load in the image of HUD (HUD.png)
 	int imgFlags = IMG_INIT_PNG;
 	int retFlags = IMG_Init(imgFlags);
-	hud.push_back(utils::loadTexture(renderer_h, "Physics/HUD.png"));
-	hud.push_back(utils::loadTexture(renderer_h, "Physics/dead.png"));
+	hud.push_back(utils::loadTexture(renderer_h, "res/HUD.png"));
+	hud.push_back(utils::loadTexture(renderer_h, "res/dead.png"));
 	SDL_Rect Temp = {54, 54, 33, 91};
 	SDL_Rect Oxygen = {109, 54, 33, 91};
 	SDL_Rect Health = {164, 54, 33, 91};

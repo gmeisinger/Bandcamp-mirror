@@ -1034,9 +1034,9 @@ void Ooze::switchRoom() {
 void Ooze::updateColor(){
         //case FIGHTING: { //Turn Red
     if(losPickup){
-            if(r < 2) return;
-            else r-=2;
-        }
+        if(r < 2) return;
+        else r-=2;
+    }
         //case HANGRY: {
     if(losPlayer){
         if(g < 2) return;
