@@ -38,6 +38,8 @@ std::vector<Door*> doors;
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
 Ooze o;
+Ooze o2;
+Ooze o3;
 
 RandomMap::RandomMap() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
@@ -89,11 +91,26 @@ void RandomMap::init(SDL_Renderer* reference){
 	objectList["hud"] = &h;
     hud_g = &h;
 	// Change to add ooze to list as initialized
-	objectList["ooze"] = &o;
+	objectList[o.getInstanceName()] = &o;
+
+	oozeRoom = *rooms[rand()%(rooms.size())];
+	//std::cout << "HERE" << std::endl;
+	o2 = Ooze(&oozeRoom, &tilemap);
+
+	o2.init(reference);
+	// Change to add ooze to list as initialized
+	objectList[o2.getInstanceName()] = &o2;
+
+	oozeRoom = *rooms[rand()%(rooms.size())];
+	//std::cout << "HERE" << std::endl;
+	o3 = Ooze(&oozeRoom, &tilemap);
+
+	o3.init(reference);
+	// Change to add ooze to list as initialized
+	objectList[o3.getInstanceName()] = &o3;
 
 	//add doors dynamically
 	placeDoors(reference);
-	//objectList[o.getInstanceName()] = &o;
 }
 
 // ADD COMMENTS 
@@ -213,14 +230,40 @@ void RandomMap::update(Uint32 ticks){
 
 // ADD COMMENTS 
 
+/*
 // based off of movePickup
 void RandomMap::cloneOoze(SDL_Renderer* reference) {
 	
+<<<<<<< HEAD
+	/*if(collision::checkCol(OozeBox, leftWall) 
+		|| collision::checkCol(OozeBox, rightWall)
+		|| collision::checkCol(OozeBox, upperWall)
+		|| collision::checkCol(OozeBox, centerPillar))
+	{
+		moveOoze(reference);
+	}
+=======
+>>>>>>> master
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
 	Ooze *newO = new Ooze(&oozeRoom, &tilemap);
 	objectList[newO->getInstanceName()] = newO;
 	newO->init(reference);
 	spawnOoze = false; //don't need a new pickup; one was just made
+}*/
+
+// based off of movePickup
+void RandomMap::cloneOoze(SDL_Renderer* reference) {
+   std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+   while(it != objectList.end()){
+       if (it->second->getInstanceName().find("Ooze") != -1) {
+           Ooze *newO = new Ooze(*static_cast<Ooze*>(it->second));
+           objectList[newO->getInstanceName()] = newO;
+//            newO->init(reference);
+           break;
+       }
+       it++;
+   }
+spawnOoze = false; //don't need a new pickup; one was just made
 }
 
 // ADD COMMENTS 
