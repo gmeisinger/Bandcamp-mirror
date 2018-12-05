@@ -21,11 +21,12 @@ class FadeObj : public Object
 		int currentFade; //What alpha should it be at currently?
 		SDL_Rect fullScreen;
 		bool done; //Has it finished fading?
+		SDL_Rect* getRect();
 
 	public:
 		void input(const Uint8* keystate);
 		void init(SDL_Renderer *renderer);
-		void update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks);
+		void update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks);
 		std::string getInstanceName();
 		SDL_Renderer* draw(SDL_Renderer *renderer, SDL_Rect cam);
 		bool isUsed();

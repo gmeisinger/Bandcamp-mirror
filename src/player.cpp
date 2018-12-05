@@ -6,6 +6,7 @@
 #include "include/game.h"
 #include "include/collision.h"
 #include "include/spritesheet.h"
+#include "include/projectile.h"
 
 constexpr int MAX_SPEED = 2;
 constexpr int BORDER_SIZE = 32;
@@ -21,6 +22,7 @@ int x_deltav;
 int y_deltav;
 int x_vel;
 int y_vel;
+int cooldownTicks;
 bool overlapEnemy;
 
 //Constructor - takes a texture, width and height
@@ -31,11 +33,19 @@ Player::Player(SDL_Rect _rect) {
     y_deltav = 0;
     x_vel = 0;
     y_vel = 0;
+	cooldownTicks = 0;
 	up = false;
 	down = false;
 	left = false;
 	right = false;
+	space = false;
+    x = false;
+	projCooldown = false;
     overlapEnemy = false;
+	projsType = 's';
+	//std::unordered_map<std::string, Object*> projList;
+    player = this;
+	correction = {0,0,0,0};
 }
 
 //
@@ -56,6 +66,8 @@ std::string Player::getInstanceName(){
  *
 */
 void Player::init(SDL_Renderer* gRenderer){
+	rendererReference = gRenderer;
+	
 	//set up player animations
 	setSpriteSheet(utils::loadTexture(gRenderer, "res/spaceman.png"), 4, 4);
 	addAnimation("down", Animation(getSheet().getRow(0)));
@@ -63,7 +75,6 @@ void Player::init(SDL_Renderer* gRenderer){
 	addAnimation("left", Animation(getSheet().getRow(2)));
 	addAnimation("right", Animation(getSheet().getRow(3)));
 	setAnimation("down");
-
 }
 
 /* Summary
@@ -130,6 +141,10 @@ int Player::getY() {
 //
 SDL_Rect* Player::getRect() {
     return &playerRect;
+}
+
+SDL_Rect* Player::getHitRect() {
+    return &hitRect;
 }
 
 /* Summary
@@ -221,7 +236,8 @@ void Player::updateAnimation(Uint32 ticks) {
     anim->update(ticks);
 }
 
-void Player::update(std::unordered_map<std::string, Object*> *objectList, std::vector<std::vector<int>> grid, Uint32 ticks) {
+void Player::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks) {
+	//std::cout << "Entered Player update" << std::endl;
 	int x_deltav = 0;
 	int y_deltav = 0;
     
@@ -238,6 +254,21 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 		y_deltav += 1;
 	if (right)
 		x_deltav += 1;
+	
+  if ((space || x) && !projCooldown) {
+		Projectile* newProj = new Projectile(projsType, playerRect.x, playerRect.y);
+		newProj->init(rendererReference);
+		objectList[newProj->getInstanceName()] = newProj;
+		projCooldown = true;
+	} else if (projCooldown) {
+		if (cooldownTicks >= 50) {
+			cooldownTicks = 0;
+			projCooldown = false;
+		} else {
+			cooldownTicks++;
+		}
+
+	}
 
 	updateVelocity(x_deltav, y_deltav);
 
@@ -255,18 +286,32 @@ void Player::update(std::unordered_map<std::string, Object*> *objectList, std::v
 
     //Check you haven't collided with object
     checkCollision(curX, curY, grid);
+	
+	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
+	while(it != objectList.end()) {
+		if (it->second->getInstanceName().find("proj") != -1 || it->second->getInstanceName().find("breach") != -1) {
+			it->second->draw(rendererReference, correction);
+		}
+		it++;
+	}
+	//std::cout << "Exiting Player update" << std::endl;
 }
 
 /* Summary
  * Argument  
  *
 */
-void Player::input(const Uint8* keystate)
-{
-	up = keystate[SDL_SCANCODE_W];
-	left = keystate[SDL_SCANCODE_A];
-	down = keystate[SDL_SCANCODE_S];
-	right = keystate[SDL_SCANCODE_D];
+void Player::input(const Uint8* keystate) {
+	up = keystate[SDL_SCANCODE_W] || keystate[SDL_SCANCODE_UP];
+	left = keystate[SDL_SCANCODE_A] || keystate[SDL_SCANCODE_LEFT];
+	down = keystate[SDL_SCANCODE_S] || keystate[SDL_SCANCODE_DOWN];
+	right = keystate[SDL_SCANCODE_D] || keystate[SDL_SCANCODE_RIGHT];
+	space = keystate[SDL_SCANCODE_SPACE];
+    x = keystate[SDL_SCANCODE_X];
+	if (up) projsType = 'n';
+	else if (left) projsType = 'e';
+	else if (down) projsType = 's';
+	else if (right) projsType = 'w';
 }
 
 /* Summary
@@ -279,7 +324,7 @@ SDL_Renderer* Player::draw(SDL_Renderer* renderer, SDL_Rect cam) {
     dest->x -= cam.x;
     dest->y -= cam.y;
     SDL_RenderCopy(renderer, sheet.getTexture(), anim->getFrame(), dest);
-   return renderer;
+	return renderer;
 }
 
 /* Summary
@@ -298,28 +343,42 @@ void Player::setEnemy(bool _overlap) {
     overlapEnemy = _overlap;
 }
 
-void Player::checkCollision(int curX, int curY, std::vector<std::vector<int>> &grid)
+void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> &grid)
 {
-    if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
-        playerRect.x = curX;
+	if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
+		playerRect.x = curX;
         hitRect.x = curX + SHORTEN_DIST/2;
+		
+		correction.x = 0;
+		correction.w = 1;
     }
     
     if(collision::checkColTop(hitRect, grid, 32) || collision::checkColBottom(hitRect, grid, 32)) {
         playerRect.y = curY;
         hitRect.y = curY+SHORTEN_DIST;
-
         playerRect.x += x_vel;
         hitRect.x += x_vel;
-
         y_vel = 0;
-        if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
+		
+		correction.y = 0;
+		correction.h = 1;
+		
+		correction.x = x_vel;
+        
+		if(collision::checkColLeft(hitRect, grid, 32) || collision::checkColRight(hitRect, grid, 32)) {
             x_vel = 0; 
             playerRect.x = curX;
-            hitRect.x = curX + SHORTEN_DIST/2;   
+            hitRect.x = curX + SHORTEN_DIST/2;
+			
+			correction.x = 0;
+			correction.w = 1;
         }
     }
-    
+
+	if (correction.w == 1) correction.w = 0;
+	else correction.x = x_vel;
+	if (correction.h == 1) correction.h = 0;
+	else correction.y = y_vel;
 }
 
 /* Summary

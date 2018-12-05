@@ -59,14 +59,14 @@ bool Generator::checkOverlap(SDL_Rect room) {
 			break;
 		}
 	}
-	if(collides) std::cout << "Collides." << std::endl;
+	if(collides) //std::cout << "Collides." << std::endl;
 	return collides;
 }
 
 //place a room using rectangle packing
 void Generator::placeRoom(SDL_Rect room, bool fill) {
 	if(rooms.size() == 0) {
-		std::cout << "First room" << std::endl;
+		//std::cout << "First room" << std::endl;
 		rooms.push_back(room);
 		room_objs.push_back(new Room(room));
 		cur_width = room.w;
@@ -103,7 +103,7 @@ void Generator::placeRoom(SDL_Rect room, bool fill) {
 				if((room.y + room.h) > cur_height) {
 					cur_height = room.y + room.h;
 				}
-				std::cout << "Placing room:\n" << room.x << " " <<room.y << " " << room.w << " " << room.h << std::endl;
+				//std::cout << "Placing room:\n" << room.x << " " <<room.y << " " << room.w << " " << room.h << std::endl;
 			}
 		}
 	}
@@ -173,7 +173,7 @@ std::vector<std::pair<int,int>> Generator::getCorners() {
 			}
 		}
 	}
-	std::cout << corners.size() << " corners found." << std::endl;
+	//std::cout << corners.size() << " corners found." << std::endl;
 	std::random_shuffle(corners.begin(), corners.end());
 	return corners;
 }
@@ -215,4 +215,8 @@ void Generator::setRoomNeighbors(Room* r) {
 			}
 		}
 	}
+}
+
+std::vector<Room*> Generator::getRooms() {
+	return room_objs;
 }

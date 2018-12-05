@@ -16,7 +16,7 @@
 constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
-Door d_1;
+//Door d_1;
 WarpTile w;
 FadeObj f;
 
@@ -34,25 +34,27 @@ TestTransition_1::TestTransition_1() : Screen(){
 
 // ADD COMMENTS 
 void TestTransition_1::init(SDL_Renderer* reference){
+	objectList.clear();
 	rendererReference = reference;
 	SDL_Rect player_box = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2, TILE_SIZE, TILE_SIZE};
 	p = Player(player_box);
-	map = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 30, 20, 32);
+	tilemap = Tilemap(utils::loadTexture(reference, "res/map_tiles.png"), 30, 20, 32);
 	camera = {p.getX() - CAM_WIDTH/2, p.getY() - CAM_HEIGHT/2, CAM_WIDTH, CAM_HEIGHT};
-	d_1 = Door(14,5,true);
+	//d_1 = Door(14,5,true);
 	w = WarpTile(14, 4, true, true, 2); //WarpTile(int x, int y, bool _insideWall, bool _fade, int _destScreen)
 	f = FadeObj(); //Fade the screen in
 	
 	h.init(reference);
 	p.init(reference);
-	d_1.init(reference);
+	//d_1.init(reference);
 	w.init(reference);
 	f.init(reference);
-	map.init();
-	map.genTestTransitionRoom();
+	tilemap.init();
+	tilemap.genTestTransitionRoom();
+	placeDoors(reference);
 	
 	//Player and HUD in the Room
-	objectList["door"] = &d_1;
+	//objectList["door"] = &d_1;
 	objectList["player"] = &p;
 	objectList["hud"] = &h;
 	objectList[w.getInstanceName()] = &w;
@@ -60,12 +62,37 @@ void TestTransition_1::init(SDL_Renderer* reference){
 	fading = true; //To prevent one frame of light before the fade in.
 }
 
+void TestTransition_1::placeDoors(SDL_Renderer* renderer) {
+	int doorCount = 0;
+	std::vector<std::vector<Tile*>> &map = tilemap.getMapRef();
+	for(int r=0;r<map.size();r++) {
+		for(int c=0;c<map[0].size();c++) {
+			if(map[r][c]->isDoor()) { //horizontal door
+				//check for horizontal/vertical
+				bool horz = true;
+				if(r > 0 && r < map.size()-1 && c > 0 && c < map[0].size()-1) {
+					if(map[r+1][c]->isBlocking() || map[r-1][c]->isBlocking()) {
+						horz = false;
+					}
+				}
+				map[r][c]->setBlocking(true);
+				Door* d = new Door(c, r, horz);
+				d->init(renderer);
+				objectList["door"+doorCount] = d;
+				doorCount++;
+			}
+		}
+	}
+}
+
 // ADD COMMENTS 
 void TestTransition_1::update(Uint32 ticks){
+	//std::cout << std::endl << "Entered TestTransition_1 update" << std::endl;
+	std::unordered_map<std::string, Object*>& objectListRef = objectList;
 	if(objectList.count("FadeObj")>0){ //only update the fade when you are fading
 		fading = true;
 		
-		objectList["FadeObj"]->update(&objectList, map.getMap(), ticks);
+		objectList["FadeObj"]->update(objectListRef, tilemap.getMapRef(), ticks);
 		
 		if(objectList["FadeObj"]->isUsed()){
 			fading = false;
@@ -89,9 +116,12 @@ void TestTransition_1::update(Uint32 ticks){
 		//update all objects
 		std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 		while(it != objectList.end()){
-			it->second->update(&objectList, map.getMap(), ticks);
+			it->second->update(objectListRef, tilemap.getMapRef(), ticks);
 			if(it->second->isUsed()) {
+				//std::cout << "About to remove object from list (TestTransition_1)" << std::endl;
 				it = objectList.erase(it);
+				//std::cout << "Succeeded in removing object from list (TestTransition_1)" << std::endl;
+				break;
 			}
 			it++;
 		}
@@ -111,6 +141,7 @@ void TestTransition_1::update(Uint32 ticks){
 		}
 		updateCount = (updateCount+1)%UPDATE_MAX;
 	}
+	//std::cout << "Exited TestTransition_1 update" << std::endl << std::endl;
 }
 
 // ADD COMMENTS 
@@ -121,12 +152,12 @@ void TestTransition_1::input(const Uint8* keystate){
 	{
 		//When you come back into the room after a pause, you will most likely still be holding down
 		//the enter key. This prevents you from going straight back into the pause menu.
-		if(enterHeld && keystate[SDL_SCANCODE_RETURN])
+		if(enterHeld && (keystate[SDL_SCANCODE_RETURN] || keystate[SDL_SCANCODE_ESCAPE]))
 			pauseB = false;
 		else
 		{
 			enterHeld = false;
-			pauseB = keystate[SDL_SCANCODE_RETURN];
+			pauseB = keystate[SDL_SCANCODE_RETURN] || keystate[SDL_SCANCODE_ESCAPE];
 			
 			std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 			while(it != objectList.end()){
@@ -146,7 +177,7 @@ SDL_Renderer* TestTransition_1::draw(SDL_Renderer *renderer){
 	SDL_SetRenderDrawColor(renderer, 0xFF, 0xFF, 0xFF, 0xFF);
 	
 	//draw map before objects
-	map.draw(renderer, camera);
+	tilemap.draw(renderer, camera);
 	//draw objects
 	std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
 	while(it != objectList.end()){
