@@ -46,6 +46,7 @@ tilemap{t}
     lastRoom = nullptr;
     initialized = false;
     intersects = curRoom->getIntersects();
+    doors = tilemap->getDoors();
     squeeze = false;
     squeezeItr = 0;
     iter = 0;
@@ -140,9 +141,9 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     //might move order of update calls
     //bool stateChange = updateState(objectList, ticks);
 	bool overlap = checkOozeOverlap(objectList, ticks);
-	if(!overlap){
-        if(iter % 5 == 0){
-            iter = 0;
+    bool los;
+	if(!overlap){    
+        if(iter % 15 == 0) {
             target = pickTarget(objectList, grid);
 //            p = static_cast<Player*>(it->second);
             if (true) {
@@ -218,6 +219,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
             return nullptr;
         }
         case HANGRY: {
+            squeeze = false;
             std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
             while(it != objectList.end()){
                 if (!it->first.substr(0,6).compare("Pickup")) {
@@ -265,7 +267,6 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                             return roomTiles.endTile;
                         }
                         else {
-                            if(collision::checkCol(rect, *roomTiles.startTile))
                                 squeezeItr++;
                             if(squeezeItr == 15) {
                                 squeeze = true;
@@ -334,7 +335,11 @@ bool Ooze::foundFood(Pickup* food) {
             //food->use();
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
-            state = EATING;
+            if(ate > 2) {
+                RandomMap::setSpawnOoze(true);
+                Ooze(*this);
+                ate = 0;
+            }
             return true;
         }
     }
@@ -375,7 +380,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             }
             if (ate > 0) {                      // "Time to eat!"
                 state = CLONING;
-                RandomMap::setSpawnOoze(true);
+                
                 ate = 0;
                 return true;
             }
@@ -746,13 +751,16 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     std::vector<std::vector<Tile*>> map = tilemap->getMap();
     Tile* endTile;
     Tile* tile;
+    Tile* doorTile;
     bool horWall = false;
     bool verWall = false; 
     int r = 0;
     int c = 0;
     int l = 0;
     int t = 0;
-    //std::cout << "intersect size: " << intersects.size() << std::endl;
+    roomTiles.startTile = nullptr;
+    roomTiles.endTile = nullptr;
+    roomTiles.door = nullptr;
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
@@ -769,8 +777,8 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
             verWall = true;
             horWall = false;
         }
-        tile = map[r][c];
-        temp1 = tile->getDest();
+        doorTile = map[r][c];
+        temp1 = doorTile->getDest();
 
         if(horWall) {
             t = c;
@@ -797,20 +805,96 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         
         tile = map[r][c];
         temp1 = tile->getDest();
+        std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
 
         bool los = drawLine(grid, temp1);
         
-        if(los && lastRoom != map[r][c]) {
+        if(los && !doorTile->isVisited()) {
             roomTiles.door = temp1;
             lastRoom = tile;
+            doorTile->setVisited(true);
             break;
         }            
     }    
     if(roomTiles.door == nullptr){
         tile = lastRoom;
-        temp1 = tile->getDest();
+        temp1 = doorTile->getDest();
         roomTiles.door = temp1;
-        //std::cout << "coo" << std::endl;
+        temp1 = tile->getDest();
+        std::cout << "coo" << std::endl;
+    }
+    endTile = map[l][t];
+    temp2 = endTile->getDest();
+    roomTiles.startTile = temp1;
+    roomTiles.endTile = temp2; 
+    /* delete temp1;
+    delete temp2;
+    delete intersect;
+    delete tile;
+    delete endTile; */
+/*
+    SDL_Rect* temp1;
+    SDL_Rect* temp2;
+    SDL_Rect* intersect;
+    std::vector<std::vector<Tile*>> map = tilemap->getMap();
+    Tile* endTile;
+    Tile* tile;
+    Tile* doorTile;
+    bool horWall = false;
+    bool verWall = false; 
+    int r = 0;
+    int c = 0;
+    int l = 0;
+    int t = 0;
+    roomTiles.startTile = nullptr;
+    roomTiles.endTile = nullptr;
+    roomTiles.door = nullptr;
+    std::cout << intersects.size() << std::endl;
+    for(int i = 0; i < doors.size(); i++) {
+        
+        temp1 = doors[i]->getDest();
+        
+        if(doors[i]->isHorWall()) {
+            t = c;
+            if (temp1->y > rect.y) {
+                l = r+2;
+                r = r-1;
+            }
+            if (temp1->y < rect.y) {
+                l = r-2;
+                r = r+1;
+            }
+        }
+        if(!doors[i]->isHorWall()) {
+            l = r;
+            if (temp1->x > rect.x) {
+                t = c+2;
+                c = c-1;
+            }
+            if (temp1->x < rect.x) {
+                t = c-2;
+                c = c+1;
+            }
+        }    
+        tile = map[r][c];
+        temp1 = tile->getDest();
+        std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
+
+        bool los = drawLine(grid, temp1);
+        
+        if(los && !doors[i]->isVisited()) {
+            roomTiles.door = temp1;
+            lastRoom = tile;
+            doors[i]->setVisited(true);
+            break;
+        }            
+    }    
+    if(roomTiles.door == nullptr){
+        tile = lastRoom;
+        temp1 = doorTile->getDest();
+        roomTiles.door = temp1;
+        temp1 = tile->getDest();
+        std::cout << "coo" << std::endl;
     }
     endTile = map[l][t];
     temp2 = endTile->getDest();
@@ -821,6 +905,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     delete intersect;
     delete tile;
     delete endTile; */
+
 }
 
 //Lets make sure our poor ooze isn't stuck in a wall
@@ -879,7 +964,6 @@ void Ooze::switchRoom() {
         //std::cout << "Rect: X " << rect.x << " Y " << rect.y << " W " << rect.w << " H " << rect.h << std::endl;
         
         if(collision::checkCol(roomRect, rect)) {
-            //std::cout << "ERE" << std::endl;
             curRoom = neighbors[i];
             neighbors = curRoom->getNeighbors();
             intersects = curRoom->getIntersects();

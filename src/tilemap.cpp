@@ -194,6 +194,36 @@ std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> 
 	return map;
 }
 
+std::vector<Tile*> Tilemap::getDoors() {
+	std::vector<Tile*> doors;
+	Tile* doorTile;
+	SDL_Rect* intersect;
+	bool horWall = false;
+	int r = 0;
+	int c = 0;
+	for(int i = 0; i < rooms.size(); i++) {
+		std::vector<SDL_Rect> intersects = rooms[i]->getIntersects();
+		for(int i = 0; i < intersects.size(); i++) {
+			intersect = &intersects[i];
+		
+			if(intersect->w > intersect->h && intersect->w > 2) {
+				//horizontal wall
+				r = intersect->y;
+				c = intersect->x + (intersect->w/2);
+				horWall = true;
+			}
+			else{
+				r = intersect->y + (intersect->h/2);
+				c = intersect->x;
+			}
+			doorTile = map[r][c];
+			doorTile->setHorWall(horWall);
+			doors.push_back(doorTile);
+		}
+	}
+	return doors;
+}
+
 void addObjects(std::unordered_map<std::string, Object*> *objectList) {
 
 }

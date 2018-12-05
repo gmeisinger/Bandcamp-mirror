@@ -15,6 +15,8 @@ private:
 	bool blocking;
 	bool door;
 	bool active;
+	bool visited;
+	bool horWall;
 public:
 	Tile(SDL_Rect _srcRect, SDL_Rect _destRect);
 	Tile();
@@ -26,6 +28,10 @@ public:
 	void setDoor(bool b);
 	void toggleBlocking();
 	bool isActive();
+	bool isVisited();
+	void setVisited(bool v);
+	bool isHorWall();
+	void setHorWall(bool h);
 };
 
 #endif // BANDCAMP_TILE_H_
