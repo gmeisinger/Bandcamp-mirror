@@ -332,7 +332,11 @@ bool Ooze::foundFood(Pickup* food) {
             //food->use();
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
-            
+            if(ate > 2) {
+                RandomMap::setSpawnOoze(true);
+                Ooze(*this);
+                ate = 0;
+            }
             return true;
         }
     }
@@ -373,7 +377,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             }
             if (ate > 0) {                      // "Time to eat!"
                 state = CLONING;
-                RandomMap::setSpawnOoze(true);
+                
                 ate = 0;
                 return true;
             }
@@ -754,7 +758,6 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     roomTiles.startTile = nullptr;
     roomTiles.endTile = nullptr;
     roomTiles.door = nullptr;
-    std::cout << intersects.size() << std::endl;
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
