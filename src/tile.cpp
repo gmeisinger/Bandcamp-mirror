@@ -58,6 +58,7 @@ bool Tile::isHorWall() {
 
 void Tile::setHorWall(bool h) {
 	horWall = h;
+}
 
 bool Tile::isChest() {
 	return chest;

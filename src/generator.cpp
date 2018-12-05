@@ -205,7 +205,7 @@ void Generator::finalize() {
 
 //Pick 20 random spots
 void Generator::addChests() {
-	for(int x = 0; x < 20; x++){
+	for(int x = 0; x < 10; x++){
 		int randX = (rand() % (map.size()-1))+1;
 		int randY = (rand() % (map[0].size()-1))+1;
 		
