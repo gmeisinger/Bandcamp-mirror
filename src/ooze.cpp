@@ -266,7 +266,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                         }
                     }
                 }
-            it++;
+            it++; 
             }
         }
         case FIGHTING: {
