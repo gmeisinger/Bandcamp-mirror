@@ -63,7 +63,7 @@ obj/%.o: src/%.cpp $(DEP)
 
 # additional features for small tests
 credits: src/credits.cpp
-	$(CC) $< $(INCLUDE) $(LFLAGScr) -o bin/credits
+	$(CC) $< $(INCLUDE) $(LFLAGScr) -o credits
 
 os:
 	@echo $(DETECTED_OS)

@@ -266,7 +266,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 		projActive = true;
 	} else if (projCooldown) {
         //projActive = false;
-		if (cooldownTicks >= 75) {
+		if (cooldownTicks >= 25) {
 			cooldownTicks = 0;
 			projCooldown = false;
 		} else {
