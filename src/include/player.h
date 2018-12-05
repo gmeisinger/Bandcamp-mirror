@@ -67,6 +67,7 @@ class Player : public Object
         void setEnemy(bool _overlap);
         void checkEnemy(int _xdv, int _ydv);
         bool getProjActive();
+        void setProjActive(bool p);
 };
 
 #endif  //  BANDCAMP_PLAYER_H_

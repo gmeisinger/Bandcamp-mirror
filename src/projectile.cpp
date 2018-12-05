@@ -148,6 +148,7 @@ void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &obje
 		newBreach->init(rendererReference);
 		objectList[newBreach->getInstanceName()] = newBreach;
 		projUsed = true;
+		player->setProjActive(false);
 	}
 }
 
