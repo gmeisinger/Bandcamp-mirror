@@ -80,8 +80,8 @@ target{other.target},
     x_vel = other.x_vel;
     y_vel = other.y_vel;
     curRoom = other.curRoom;
-    neighbors = curRoom->getNeighbors();
-    roomRect = curRoom->getRectCopy();
+    neighbors = other.neighbors;//curRoom->getNeighbors();
+    roomRect = other.roomRect;//curRoom->getRectCopy();
     //SDL_Rect *temp = curRoom->getRect();
     rect = other.rect;
     stats = other.stats;
