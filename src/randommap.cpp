@@ -96,7 +96,7 @@ void RandomMap::init(SDL_Renderer* reference){
 	// Change to add ooze to list as initialized
 	objectList[o.getInstanceName()] = &o;
 
-	/*oozeRoom = *rooms[rand()%(rooms.size())];
+	oozeRoom = *rooms[rand()%(rooms.size())];
 	//std::cout << "HERE" << std::endl;
 	o2 = Ooze(&oozeRoom, &tilemap);
 
@@ -110,7 +110,7 @@ void RandomMap::init(SDL_Renderer* reference){
 
 	o3.init(reference);
 	// Change to add ooze to list as initialized
-	objectList[o3.getInstanceName()] = &o3;*/
+	objectList[o3.getInstanceName()] = &o3;
 
 	//add doors dynamically
 	placeDoors(reference);
