@@ -34,6 +34,7 @@ TestTransition_1::TestTransition_1() : Screen(){
 
 // ADD COMMENTS 
 void TestTransition_1::init(SDL_Renderer* reference){
+	objectList.clear();
 	rendererReference = reference;
 	SDL_Rect player_box = {SCREEN_WIDTH/2, SCREEN_HEIGHT/2, TILE_SIZE, TILE_SIZE};
 	p = Player(player_box);
