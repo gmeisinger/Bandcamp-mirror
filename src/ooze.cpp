@@ -840,13 +840,13 @@ void Ooze::Mutate(){
     stats.health_cost = std::max(1, stats.health_cost + utils::normDist());
     stats.num_cost =    std::max(1, stats.num_cost    + utils::normDist());
     
-    //std::cout << "Ooze "  << oozeNumber  << ":"
-    //<< " HP " << stats.health
-    //<< " ATK " << stats.attack
-    //<< " SPD " << stats.speed
-    //<< " HC " << stats.health_cost
-    //<< " NC " << stats.num_cost
-    //<< "\n";
+    std::cout << "Ooze "  << oozeNumber  << ":"
+    << " HP " << stats.health
+    << " ATK " << stats.attack
+    << " SPD " << stats.speed
+    << " HC " << stats.health_cost
+    << " NC " << stats.num_cost
+    << "\n";
 }
 
 
