@@ -278,7 +278,7 @@ void Player::update(std::unordered_map<std::string, Object*> &objectList, std::v
 	updateVelocity(x_deltav, y_deltav);
 
     //Checks if you are overlapping an enemy, slows down velocity if you are
-    //checkEnemy(x_deltav, y_deltav);
+    checkEnemy(x_deltav, y_deltav);
 
     //update animation
     updateAnimation(ticks);
@@ -393,8 +393,8 @@ void Player::checkCollision(int curX, int curY, std::vector<std::vector<Tile*>> 
 */
 void Player::checkEnemy(int _xdv, int _ydv){
     if(overlapEnemy){
-        x_vel -= x_vel/2;
-        y_vel -= y_vel/2;
+        x_vel -= x_vel*3/4;
+        y_vel -= y_vel*3/4;
     }
 }
 

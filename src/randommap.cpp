@@ -216,11 +216,8 @@ void RandomMap::update(Uint32 ticks){
 /*
 // based off of movePickup
 void RandomMap::cloneOoze(SDL_Renderer* reference) {
-	int OozeX = std::max(tile_s, rand()%(screen_w-tile_s));
-	int OozeY = std::max(tile_s, rand()%(screen_h-tile_s));
-	SDL_Rect OozeBox = {OozeX, OozeY, tile_s, tile_s};
-
 	
+<<<<<<< HEAD
 	/*if(collision::checkCol(OozeBox, leftWall) 
 		|| collision::checkCol(OozeBox, rightWall)
 		|| collision::checkCol(OozeBox, upperWall)
@@ -228,6 +225,8 @@ void RandomMap::cloneOoze(SDL_Renderer* reference) {
 	{
 		moveOoze(reference);
 	}
+=======
+>>>>>>> master
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
 	Ooze *newO = new Ooze(&oozeRoom, &tilemap);
 	objectList[newO->getInstanceName()] = newO;

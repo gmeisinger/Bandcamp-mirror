@@ -6,6 +6,8 @@ int Ooze::totalOoze = 0;
 
 constexpr int MAX_SPEED = 1;
 constexpr int BORDER_SIZE = 32;
+constexpr int CHANNEL_MAX = 255;
+
 
 // Default Constructor
 Ooze::Ooze():state{CLONING}, hostility{0} {}
@@ -55,6 +57,9 @@ tilemap{t}
     losPickup = false;
     losPlayer = false;
     losTarget = false;
+
+    r = g = b = CHANNEL_MAX;
+
 }
 
 //Other constructor?
@@ -72,13 +77,14 @@ target{other.target},
     oozeNumber = totalOoze;
     
     curRoom = other.curRoom;
+    neighbors = curRoom->getNeighbors();
+    roomRect = curRoom->getRectCopy();
     SDL_Rect *temp = curRoom->getRect();
-    rect = {(temp->x + (temp->w/2)) * tile_s, (temp->y + (temp->h/2)) * tile_s, 30, 30};
-    
+    rect = other.rect;
     stats = other.stats;
     std::cout << "copy" << std::endl;
     Mutate();
-    
+    r = g = b = CHANNEL_MAX;
 }
 
 //Destructor
@@ -101,9 +107,11 @@ void Ooze::input(const Uint8* keystate){}
  * Returns: void
 */
 void Ooze::init(SDL_Renderer* gRenderer) {
-	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
+    texture = utils::loadTexture(gRenderer, "res/ooze.png");
+	setSpriteSheet(texture, 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
+    renderer = gRenderer;
 }
 
 /* setSpriteSheet method, takes in texture and number of columns and rows
@@ -154,6 +162,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
             if (target) {
             //check which direction the target is
             //Only move if we can see the player
+                
                 moveLine(grid, target);
             }
 
@@ -187,6 +196,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	}
     iter++;
 	//std::cout << "Exiting Ooze update" << std::endl;
+    updateColor();
 }
 
 /* increaseHostility. When called, if less than max, increase by 1
@@ -234,8 +244,9 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                     Pickup* temp = (Pickup*)it->second;
                     losPickup = drawLine(grid, temp->getRect());
                         
-                    if(losPickup)
+                    if(losPickup){
                         return temp->getRect();
+                    }
                     else {
                         losPlayer = drawLine(grid, player->getRect());
                         if(losPlayer)
@@ -366,6 +377,9 @@ bool Ooze::foundFood(Pickup* food) {
             if(ate > 0) {
                 RandomMap::setSpawnOoze(true);
                 //state = CLONING;
+                //RandomMap::setSpawnOoze(true);
+                //Ooze(*this);
+
                 ate = 0;
             }
             return true;
@@ -480,6 +494,10 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case ROOMEXIT: {
+            break;
+        }
+        default: {
+            std::cout << "updateState: default case" << std::endl;
             break;
         }
     }
@@ -747,6 +765,7 @@ bool Ooze::drawLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
 //This version of Bresenham's moves the player in as stright a line as possible to 
 //the player
 void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
+//    std::cout << "target check" << target << std::endl;
     if(target == nullptr) return;
     int deltaX = target->x - rect.x;
     int deltaY = target->y - rect.y;
@@ -976,7 +995,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     temp2 = endTile->getDest();
     roomTiles.startTile = temp1;
     roomTiles.endTile = temp2; 
-    /*delete temp1;
+    delete temp1;
     delete temp2;
     delete intersect;
     delete tile;
@@ -994,6 +1013,7 @@ void Ooze::initRoom(std::vector<std::vector<Tile*>> &grid) {
         rect.x += tile_s;
         rect.y += tile_s;
     }
+    return;
 }
 
 void Ooze::Mutate(){
@@ -1004,13 +1024,14 @@ void Ooze::Mutate(){
     stats.health_cost = std::max(1, stats.health_cost + utils::normDist());
     stats.num_cost =    std::max(1, stats.num_cost    + utils::normDist());
     
-    //std::cout << "Ooze "  << oozeNumber  << ":"
-    //<< " HP " << stats.health
-    //<< " ATK " << stats.attack
-    //<< " SPD " << stats.speed
-    //<< " HC " << stats.health_cost
-    //<< " NC " << stats.num_cost
-    //<< "\n";
+    std::cout << "Ooze "  << oozeNumber  << ":"
+    << " HP " << stats.health
+    << " ATK " << stats.attack
+    << " SPD " << stats.speed
+    << " HC " << stats.health_cost
+    << " NC " << stats.num_cost
+    << "\n";
+    return;
 }
 
 
@@ -1024,6 +1045,7 @@ void Ooze::hurt(int damage) {
     if ( stats.health <= 0 ) {
         state = DYING;
     }
+    return;
 }
     /* Summary
      * Argument
@@ -1046,4 +1068,34 @@ void Ooze::switchRoom() {
             return;
         }
     }
+}
+
+void Ooze::updateColor(){
+    switch(this->state) {
+        case FIGHTING: { //Turn Red
+            if(r < 2) return;
+            else r-=2;
+            break;
+        }
+        case HANGRY: {
+            if(g < 2) return;
+            else g-=2;
+            break;
+        }
+        case FLEEING: {
+            if(b < 2) return;
+            else b-=2;
+            break;
+        }
+        default: {
+            if (r == g && g == b && b == CHANNEL_MAX) return;
+            if(r < CHANNEL_MAX) r++;
+            if(g < CHANNEL_MAX) g++;
+            if(b < CHANNEL_MAX) b++;
+        }
+    }
+//  std::cout << "r " << (int)r << " g " << (int)g << " b " << (int)b  << std::endl;
+    SDL_SetTextureColorMod(sheet.getTexture(), r, g, b);
+    SDL_RenderCopy(renderer, sheet.getTexture(), NULL, getRect());
+    return;
 }
