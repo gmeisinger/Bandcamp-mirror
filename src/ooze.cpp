@@ -49,6 +49,7 @@ tilemap{t}
     squeeze = false;
     squeezeItr = 0;
     iter = 0;
+	used = false;
 }
 
 //Other constructor?
@@ -312,6 +313,8 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
             }
             return nullptr;
         }
+		case DYING:
+			used = true;
         default:
             return player->getRect();
     }
@@ -513,7 +516,7 @@ void Ooze::checkBounds(int max_width, int max_height, bool move) {
  * Argument  
  *
  */
-bool Ooze::isUsed() { return false; }
+bool Ooze::isUsed() { return used; }
 
 Animation* Ooze::getAnimation(std::string tag) { return &anims[tag]; }
 

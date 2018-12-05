@@ -90,6 +90,7 @@ private:
     int squeezeItr;
     std::vector<SDL_Rect> intersects;
     int iter;
+	bool used;
     
 public:
 
