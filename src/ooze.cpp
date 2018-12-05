@@ -49,6 +49,7 @@ tilemap{t}
     squeeze = false;
     squeezeItr = 0;
     iter = 0;
+	used = false;
 }
 
 //Other constructor?
@@ -312,6 +313,8 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
             }
             return nullptr;
         }
+		case DYING:
+			used = true;
         default:
             return player->getRect();
     }
