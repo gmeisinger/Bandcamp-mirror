@@ -77,7 +77,8 @@ target{other.target},
 {
     totalOoze++;
     oozeNumber = totalOoze;
-    
+    x_vel = other.x_vel;
+    y_vel = other.y_vel;
     curRoom = other.curRoom;
     neighbors = curRoom->getNeighbors();
     roomRect = curRoom->getRectCopy();
@@ -138,9 +139,11 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     //first update. Runs very quickly too
     
     ////std::cout << "X " << roomRect.x << " Y " << roomRect.y << " W " << roomRect.h << " H " << roomRect.w << std::endl;
-
+    
     if(!initialized) {
         initRoom(grid);
+        
+     ;
         initialized = true;
     } 
     //Get the position of the ooze before it moves
@@ -151,15 +154,16 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     int curX = rect.x;
     int curY = rect.y;
 
-    int pickupX;
-    int pickupY;
+    int pickupX = 0;
+    int pickupY = 0;
 
     //might move order of update calls
     bool stateChange = updateState(objectList, ticks);
     if (stateChange)
         std::cout << "change state to " << state << std::endl;
-	bool overlap = checkOozeOverlap(objectList, ticks);
-    bool los;
+	
+    bool overlap = checkOozeOverlap(objectList, ticks);
+    bool los = false;
 	if(!overlap){    
         if(iter % 15 == 0) {
             target = pickTarget(objectList, grid);
@@ -176,6 +180,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
         else {
             //moveRoom(grid);
         }
+        
         updatePosition();
     }
 
@@ -198,7 +203,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 				break;
 			}
 		}
-	}
+	}      
     iter++;
 	//std::cout << "Exiting Ooze update" << std::endl;
     updateColor();
@@ -264,7 +269,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                         }
                     }
                 }
-            it++;
+            it++; 
             }
         }
         case FIGHTING: {
@@ -932,7 +937,6 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         //std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
 
         bool los = drawLine(grid, temp1);
-        std::cout << los << std::endl;
         if(los && !doorTile->isVisited()) {
             roomTiles.door = temp1;
             endTile = map[l][t];
@@ -1017,7 +1021,6 @@ void Ooze::switchRoom() {
     if(curRoom->contains(&rect)) {
         return;
     }
-
     for(int i = 0; i < neighbors.size(); i++) {
         if(neighbors[i]->contains(&rect)) {
             curRoom = neighbors[i];
