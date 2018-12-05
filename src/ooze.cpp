@@ -197,6 +197,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
             return nullptr;
         }
         case HANGRY: {
+            squeeze = false;
             std::unordered_map<std::string, Object*>::iterator it = objectList.begin();
             while(it != objectList.end()){
                 if (!it->first.substr(0,6).compare("Pickup")) {
@@ -243,7 +244,7 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                             return roomTiles.endTile;
                         }
                         else {
-                            squeezeItr++;
+                                squeezeItr++;
                             if(squeezeItr == 15) {
                                 squeeze = true;
                                 squeezeItr = 0;
@@ -667,7 +668,6 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     Tile* endTile;
     Tile* tile;
     Tile* doorTile;
-    Tile* emergencyDoor;
     bool horWall = false;
     bool verWall = false; 
     int r = 0;
@@ -721,7 +721,6 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         }
         
         tile = map[r][c];
-        
         temp1 = tile->getDest();
         std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
 
@@ -732,7 +731,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
             lastRoom = tile;
             doorTile->setVisited(true);
             break;
-        }          
+        }            
     }    
     if(roomTiles.door == nullptr){
         tile = lastRoom;

@@ -5,10 +5,12 @@
 
 #include "include/projectile.h"
 
+
 constexpr int FIRED_SPEED = 4;
 
 Uint32 projTicks;
 static int totalInstance = 0;//How many instances of the object exist?
+
 
 Projectile::Projectile(char type, int playerX, int playerY) {
 	switch(type){
@@ -98,6 +100,7 @@ void Projectile::init(SDL_Renderer *renderer){
 		
 void Projectile::update(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid, Uint32 ticks){
 	updatePosition(ticks);
+
 	checkProjOverlap(objectList, grid);
 }
 
