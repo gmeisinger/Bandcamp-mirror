@@ -38,6 +38,8 @@ std::vector<Door*> doors;
 bool pauseB, enterHeld; //Have we pushed the pauseButton this frame?
 
 Ooze o;
+Ooze o2;
+Ooze o3;
 
 RandomMap::RandomMap() : Screen(){
 	std::unordered_map<std::string, Object*> objectList;
@@ -91,9 +93,24 @@ void RandomMap::init(SDL_Renderer* reference){
 	// Change to add ooze to list as initialized
 	objectList[o.getInstanceName()] = &o;
 
+	oozeRoom = *rooms[rand()%(rooms.size())];
+	//std::cout << "HERE" << std::endl;
+	o2 = Ooze(&oozeRoom, &tilemap);
+
+	o2.init(reference);
+	// Change to add ooze to list as initialized
+	objectList[o2.getInstanceName()] = &o2;
+
+	oozeRoom = *rooms[rand()%(rooms.size())];
+	//std::cout << "HERE" << std::endl;
+	o3 = Ooze(&oozeRoom, &tilemap);
+
+	o3.init(reference);
+	// Change to add ooze to list as initialized
+	objectList[o3.getInstanceName()] = &o3;
+
 	//add doors dynamically
 	placeDoors(reference);
-	//objectList[o.getInstanceName()] = &o;
 }
 
 // ADD COMMENTS 

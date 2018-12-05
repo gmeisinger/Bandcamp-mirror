@@ -186,7 +186,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 		if(it->second->getInstanceName().find("proj") != -1) {
 			Projectile* temp = (Projectile*)it->second;
 			if (collision::checkCol(rect, *(temp->getRect()))) {
-				std::cout << "Ooze hit" << std::endl;;
+				std::cout << "Ooze " << this->getInstanceName() << " hit" << std::endl;;
                 hurt(1);
 				temp->projUsed = true;
                 player->setProjActive(false);
@@ -363,10 +363,10 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
 
 /* foundFood method. Used to check for collision with a Pickup. Note that this is only called from Pickup.
  * Used in Pickup's checkPickupOverlap method. That method is the one that sets the used to true.
- * Argument: Pickup* food
+ * Argument: Pickup* food, object list
  * Returns: bool
 */
-bool Ooze::foundFood(Pickup* food) {
+bool Ooze::foundFood(Pickup* food, std::unordered_map<std::string, Object*> &objectList) {
     if (food) {
         SDL_Rect* fRect = food->getRect();
         bool overlap = collision::checkCol(rect, *fRect);
@@ -375,10 +375,10 @@ bool Ooze::foundFood(Pickup* food) {
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
             if(ate > 0) {
-                RandomMap::setSpawnOoze(true);
-                //state = CLONING;
-                //RandomMap::setSpawnOoze(true);
-                //Ooze(*this);
+
+                Ooze *newOoze  = new Ooze(*this);
+                objectList[newOoze->getInstanceName()] = newOoze;
+                newOoze->init(renderer);
 
                 ate = 0;
             }
@@ -900,7 +900,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         
         tile = map[r][c];
         temp1 = tile->getDest();
-        std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
+        //std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
 
         bool los = drawLine(grid, temp1);
         
@@ -1024,7 +1024,7 @@ void Ooze::Mutate(){
     stats.health_cost = std::max(1, stats.health_cost + utils::normDist());
     stats.num_cost =    std::max(1, stats.num_cost    + utils::normDist());
     
-    std::cout << "Ooze "  << oozeNumber  << ":"
+    std::cout << "Ooze "  << this->getInstanceName()  << ":"
     << " HP " << stats.health
     << " ATK " << stats.attack
     << " SPD " << stats.speed

@@ -124,7 +124,7 @@ public:
 
     Pickup* getPickup(std::unordered_map<std::string, Object*> &objectList);
     SDL_Rect* pickTarget(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid);
-    bool foundFood(Pickup* pickUp);
+    bool foundFood(Pickup* pickUp, std::unordered_map<std::string, Object*> &objectList);
     int getAte();
     OozeState getState();
     void initRoom(std::vector<std::vector<Tile*>> &grid);
