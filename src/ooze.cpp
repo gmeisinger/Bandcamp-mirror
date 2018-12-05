@@ -141,7 +141,7 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
 	bool overlap = checkOozeOverlap(objectList, ticks);
     bool los;
 	if(!overlap){    
-        if(iter % 15 == 0)
+        if(iter % 15 == 0) {
             target = pickTarget(objectList, grid);
 //            p = static_cast<Player*>(it->second);
             if (true) {
@@ -332,7 +332,7 @@ bool Ooze::foundFood(Pickup* food) {
             //food->use();
             ate++;
             std::string s = getInstanceName() + " ATE: "+ food->getInstanceName() + ". HAS ATE: " + std::to_string(ate);
-            state = EATING;
+            
             return true;
         }
     }
