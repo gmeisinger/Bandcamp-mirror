@@ -148,6 +148,7 @@ void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &obje
 		if(it->second->getInstanceName().find("ooze") != -1) {
 			if (collision::checkCol(projRect, *(it->second->getRect()))) {
 				projUsed = true;
+				player->setProjActive(false);
 				break;
 			}
 		}
@@ -161,6 +162,7 @@ void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &obje
 			newBreach->init(rendererReference);
 			objectList[newBreach->getInstanceName()] = newBreach;
 			projUsed = true;
+			player->setProjActive(false);
 		}
 	}
 }

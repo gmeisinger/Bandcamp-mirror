@@ -399,3 +399,6 @@ void Player::checkEnemy(int _xdv, int _ydv){
 bool Player::getProjActive() {
     return projActive;
 }
+void Player::setProjActive(bool p) {
+    projActive = p;
+}

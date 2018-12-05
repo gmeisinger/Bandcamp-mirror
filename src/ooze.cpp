@@ -131,7 +131,9 @@ void Ooze::update(std::unordered_map<std::string, Object*> &objectList, std::vec
     int pickupY;
 
     //might move order of update calls
-    //bool stateChange = updateState(objectList, ticks);
+    bool stateChange = updateState(objectList, ticks);
+    if (stateChange)
+        std::cout << "change state to " << state << std::endl;
 	bool overlap = checkOozeOverlap(objectList, ticks);
     bool los;
 	if(!overlap){    
@@ -392,7 +394,7 @@ OozeState Ooze::getState() {
 bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks) {
 
 
-    if (ate > 2) {
+    /*if (ate > 2) {
         state = CLONING;
         RandomMap::setSpawnOoze(true);
         ate = 0;
@@ -400,7 +402,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
     } else if(state != ROOMENTER || state != ROOMEXIT){
         state = HANGRY;
         return true;
-    }
+    }*/
 
     
     switch(this->state) {
@@ -446,6 +448,7 @@ bool Ooze::updateState(std::unordered_map<std::string, Object*> &objectList, Uin
             break;
         }
         case DODGING: {
+            std::cout << player->getProjActive() << std::endl;
             if (!player->getProjActive()) {
                 state = HANGRY; 
                 return true;
@@ -742,14 +745,7 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
     deltaX = abs(deltaX * 2);
     deltaY = abs(deltaY * 2);
 
-    if (state == DODGING) {
-        dir = rand()%2;
-        int temp = deltaX;
-        deltaX = deltaY;
-        deltaY = temp;
-    }
-
-    if (state == FLEEING | state == DODGING && dir == 0) { //move in opposite direction if fleeing, or to left if dodge
+    if (state == FLEEING || state == DODGING) { //move in opposite direction if fleeing, or to left if dodge
         if (target->y > rect.y) 
             yDir = -1;
         if (target->x > rect.x) 
@@ -769,6 +765,11 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
             xDir = -1;
     }
 
+    if (state == DODGING) {
+        int temp = deltaX;
+        deltaX = deltaY;
+        deltaY = temp;
+    }
 
     if(deltaX > deltaY) {
         moveSlope = deltaY * 2 - deltaX;
@@ -800,6 +801,10 @@ void Ooze::moveLine(std::vector<std::vector<Tile*>> &grid, SDL_Rect* target) {
         moveSlope += deltaX;
         y_vel = yDir;
     }   
+
+    if (state == DODGING) {
+        std::cout << "x vel: " << x_vel << " y vel " << y_vel << std::endl;
+    }
 }
 
 //If we don't see the player or a pickup, move to the next room
@@ -816,7 +821,7 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     int c = 0;
     int l = 0;
     int t = 0;
-    std::cout << "intersect size: " << intersects.size() << std::endl;
+    //std::cout << "intersect size: " << intersects.size() << std::endl;
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
