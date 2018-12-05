@@ -934,7 +934,6 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         //std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
 
         bool los = drawLine(grid, temp1);
-        std::cout << los << std::endl;
         if(los && !doorTile->isVisited()) {
             roomTiles.door = temp1;
             endTile = map[l][t];
