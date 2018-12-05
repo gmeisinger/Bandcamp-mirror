@@ -56,6 +56,7 @@ class Ooze : public Object {
     };
 
 private:
+    SDL_Texture* texture;
     SDL_Rect rect; // includes x_pos, y_pos, width, height
     //Used to check line of sight
     SDL_Rect colRect;
@@ -91,7 +92,8 @@ private:
     std::vector<SDL_Rect> intersects;
     int iter;
 	bool used;
-    
+    SDL_Renderer* renderer;
+    void changeColor();
 public:
 
     
@@ -135,6 +137,7 @@ public:
     SDL_Renderer* draw(SDL_Renderer* renderer, SDL_Rect cam);
     bool checkOozeOverlap(std::unordered_map<std::string, Object*> &objectList, Uint32 ticks);
     bool isUsed();
+    
 
     //Movement
 

@@ -95,9 +95,11 @@ void Ooze::input(const Uint8* keystate){}
  *
  */
 void Ooze::init(SDL_Renderer* gRenderer) {
-	setSpriteSheet(utils::loadTexture(gRenderer, "res/ooze.png"), 3, 1);
+    texture = utils::loadTexture(gRenderer, "res/ooze.png");
+	setSpriteSheet(texture, 3, 1);
     addAnimation("wandering", Animation(getSheet().getRow(0)));
     setAnimation("wandering");
+    renderer = gRenderer;
 }
 
  /*Summary
@@ -222,8 +224,9 @@ SDL_Rect* Ooze::pickTarget(std::unordered_map<std::string, Object*> &objectList,
                     Pickup* temp = (Pickup*)it->second;
                     bool losPickup = drawLine(grid, temp->getRect());
                         
-                    if(losPickup)
+                    if(losPickup){
                         return temp->getRect();
+                    }
                     else {
                         bool losPlayer = drawLine(grid, player->getRect());
                         if(losPlayer)
@@ -883,4 +886,13 @@ void Ooze::switchRoom() {
             return;
         }
     }
+}
+
+void Ooze::changeColor(int r, int g, int b){
+    
+//    SDL_SetTextureColorMod(art->getImage(), art->getR(), art->getG(), art->getB());
+//    SDL_RenderCopy(renderer, artifactList.at(inventory[x1][y1])->getImage(), NULL, &img);
+    // art->getR(), art->getG(), art->getB());
+    SDL_SetTextureColorMod(sheet.getTexture(), r, g, b);
+    SDL_RenderCopy(renderer, sheet.getTexture(), NULL, getRect());
 }
