@@ -14,6 +14,7 @@ private:
 	SDL_Rect destRect;
 	bool blocking;
 	bool door;
+	bool chest;
 	bool active;
 	bool visited;
 	bool horWall;
@@ -26,6 +27,8 @@ public:
 	void setBlocking(bool b);
 	bool isDoor();
 	void setDoor(bool b);
+	bool isChest();
+	void setChest(bool b);
 	void toggleBlocking();
 	bool isActive();
 	bool isVisited();

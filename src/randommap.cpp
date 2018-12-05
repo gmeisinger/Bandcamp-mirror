@@ -15,6 +15,7 @@
 #include "include/collision.h"
 #include "include/pickup.h"
 #include "include/tilemap.h"
+#include "include/box.h"
 
 //constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
@@ -57,7 +58,7 @@ RandomMap::RandomMap() : Screen(){
 void RandomMap::init(SDL_Renderer* reference){
 	objectList.clear();
 	rendererReference = reference;
-	SDL_Rect player_box = {TILE_SIZE + 1, TILE_SIZE + 1, TILE_SIZE, TILE_SIZE};
+	SDL_Rect player_box = {TILE_SIZE + 1, TILE_SIZE + 1, 30, 30};
 
 	p = Player(player_box);
 	//
@@ -76,6 +77,8 @@ void RandomMap::init(SDL_Renderer* reference){
 	rooms = tilemap.getRooms();
 	doors = {};
 	
+	placeChests(reference);
+	
 	//Set the starting room for the ooze
 	//std::cout << "numRooms: " << rooms.size() << std::endl;
 	Room oozeRoom = *rooms[rand()%(rooms.size())];
@@ -93,6 +96,7 @@ void RandomMap::init(SDL_Renderer* reference){
 
 	//add doors dynamically
 	placeDoors(reference);
+	
 	//objectList[o.getInstanceName()] = &o;
 }
 
@@ -316,6 +320,19 @@ void RandomMap::placeDoors(SDL_Renderer* renderer) {
 	}
 }
 
+void RandomMap::placeChests(SDL_Renderer* renderer) {
+	std::vector<std::vector<Tile*>> &map = tilemap.getMapRef();
+	for(int r=0;r<map.size();r++) {
+		for(int c=0;c<map[0].size();c++) {
+			if(map[r][c]->isChest()) { 
+				Box* b = new Box(c, r);
+				b->init(renderer);
+				objectList[b->getInstanceName()] = b;
+			}
+		}
+	}
+}
+
 // ADD COMMENTS 
 SDL_Renderer* RandomMap::draw(SDL_Renderer *renderer){
 	//draw map before objects
@@ -328,6 +345,7 @@ SDL_Renderer* RandomMap::draw(SDL_Renderer *renderer){
 	}
 
 	//draw the darkness
+
 	SDL_Rect enlarge = {-CAM_WIDTH/2 - TILE_SIZE, -CAM_HEIGHT/2 - TILE_SIZE, 2*CAM_WIDTH, 2*CAM_HEIGHT};
 	SDL_RenderCopy(renderer, dark, NULL, &enlarge);
 

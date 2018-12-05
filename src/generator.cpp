@@ -203,6 +203,19 @@ void Generator::finalize() {
 	}
 }
 
+//Pick 20 random spots
+void Generator::addChests() {
+	for(int x = 0; x < 20; x++){
+		int randX = (rand() % (map.size()-1))+1;
+		int randY = (rand() % (map[0].size()-1))+1;
+		
+		if(!(randX == 1 && randY == 1) && map[randX][randY] == 1 && map[randX][randY+1] != 4 && map[randX][randY-1] != 4 
+			&& map[randX+1][randY] != 4 && map[randX-1][randY] != 4)
+			map[randX][randY] = 5;
+			
+	}
+}
+
 void Generator::setRoomNeighbors(Room* r) {
 	for(auto other : room_objs) {
 		if(r != other) {

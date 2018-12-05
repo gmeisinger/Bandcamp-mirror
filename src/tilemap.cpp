@@ -156,6 +156,7 @@ void Tilemap::genRandomMap() {
 		//
 	}
 	gen.finalize();
+	gen.addChests();
 	map = convert(gen.getMap());
 	rooms = gen.getRooms();
 	
@@ -185,6 +186,12 @@ std::vector<std::vector<Tile*>> Tilemap::convert( std::vector<std::vector<int>> 
 				// DOOR tile
 				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
 				map[r][c]->setDoor(true);
+			}
+			else if(intmap[r][c] == 5) {
+				// Chest tile
+				map[r][c] = new Tile(tiles["floor"], {c*tilesize, r*tilesize, tilesize, tilesize});
+				map[r][c]->setBlocking(true);
+				map[r][c]->setChest(true);
 			}
 			else {
 				map[r][c] = new Tile();

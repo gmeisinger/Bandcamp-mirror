@@ -55,6 +55,7 @@ void GSM::init(SDL_Renderer* reference){
 	rendererReference = reference;
 	
 	roomList[GSM::currentScreen]->init(reference);
+	pauseMenu.init(rendererReference); //So that the artifact list can be generated.
 	running = true;
 }
 

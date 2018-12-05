@@ -151,6 +151,7 @@ bool Door::checkCanToggle(Player*& playerObj){
 	//Also check direction of the player later
 	//get the player rect
 	SDL_Rect * playerRect = playerObj->getRect();
+
 	//and check if he's close enough to the door
 	//we'll just use a slightly larger rect and check for overlap
 	SDL_Rect proximity = {doorRect.x - doorRect.w/2, doorRect.y - doorRect.h/2, doorRect.w * 2, doorRect.h * 2};

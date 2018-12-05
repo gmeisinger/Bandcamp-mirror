@@ -12,10 +12,12 @@
 #include "include/GSM.h"
 #include "include/circle.h"
 #include "include/collision.h"
+#include "include/box.h"
 
 constexpr int UPDATE_MAX = 100;
 constexpr int CAM_WIDTH = 800;
 constexpr int CAM_HEIGHT = 600;
+
 //Door d_1;
 WarpTile w;
 FadeObj f;
@@ -46,6 +48,7 @@ void TestTransition_1::init(SDL_Renderer* reference){
 	
 	h.init(reference);
 	p.init(reference);
+
 	//d_1.init(reference);
 	w.init(reference);
 	f.init(reference);
@@ -54,6 +57,7 @@ void TestTransition_1::init(SDL_Renderer* reference){
 	placeDoors(reference);
 	
 	//Player and HUD in the Room
+
 	//objectList["door"] = &d_1;
 	objectList["player"] = &p;
 	objectList["hud"] = &h;

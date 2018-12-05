@@ -15,7 +15,9 @@
 Button *test_button = nullptr; //test button for proof of concept
 SDL_Rect dummy_cam = {0, 0, 0, 0};
 SDL_Rect menu_rect = {0, 0, 0, 0};
+SDL_Rect menu_Image_dest = {0, 0, 800, 600};
 std::unordered_map<std::string, Object*> * object_list;
+SDL_Texture* menu_img;
 
 
 /* Summary
@@ -32,8 +34,8 @@ Menu::Menu() { //Constructs a test button; in the future, this should be more fl
 */
 void Menu::init(SDL_Renderer* renderer) {
 	int clicked = 0; //Flag value for 
-	r.x = 300;
-	r.y = 250;
+	r.x = 500;
+	r.y = 150;
 	r.w = 200;
 	r.h = 100;
 	menu_rect.x = 40;
@@ -42,6 +44,7 @@ void Menu::init(SDL_Renderer* renderer) {
 	menu_rect.h = SCREEN_HEIGHT - 80;
 	test_button = new Button("Start", r);
 	test_button->init(renderer);
+	menu_img = utils::loadTexture(renderer, "res/title.png");
 }
 
 /* Summary
@@ -92,9 +95,9 @@ void Menu::input(const Uint8* keystate) { //In the future, the input will probab
  *
 */
 SDL_Renderer* Menu::draw(SDL_Renderer *renderer) { //As with input, in the future this will render every object in a list rather than just test_button
-
 	SDL_SetRenderDrawColor(renderer, 40, 40, 40, 0xFF);
-	SDL_RenderFillRect(renderer, &menu_rect);
+	SDL_RenderCopy(renderer, menu_img, NULL, &menu_Image_dest);
+	//SDL_RenderFillRect(renderer, &menu_rect);
 	test_button->draw(renderer, dummy_cam);
 	return renderer;
 }

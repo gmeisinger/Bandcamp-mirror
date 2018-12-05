@@ -138,8 +138,12 @@ void Projectile::updatePosition(Uint32 ticks) {
 }
 
 void Projectile::checkProjOverlap(std::unordered_map<std::string, Object*> &objectList, std::vector<std::vector<Tile*>> &grid) {
-	if(collision::checkColLeft(projRect, grid, 32) || collision::checkColRight(projRect, grid, 32) ||
-	   collision::checkColTop(projRect, grid, 32) || collision::checkColBottom(projRect, grid, 32)) {
+	Tile* up = collision::checkColTop(projRect, grid, 32);
+	Tile* down = collision::checkColBottom(projRect, grid, 32);
+	Tile* right = collision::checkColRight(projRect, grid, 32);
+	Tile* left = collision::checkColLeft(projRect, grid, 32);
+	
+	if((up && !up->isChest()) || (down && !down->isChest()) || (right && !right->isChest()) || (left && !left->isChest())) {
 		Breach* newBreach = new Breach(projType, projRect, projDrawBox);
 		newBreach->init(rendererReference);
 		objectList[newBreach->getInstanceName()] = newBreach;

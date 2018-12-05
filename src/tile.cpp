@@ -5,6 +5,7 @@ Tile::Tile(SDL_Rect _srcRect, SDL_Rect _destRect) {
 	destRect = _destRect;
 	blocking = false;
 	door = false;
+	chest = false;
 	active = true;
 	visited = false;
 	horWall = false;
@@ -15,6 +16,7 @@ Tile::Tile() {
 	destRect = {0,0,0,0};
 	blocking = false;
 	door = false;
+	chest = false;
 	active = false;
 }
 
@@ -56,6 +58,13 @@ bool Tile::isHorWall() {
 
 void Tile::setHorWall(bool h) {
 	horWall = h;
+
+bool Tile::isChest() {
+	return chest;
+}
+
+void Tile::setChest(bool b) {
+	chest = b;
 }
 
 void Tile::toggleBlocking() {

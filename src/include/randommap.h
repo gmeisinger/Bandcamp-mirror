@@ -41,6 +41,7 @@ class RandomMap : public Screen
 		void input(const Uint8* keystate);
 		void update(Uint32 ticks);
 		void placeDoors(SDL_Renderer* renderer);
+		void placeChests(SDL_Renderer* renderer);
 		SDL_Renderer* draw(SDL_Renderer* renderer);
 		void movePickup(SDL_Renderer* reference, std::vector<std::vector<Tile*>> &grid);
 		void cloneOoze(SDL_Renderer* reference);
