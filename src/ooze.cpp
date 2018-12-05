@@ -1032,28 +1032,21 @@ void Ooze::switchRoom() {
 }
 
 void Ooze::updateColor(){
-    switch(this->state) {
-        case FIGHTING: { //Turn Red
+        //case FIGHTING: { //Turn Red
+    if(losPickup){
             if(r < 2) return;
             else r-=2;
-            break;
         }
-        case HANGRY: {
-            if(g < 2) return;
-            else g-=2;
-            break;
-        }
-        case FLEEING: {
-            if(b < 2) return;
-            else b-=2;
-            break;
-        }
-        default: {
-            if (r == g && g == b && b == CHANNEL_MAX) return;
-            if(r < CHANNEL_MAX) r++;
-            if(g < CHANNEL_MAX) g++;
-            if(b < CHANNEL_MAX) b++;
-        }
+        //case HANGRY: {
+    if(losPlayer){
+        if(g < 2) return;
+        else g-=2;
+    }
+    else {
+        if (r == g && g == b && b == CHANNEL_MAX) return;
+        if(r < CHANNEL_MAX) r++;
+        if(g < CHANNEL_MAX) g++;
+        if(b < CHANNEL_MAX) b++;
     }
 //  std::cout << "r " << (int)r << " g " << (int)g << " b " << (int)b  << std::endl;
     SDL_SetTextureColorMod(sheet.getTexture(), r, g, b);
