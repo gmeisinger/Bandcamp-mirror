@@ -22,7 +22,7 @@ tilemap{t}
     curRoom = room;
     neighbors = curRoom->getNeighbors();
     roomRect = curRoom->getRectCopy();
-    rect = {(roomRect.x + (roomRect.w/2)) * tile_s, (roomRect.y + (roomRect.h/2)) * tile_s, 30, 30};
+    rect = {((roomRect.w/2)) * tile_s, ((roomRect.h/2)) * tile_s, 30, 30};
     totalOoze++; //Increase # of instances counter
 	oozeNumber = totalOoze;
 	int overlapTicks = 0;
@@ -45,7 +45,9 @@ tilemap{t}
     roomTiles.startTile = nullptr;
     roomTiles.endTile = nullptr;
     
-    lastRoom = nullptr;
+    lastStart = nullptr;
+    lastDoor = nullptr;
+    lastEnd = nullptr;
     initialized = false;
     intersects = curRoom->getIntersects();
     doors = tilemap->getDoors();
@@ -770,9 +772,18 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
     int c = 0;
     int l = 0;
     int t = 0;
+
+    int reverseR = 0;
+    int reverseC = 0;
+    int reverseL = 0;
+    int reverseT = 0;
+
+    //Tiles to determine where in front of and behind the door we are
     roomTiles.startTile = nullptr;
     roomTiles.endTile = nullptr;
     roomTiles.door = nullptr;
+
+    //Get all the doors in this room, then determine which we have visited
     for(int i = 0; i < intersects.size(); i++) {
         intersect = &intersects[i];
        
@@ -792,51 +803,77 @@ void Ooze::moveRoom(std::vector<std::vector<Tile*>> &grid) {
         doorTile = map[r][c];
         temp1 = doorTile->getDest();
 
+        //Determine if we need to move through a vertial door or horizontal door
         if(horWall) {
             t = c;
+            reverseT = t;
+            reverseC = c;
             if (temp1->y > rect.y) {
                 l = r+2;
                 r = r-1;
+                reverseL = l-1;
+                reverseR = r-1;
             }
             if (temp1->y < rect.y) {
                 l = r-2;
                 r = r+1;
+                reverseL = l+1;
+                reverseR = r+1;
             }
         }
         if(verWall) {
             l = r;
+            reverseL = l;
+            reverseR = r;
             if (temp1->x > rect.x) {
                 t = c+2;
                 c = c-1;
+                reverseT = t-1;
+                reverseC = c-1;
             }
             if (temp1->x < rect.x) {
                 t = c-2;
                 c = c+1;
+                reverseT = t+1;
+                reverseC = c+1;
             }
         }
         
         tile = map[r][c];
         temp1 = tile->getDest();
-        std::cout << "RoomRect: X " << temp1->x << " Y " << temp1->y << " W " << temp1->w << " H " << temp1->h << std::endl;
 
         bool los = drawLine(grid, temp1);
-        
+        std::cout << los << std::endl;
         if(los && !doorTile->isVisited()) {
+            std::cout << "Here1" << std::endl;
             roomTiles.door = temp1;
-            lastRoom = tile;
+            endTile = map[l][t];
+            if(lastDoor != nullptr)
+                lastDoor->setVisited(false);
+            lastEnd = map[reverseR][reverseC];
+            lastStart = map[reverseL][reverseT];
+            lastDoor = doorTile;
+            temp2 = endTile->getDest();
             doorTile->setVisited(true);
             break;
-        }            
+        }       
+        else if(lastDoor == nullptr && lastStart == nullptr && lastEnd == nullptr) {
+            std::cout << "Here2" << std::endl;
+            lastEnd = map[reverseR][reverseC];
+            lastStart = map[reverseL][reverseT];
+            lastDoor = doorTile;
+        } 
     }    
     if(roomTiles.door == nullptr){
-        tile = lastRoom;
-        temp1 = doorTile->getDest();
+        temp1 = lastDoor->getDest();
         roomTiles.door = temp1;
-        temp1 = tile->getDest();
+        temp1 = lastStart->getDest();
+        temp2 = lastEnd->getDest();
+        tile = lastStart;
+        lastStart = lastEnd;
+        lastEnd = tile;
         std::cout << "coo" << std::endl;
     }
-    endTile = map[l][t];
-    temp2 = endTile->getDest();
     roomTiles.startTile = temp1;
     roomTiles.endTile = temp2; 
     /* delete temp1;
@@ -969,6 +1006,7 @@ void Ooze::hurt(int damage) {
      *
      */
 void Ooze::switchRoom() {
+    roomRect = {roomRect.x * TILE_SIZE, roomRect.y * TILE_SIZE, roomRect.w * TILE_SIZE, roomRect.h * TILE_SIZE};
     if(collision::checkCol(roomRect, rect)) {
         return;
     }
