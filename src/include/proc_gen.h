@@ -3,14 +3,14 @@
 
 class Proc_Gen
 {
-	public:
-		bool genFloor();
-		bool validFloor();
-		bool genRoom();
-		bool validRoom();
-		bool genItem();
-		bool decideItem();
-
+public:
+    bool genFloor();
+    bool validFloor();
+    bool genRoom();
+    bool validRoom();
+    bool genItem();
+    bool decideItem();
+    
 };
 
 #endif  //  BANDCAMP_PROC_GEN_H_

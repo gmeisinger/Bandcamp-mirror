@@ -15,20 +15,20 @@ class GSM;
 //extern int TILE_SIZE;
 
 class Game {
-	private:
-		bool running;
-		SDL_Window* gWindow;
-		SDL_Renderer* gRenderer;
-		GSM * gsm;
-	public:
-		Game();
-		//~Game();
-		bool init();
-		void run();
-		void change_track();
-		void close();
-		void input(const Uint8* keystate);
-		void update(Uint32 ticks);
-		void draw();
+private:
+    bool running;
+    SDL_Window* gWindow;
+    SDL_Renderer* gRenderer;
+    GSM * gsm;
+public:
+    Game();
+    //~Game();
+    bool init();
+    void run();
+    void change_track();
+    void close();
+    void input(const Uint8* keystate);
+    void update(Uint32 ticks);
+    void draw();
 };
 #endif	//	BANDCAMP_GAME_H_

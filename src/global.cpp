@@ -1,7 +1,7 @@
 /* Team Bandcamp
  * Class function: Global variables for any class
- * 
-*/
+ *
+ */
 
 #include "include/global.h"
 

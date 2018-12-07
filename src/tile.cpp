@@ -1,78 +1,78 @@
 #include "include/tile.h"
 
 Tile::Tile(SDL_Rect _srcRect, SDL_Rect _destRect) {
-	srcRect = _srcRect;
-	destRect = _destRect;
-	blocking = false;
-	door = false;
-	chest = false;
-	active = true;
-	visited = false;
-	horWall = false;
+    srcRect = _srcRect;
+    destRect = _destRect;
+    blocking = false;
+    door = false;
+    chest = false;
+    active = true;
+    visited = false;
+    horWall = false;
 }
 
 Tile::Tile() {
-	srcRect = {0,0,0,0};
-	destRect = {0,0,0,0};
-	blocking = false;
-	door = false;
-	chest = false;
-	active = false;
+    srcRect = {0,0,0,0};
+    destRect = {0,0,0,0};
+    blocking = false;
+    door = false;
+    chest = false;
+    active = false;
 }
 
 SDL_Rect* Tile::getSource() {
-	return &srcRect;
+    return &srcRect;
 }
 
 SDL_Rect* Tile::getDest() {
-	return &destRect;
+    return &destRect;
 }
 
 bool Tile::isBlocking() {
-	return blocking;
+    return blocking;
 }
 
 void Tile::setBlocking(bool b) {
-	blocking = b;
+    blocking = b;
 }
 
 bool Tile::isDoor() {
-	return door;
+    return door;
 }
 
 void Tile::setDoor(bool b) {
-	door = b;
+    door = b;
 }
 
 bool Tile::isVisited() {
-	return visited;
+    return visited;
 }
 
 void Tile::setVisited(bool v) {
-	visited = v;
+    visited = v;
 }
 
 bool Tile::isHorWall() {
-	return horWall;
+    return horWall;
 }
 
 void Tile::setHorWall(bool h) {
-	horWall = h;
+    horWall = h;
 }
 
 bool Tile::isChest() {
-	return chest;
+    return chest;
 }
 
 void Tile::setChest(bool b) {
-	chest = b;
+    chest = b;
 }
 
 void Tile::toggleBlocking() {
-	if(blocking) blocking = false;
-	else blocking = true;
+    if(blocking) blocking = false;
+    else blocking = true;
 }
 
 bool Tile::isActive() {
-	return active;
+    return active;
 }

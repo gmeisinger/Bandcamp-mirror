@@ -11,14 +11,14 @@
 
 class Credits
 {
-    private:
-        bool init;
-        std::vector<SDL_Texture*> credits;
-        SDL_Renderer* renderer;
-    public:
-        Credits(SDL_Renderer* _gRenderer);
-        ~Credits();
-        void load();
-        void play();
+private:
+    bool init;
+    std::vector<SDL_Texture*> credits;
+    SDL_Renderer* renderer;
+public:
+    Credits(SDL_Renderer* _gRenderer);
+    ~Credits();
+    void load();
+    void play();
 };
 #endif // BANDCAMP_CREDITS_H_

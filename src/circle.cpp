@@ -1,7 +1,7 @@
 /* Team Bandcamp
- * Class function: 
- * 
-*/
+ * Class function:
+ *
+ */
 
 #include "include/circle.h"
 
@@ -36,17 +36,17 @@ void Circle::updateCircle(int varX, int varY, int varR)
 // add description
 void Circle::drawCircle(SDL_Renderer* rend)
 {
-    for (int i = -r; i < r; i++) 
+    for (int i = -r; i < r; i++)
     {
-		for (int f = -r; f < r; f++) 
+        for (int f = -r; f < r; f++)
         {
-			if ((i*i + f*f) < (r*r)) 
+            if ((i*i + f*f) < (r*r))
             {
                 SDL_SetRenderDrawColor(rend, 0, 0xFF, 0, 0);
-				SDL_RenderDrawPoint(rend, x + i, y + f);
-			}
-		}
-	}
+                SDL_RenderDrawPoint(rend, x + i, y + f);
+            }
+        }
+    }
 }
 
 // add description
